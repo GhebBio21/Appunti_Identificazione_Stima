@@ -5117,5 +5117,547 @@ Ma la media campionaria, che coincide con LS e ML, ha proprio MSE
 Quindi raggiunge il limite teorico: in questo problema lo stimatore ML/LS e' efficiente.
 \end{spiegazione}
 
-%AGGIUNGERE LEZIONE DEL 20/04 E DEL 23/04
+\subsection*{Piccolo recap delle cose viste.}
+
+Si vuole costruire uno stimatore $\hat x$ come funzione di \(z\) fino all'istante \(k\).
+
+Si distinguono due approcci principali:
+
+\begin{itemize}
+    \item \textbf{Non bayesiano}
+    \[
+    \begin{cases}
+    \text{ML} \\
+    \text{LS}
+    \end{cases}
+    \]
+
+    \item \textbf{Bayesiano}
+    \[
+    \begin{cases}
+    \text{MAP} \\
+    \text{MMSE}
+    \end{cases}
+    \]
+\end{itemize}
+
+Inoltre,
+\[
+\mathrm{MMSE}=\mathrm{EAP}.
+\]
+
+Gli indici di bontà considerati sono:
+\begin{itemize}
+    \item polarizzazione;
+    \item varianza / MSE;
+    \item consistenza / efficienza.
+\end{itemize}
+
+Abbiamo visto anche:
+\[
+\mathrm{CRLB}
+\qquad \text{e} \qquad
+\mathrm{FIM}.
+\]
+
+\subsection*{Approfondimento del caso gaussiano}
+
+Si assume che \(x\) e \(z\) siano variabili aleatorie congiuntamente gaussiane.
+
+Si definisce il vettore
+\[
+y=
+\begin{bmatrix}
+x\\
+z
+\end{bmatrix},
+\qquad
+y\sim \mathcal{N}\bigl(\bar y,\Sigma_y\bigr).
+\]
+
+Il vettore delle medie è
+\[
+\bar y=
+\begin{bmatrix}
+\bar y\\
+\bar z
+\end{bmatrix},
+\]
+mentre la matrice di covarianza è
+\[
+\Sigma_y=
+\begin{bmatrix}
+\Sigma_x & \Sigma_{xz}\\
+\Sigma_{zx} & \Sigma_z
+\end{bmatrix}.
+\]
+
+Qui:
+\begin{itemize}
+    \item \(x\) è la quantità da stimare;
+    \item \(z\) rappresenta le osservazioni.
+\end{itemize}
+
+Si considera quindi la densità marginale
+\[
+f_{\overline{\underline{x}}}(x).
+\]
+
+\subsubsection*{Stima MMSE (EAP)}
+
+\[
+\hat x^{\mathrm{MMSE}} = E[x\mid z]
+\]
+
+Sotto l'ipotesi che \(z\) e \(z\) siano congiuntamente gaussiane, vale la formula
+
+\[
+E[x\mid z]
+=
+\bar x
++
+\Sigma_{xz}\,\Sigma_z^{-1}\,(z-\bar z).
+\]
+
+\paragraph{Matrice di covarianza}
+
+La matrice di covarianza è
+
+\[
+\Sigma_{xx\mid z}
+=
+E\!\left[
+(x-\hat x)(x-\hat x)^T \mid z
+\right]
+=
+\Sigma_x-\Sigma_{xz}\Sigma_z^{-1}\Sigma_{zx}.
+\]
+
+Da qui seguono due proprietà importanti:
+
+\begin{itemize}
+    \item lo stimatore ottimo, nel senso MMSE, è \textbf{lineare in \(z\)};
+    \item la covarianza \textbf{non dipende dalle particolari osservazioni}
+\end{itemize}
+
+Queste sono proprietà che discendono dall'ipotesi di gaussianità.
+
+\paragraph{Negli altri casi}
+
+In generale, negli altri casi:
+\begin{itemize}
+    \item è complesso ricavare l'espressione della PDF a posteriori e quindi del suo valore atteso.
+\end{itemize}
+ Conviene ricercare uno stimatore più "semplice", ad esempio un'espressione lineare delle osservazioni.
+Quindi si cerca uno stimatore "semplice" minimizzando l'MSE $\rightarrow MMSE$ lineare.
+
+\subsubsection*{Condizioni per lo stimatore lineare ottimo}
+
+Si impongono le seguenti condizioni:
+
+\begin{enumerate}
+    \item stimatore non polarizzato;
+    \item errore di stima incorrelato con le osservazioni
+\end{enumerate}
+\[
+\text{Queste due condizioni costituiscono il} \ \textbf{Principio di ortogonalità}
+\]
+ 
+ 
+Consideriamo \(x\) e \(z\) senza particolari assunzioni. 
+
+Si cerca uno stimatore della forma affine (che in realtà chiameremo lineare)
+\[
+\hat x = Az+b.
+\]
+
+\paragraph{Errore di stima}
+Si definisce
+\[
+\tilde x = x-\hat x,
+\]
+che rappresenta l'errore di stima.
+
+\paragraph{Prima condizione: non polarizzazione}
+Si richiede che l'errore abbia media nulla:
+\[
+E[\tilde x]=0.
+\]
+
+Poiché
+\[
+E[\tilde x]
+=
+\bar x-(A\bar z+b),
+\]
+la condizione \(E[\tilde x]=0\) implica
+\[
+b=\bar x-A\bar z.
+\]
+(Che verifica la prima condizione). \\
+Quindi lo stimatore può essere riscritto come
+\[
+\hat x
+=
+Az+\bar x-A\bar z
+=
+\bar x + A(z-\bar z).
+\]
+
+Errore di stima:
+\[
+\tilde x
+=
+x-\hat x
+=
+x-\bar x-A(z-\bar z).
+\]
+
+\paragraph{Seconda condizione: Errore di stima incorrelato con le osservazioni}
+Si richiede che l'errore di stima sia incorrelato con le osservazioni:
+\[
+E[\tilde x\,z^T]=0.
+\]
+
+Equivalentemente, sostituiendo l'errore di stima $\tilde x$ per come l'abbiamo scritto poco fa
+\[
+E[(x-\bar x - A(z-\bar z))z^T]=0.
+\]
+Ma anche
+\[
+E[\tilde x \bar z^T] = 0
+\]
+
+Quindi 
+\[
+E[\tilde xz^T] - E[\tilde x \bar z^T] = 0
+\]
+Dunque raccogliendo $\tilde x$
+\[
+E[\tilde x(z-\bar z)^T] = 0
+\]
+Sostituendo l'espressione di \(\tilde x\):
+\[
+E\!\left[
+\bigl(x-\bar x-A(z-\bar z)\bigr)(z-\bar z)^T
+\right]=0.
+\]
+
+Da cui:
+\[
+\Sigma_{xz}-A\Sigma_z=0.
+\]
+
+Da cui si ricava
+\[
+A=\Sigma_{xz}\Sigma_z^{-1}.
+\]
+(Che verifica la seconda condizione)
+\[
+\hat x
+=
+Az+\bar x-A\bar z
+=
+\bar x + A(z-\bar z)
+=
+\bar x+\Sigma_{xz}\Sigma_z^{-1}(z-\bar z) \rightarrow\text{MMSE Lineare o BLUE (Best Linear Unbiased Estimator)}
+\]
+
+La covarianza dell'errore di stima vale
+\[
+E[\tilde x\,\tilde x^T]
+=
+\Sigma_x-\Sigma_{xz}\Sigma_z^{-1}\Sigma_{zx}
+=
+\Sigma_{xx\mid z}.
+\]
+
+Quindi si ottiene il miglior stimatore lineare cercato tra sole funzioni lineari.
+
+
+
+\subsubsection*{Approfondiamo il caso di \(h(\cdot,\cdot)\) lineare}
+
+\[
+\begin{cases}
+    Y = Cx + V \\
+    x \sim (\bar{x}, \Sigma_x) \\
+    V \sim (0, \Sigma_V) \\
+    x \text{ e } V \text{ incorrelati}
+\end{cases}
+\]
+
+Stimatore BLUE, ci mancano $\bar y, \Sigma_{xy}, \Sigma_y$ (verifica che sia Y o y)
+
+\paragraph{Media di \(y\)}
+\[
+\bar y = E[Y]=E[CX+V]=C\bar x.
+\]
+
+Definiamo
+\[
+\tilde Y = Y-\bar y.
+\]
+Allora
+\[
+\tilde Y
+=
+Cx+V-C\bar x
+=
+C\tilde x+V,
+\]
+dove
+\[
+\tilde x=x-\bar x.
+\]
+
+\paragraph{Covarianza incrociata}
+\[
+\Sigma_{xy}
+=
+E[\tilde x\,\tilde Y^T]
+=
+E\!\left[\tilde x(C\tilde x+V)^T\right].
+\]
+
+Poiché \(x\) e \(V\) sono incorrelati,
+\[
+\Sigma_{xy}
+=
+\Sigma_x C^T.
+\]
+
+\paragraph{Covarianza di \(Y\)}
+\[
+\Sigma_y
+=
+E[\tilde Y\,\tilde Y^T]
+=
+E\!\left[(C\tilde x+V)(C\tilde x+V)^T\right].
+\]
+
+Ancora, usando l'incorrelazione tra \(x\) e \(V\),
+\[
+\Sigma_y
+=
+C\Sigma_x C^T+\Sigma_V.
+\]
+
+\[
+\hat x^{\mathrm{BLUE}}(y)
+=
+\bar x+\Sigma_{xy}\Sigma_y^{-1}(y-\bar y)
+\]
+
+Sostituendo le espressioni ricavate in precedenza,
+\[
+\hat x^{\mathrm{BLUE}}(y)
+=
+\bar x+\Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}(y-C\bar x) = 
+\]
+\[
+[I + \Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}C]\bar x + \Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}y
+\]
+
+\subsubsection*{Lemma di inversione di matrice}
+
+Si usa il lemma
+\[
+\bigl(P+CQC^T\bigr)^{-1}
+=
+P^{-1}
+-
+P^{-1}C\bigl(Q^{-1}+C^TP^{-1}C\bigr)^{-1}C^TP^{-1}
+\]
+
+e inoltre
+\[
+QC^T\bigl(P+CQC^T\bigr)^{-1}
+=
+\bigl(Q^{-1}+C^TP^{-1}C\bigr)^{-1}C^TP^{-1}.
+\]
+
+Applico il lemma a $\hat x^{BLUE}(y)$, per il primo termine:
+
+\[
+\Bigl[
+\Sigma_X-\Sigma_X C^T\bigl(C\Sigma_X C^T+\Sigma_V\bigr)^{-1}C\Sigma_X
+\Bigr]\Sigma_X^{-1}\bar X
+\]
+si pone:
+\[
+P^{-1}=\Sigma_x,
+\qquad
+C=C^T
+\qquad
+Q^{-1} = \Sigma_V
+\]
+
+e diventa
+\[
+\bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}\Sigma_x^{-1}\bar x
+\]
+
+Per il secondo termine:
+\[
+\Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}y
+\]
+Si pone
+\[
+Q =\Sigma_x, \qquad C = C, \qquad P=\Sigma_V
+\]
+
+e diventa
+\[
+\bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}C^T\Sigma_V^{-1}y
+\]
+
+Pertanto, mettendo tutto insieme e poi raccogliendo i due contributi, si ottiene la forma compatta
+\[
+\hat x^{\mathrm{BLUE}}(y) = \bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}\Sigma_x^{-1}\bar x + \bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}C^T\Sigma_V^{-1}y.
+=
+\]
+\[
+=\bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}
+\bigl(\Sigma_x^{-1}\bar x+C^T\Sigma_V^{-1}y\bigr)
+\]
+
+\[
+\hat\Sigma_X^{\mathrm{BLUE}}
+=
+\Sigma_x-\Sigma_{xy}\Sigma_y^{-1}\Sigma_{yx}
+\]
+
+Sostituendo
+\[
+\Sigma_{xy}=\Sigma_X C^T,
+\qquad
+\Sigma_y=C\Sigma_x C^T+\Sigma_V,
+\]
+si ottiene
+\[
+\hat\Sigma_x^{\mathrm{BLUE}}
+=
+\Sigma_x-\Sigma_x C^T\bigl(C\Sigma_xC^T+\Sigma_V\bigr)^{-1}C\Sigma_x
+\]
+
+Applicando il lemma di inversione di matrice, questa espressione diventa
+\[
+\hat\Sigma_x^{\mathrm{BLUE}}
+=
+\bigl(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C\bigr)^{-1}.
+\]
+
+Di conseguenza,
+\[
+\bigl(\hat\Sigma_x^{\mathrm{BLUE}}\bigr)^{-1}
+=
+\Sigma_x^{-1}+C^T\Sigma_V^{-1}C.
+\]
+
+\subsection*{Osservazioni non informative}
+
+Se le osservazioni sono non informative, allora
+\[
+\Sigma_V^{-1}\approx 0.
+\]
+
+In questo caso,
+\[
+\hat x^{\mathrm{BLUE}}(y)\to \bar x
+\]
+e
+\[
+\hat\Sigma_x^{\mathrm{BLUE}}\to \Sigma_x.
+\]
+
+Quindi, se il rumore è molto elevato e le osservazioni portano poca informazione, lo stimatore tende semplicemente al valore medio \(\bar x\), e la covarianza a posteriori tende a quella a priori.
+
+\subsubsection*{Assenza di informazione a priori}
+
+Se invece manca informazione a priori, ovvero:
+\[
+\Sigma_x^{-1}\approx 0.
+\]
+
+In tal caso,
+\[
+\hat x^{\mathrm{BLUE}}
+\to
+\bigl(C^T\Sigma_V^{-1}C\bigr)^{-1}C^T\Sigma_V^{-1}y
+\]
+e
+\[
+\hat\Sigma_x^{\mathrm{BLUE}}
+\to
+\bigl(C^T\Sigma_V^{-1}C\bigr)^{-1}.
+\]
+
+\subsubsection*{Legame con i minimi quadrati pesati}
+
+Si consideri il modello
+\[
+Y=Cx+V.
+\]
+
+Ponendo
+\[
+W=\Sigma_V^{-1},
+\]
+si può definire lo stimatore ai minimi quadrati pesati come
+\[
+\hat x^{LS}(y)
+=
+\operatorname*{arg\,min}_{x}
+\,(y-Cx)^T W (y-Cx).
+\]
+
+La soluzione è
+\[
+\hat x^{LS}
+=
+\bigl(C^TWC\bigr)^{-1}C^TWy.
+\]
+
+Questa è la pseudoinversa pesata con \(W\).
+
+\subsection*{Caso non lineare}
+
+Si consideri un modello di misura non lineare della forma
+\[
+Y=h(x,V),
+\]
+con
+\[
+\begin{bmatrix}
+x\\
+V
+\end{bmatrix}
+\sim
+\mathcal{N}\!\left(
+\begin{bmatrix}
+\bar x\\
+0
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_x & 0\\
+0 & \Sigma_V
+\end{bmatrix}
+\right).
+\]
+
+In questo caso ricavare esplicitamente
+\[
+\bar y,\qquad \Sigma_y,\qquad \Sigma_{xy}
+\]
+può essere complicato.
+
+Per affrontare il problema si possono seguire diversi approcci:
+
+\begin{enumerate}
+    \item linearizzare \(h(\cdot)\);
+    \item usare la \emph{Unscented Transform};
+    \item usare metodi Monte Carlo.
+\end{enumerate}
+
 \end{document}
