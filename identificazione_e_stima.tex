@@ -10,6 +10,8 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
 \usetikzlibrary{positioning,arrows.meta}
 \usetikzlibrary{patterns}
 \usetikzlibrary{positioning,arrows.meta}
@@ -21,6 +23,23 @@
 \newtheorem{definition}{Definizione}
 \newtheorem{example}{Esempio}
 \newtheorem{remark}{Osservazione}
+
+\newtcolorbox{spiegazione}[2][]{
+  enhanced,
+  breakable,
+  colback=blue!3,
+  colframe=blue!55!black,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={Spiegazione -- #2},
+  arc=2mm,
+  boxrule=0.6pt,
+  left=2mm,
+  right=2mm,
+  top=1mm,
+  bottom=1mm,
+  #1
+}
 
 \title{Identificazione e Stima \\ \large Appunti del corso (Prof.\ Costanzi)}
 \author{}
@@ -57,6 +76,16 @@ Una possibilità è scegliere $f(\cdot)$ lineare nelle ultime $n$ osservazioni:
 
 Il problema diventa quindi \emph{scegliere} i coefficienti $a_1,\dots,a_n$.
 
+\begin{spiegazione}{Perche' identificazione e predizione sono collegate}
+In identificazione si vuole costruire un modello a partire dai dati osservati. Un modo molto naturale per giudicare se il modello e' buono consiste nel chiedersi: ``quanto bene riesce a predire il prossimo campione?''. Se il modello usa bene l'informazione contenuta nel passato, allora la differenza tra valore osservato e valore predetto deve contenere solo la parte nuova, cioe' la parte che non era ricavabile dai dati precedenti.
+
+Nel caso lineare, il predittore e' una combinazione pesata dei campioni passati:
+\[
+\hat v(t\mid t-1)=a_1v(t-1)+\cdots+a_nv(t-n).
+\]
+I coefficienti $a_i$ determinano quanta importanza dare a ciascun valore passato. Identificare il modello significa quindi scegliere questi coefficienti in modo che la previsione sia il piu' possibile aderente ai dati osservati.
+\end{spiegazione}
+
 \subsection{Errore di predizione}
 \[
 \varepsilon(k)=v(k)-\hat v(k\mid k-1),
@@ -87,6 +116,16 @@ Sia $\bar\varepsilon$ la media di $\varepsilon(k)$. Migliorare la regola signifi
 \hat v(k+1\mid k)=a_1 v(t-1)+\dots+a_n v(t-n)-\bar\varepsilon,
 \]
 così da avere media nulla.
+
+\begin{spiegazione}{Come interpretare l'errore di predizione}
+L'errore di predizione misura cio' che il predittore non e' riuscito a spiegare:
+\[
+\varepsilon(k)=v(k)-\hat v(k\mid k-1).
+\]
+Se gli errori hanno una media diversa da zero, il predittore sta sbagliando sistematicamente verso l'alto o verso il basso. Per questo si cerca almeno di ottenere errori a media nulla. Ma la media nulla non basta: un errore puo' avere media zero e contenere comunque una struttura temporale, ad esempio alternare valori positivi e negativi in modo regolare.
+
+L'obiettivo piu' forte e' quindi ottenere un errore senza struttura residua. In altre parole, dopo aver predetto usando il passato, l'errore non deve essere ancora predicibile dal passato stesso. Questo porta naturalmente all'idea di rumore bianco.
+\end{spiegazione}
 
 
 Un'altra possibilità può essere:
@@ -146,6 +185,24 @@ Il problema si riconduce a trovare $W(z)$ soggetto a rumore bianco in ingresso c
  Dobbiamo studiare questo  
 \end{center}
 
+\begin{spiegazione}{Dal predittore al filtro generatore}
+Se l'errore di predizione e' rumore bianco, allora il segnale osservato puo' essere visto come il risultato di un filtro dinamico alimentato da una sorgente completamente imprevedibile. La relazione
+\[
+v(t)=a_1v(t-1)+\cdots+a_nv(t-n)+\varepsilon(t)
+\]
+dice che il valore attuale e' composto da una parte prevedibile, costruita con i valori passati, e da una parte nuova, $\varepsilon(t)$.
+
+Portando tutti i termini in $v$ a sinistra si ottiene
+\[
+A(z)v(t)=\varepsilon(t),
+\]
+dove $A(z)=1-a_1z^{-1}-\cdots-a_nz^{-n}$. Invertendo formalmente:
+\[
+v(t)=\frac{1}{A(z)}\varepsilon(t)=W(z)\varepsilon(t).
+\]
+Questa e' l'idea fondamentale dei modelli stocastici: descrivere un processo osservato come uscita di un sistema dinamico eccitato da rumore bianco.
+\end{spiegazione}
+
 %==============================================================
 \section{Processi stocastici}
 il WN (White Noise) è un processo stocastico.
@@ -173,6 +230,18 @@ dove $s$ è sottinteso e indica la dipendenza dall'esperimento. Fissato $s=\bar 
 \end{itemize}
 
 
+\begin{spiegazione}{Processo stocastico e realizzazione}
+Un processo stocastico e' una famiglia di variabili aleatorie indicizzate dal tempo. Per ogni istante $t$ si ha una variabile aleatoria; per ogni esito dell'esperimento si ottiene invece una sequenza temporale concreta, detta realizzazione.
+
+Questa distinzione e' importante negli appunti:
+\begin{itemize}
+  \item le formule con $\mathbb E[\cdot]$ descrivono proprieta' teoriche del processo;
+  \item i dati misurati sono una singola realizzazione;
+  \item gli stimatori cercano di ricostruire le proprieta' teoriche usando solo quella realizzazione.
+\end{itemize}
+Quindi media, varianza e covarianza sono oggetti del processo, mentre media campionaria e correlogramma sono stime calcolate sui dati disponibili.
+\end{spiegazione}
+
 \subsection{Processi stazionari (in senso lato, PSS)}
 \begin{itemize}
   \item $m(t)$ costante: $\mathbb{E}[v(t)]=m$.
@@ -187,6 +256,16 @@ dove $s$ è sottinteso e indica la dipendenza dall'esperimento. Fissato $s=\bar 
    Conseguenza: $\mathrm{Var}(t) =$ costante.
 \end{itemize}
 
+\begin{spiegazione}{Significato della stazionarieta' in senso lato}
+La stazionarieta' in senso lato non richiede che l'intera distribuzione probabilistica resti identica nel tempo; richiede solo che restino invariati media e covarianza. Questo e' sufficiente per molti strumenti del corso, perche' predizione lineare, spettro e correlogramma lavorano soprattutto con momenti del primo e del secondo ordine.
+
+La condizione
+\[
+\gamma(t_1,t_2)=\gamma(t_2-t_1)
+\]
+significa che la dipendenza statistica tra due campioni non dipende dalla loro posizione assoluta nel tempo, ma solo da quanto sono distanti. Per esempio, la relazione tra $v(10)$ e $v(12)$ e' la stessa che tra $v(100)$ e $v(102)$, perche' in entrambi i casi il ritardo e' $\tau=2$.
+\end{spiegazione}
+
 \subsection{Rumore bianco (WN)}
 Processo stocastico stazionario tale che $\gamma(\tau)=0\ \forall \tau\neq0$:
 \begin{itemize} 
@@ -195,6 +274,18 @@ Processo stocastico stazionario tale che $\gamma(\tau)=0\ \forall \tau\neq0$:
   \item WN è un segnale completamente imprevedibile.
 \end{itemize}
 Scriviamo: $\eta(t)\sim WN(m,\sigma^2)$ con $\mathbb{E}[\eta]=m$, $\gamma(\tau) = 0 \ \ \forall\tau\neq0$, $\gamma(0)=\sigma^2$ Varianza.
+
+\begin{spiegazione}{Perche' il rumore bianco e' il riferimento di imprevedibilita'}
+Il rumore bianco e' il processo che non contiene correlazione temporale: conoscere un campione non aiuta a predire i campioni successivi tramite relazioni lineari. La sua autocovarianza e'
+\[
+\gamma_\eta(\tau)=
+\begin{cases}
+\sigma^2, & \tau=0,\\
+0, & \tau\neq 0.
+\end{cases}
+\]
+Per questo, quando l'errore di predizione assomiglia a rumore bianco, significa che il modello ha estratto dai dati tutta la struttura lineare prevedibile. Rimane solo innovazione, cioe' informazione nuova che arriva al tempo corrente.
+\end{spiegazione}
 
 %==============================================================
 \section{Processi MA, AR e ARMA}
@@ -248,6 +339,16 @@ In sintesi, $MA$:
     \item covrianza funzione solo di $t_2-t_1 \rightarrow \text{PS stazionario }\forall c_0,...,c_n$
 \end{itemize}
 
+\begin{spiegazione}{Processo MA: memoria finita del rumore}
+Un processo MA($n$) e' costruito sommando il rumore bianco corrente e un numero finito di rumori passati:
+\[
+v(t)=c_0\eta(t)+c_1\eta(t-1)+\cdots+c_n\eta(t-n).
+\]
+Il punto chiave e' che $v(t)$ e $v(t+\tau)$ possono essere correlati solo se condividono almeno uno stesso termine di rumore. Se il ritardo $\tau$ e' maggiore di $n$, i due campioni non hanno piu' nessun $\eta(\cdot)$ in comune e quindi la covarianza si annulla.
+
+Per questo gli MA hanno una memoria statistica finita: oltre l'ordine del modello, l'autocovarianza teorica vale zero. Questa proprieta' sara' poi utile nella scelta della famiglia del modello a partire dai dati.
+\end{spiegazione}
+
 \paragraph{In funzione di $z^{-1}$:}
 \[
 v(t)=(c_0\eta(t)+c_1 z^{-1}\eta(t)+\dots+c_n z^{-n}\eta(t)) = (c_0+c_1 z^{-1}+\dots+c_n z^{-n})\eta(t)=C(z)\,\eta(t)
@@ -268,6 +369,20 @@ F.d.t.\ con $n$ poli nell'origine e $n$ zeri dipendenti dai $c_i$.
 \end{tikzpicture}
 \end{center}
 
+\begin{spiegazione}{Uso dell'operatore ritardo nei modelli MA}
+L'operatore $z^{-1}$ rappresenta un ritardo di un campione:
+\[
+z^{-1}\eta(t)=\eta(t-1),\qquad z^{-2}\eta(t)=\eta(t-2).
+\]
+Questo permette di riscrivere somme temporali come polinomi in $z^{-1}$. Per un MA($n$),
+\[
+v(t)=C(z)\eta(t),
+\qquad
+C(z)=c_0+c_1z^{-1}+\cdots+c_nz^{-n}.
+\]
+Questa forma e' molto comoda per passare dalla descrizione nel tempo alla descrizione come filtro: il processo $v(t)$ e' l'uscita del filtro $C(z)$ quando l'ingresso e' rumore bianco.
+\end{spiegazione}
+
 \paragraph{MA($\infty$):}
 \[
 v(t) = c_0\eta(t)+\dots+c_n\eta(t-n) + \dots \text{infinità di termini}
@@ -284,6 +399,14 @@ Esistono generalizzazioni:
     \item $GMA$ generati da PS non WN
 \end{itemize}
 
+\begin{spiegazione}{Perche' introdurre MA($\infty$)}
+Gli MA finiti hanno memoria finita, ma molti processi reali hanno una memoria che si attenua senza annullarsi esattamente dopo un numero finito di passi. La scrittura MA($\infty$)
+\[
+v(t)=\sum_{i=0}^{\infty}c_i\eta(t-i)
+\]
+permette di rappresentare processi con memoria infinita ma decrescente. Questa forma e' centrale per capire gli AR stabili: un AR stabile puo' infatti essere sviluppato come un MA($\infty$), cioe' come una somma infinita di rumori passati pesati da coefficienti che tendono a zero.
+\end{spiegazione}
+
 \subsection{Processo AR (Auto Regressivo), AR($n$) (di ordine n)}
 \[
 v(t)=a_1 v(t-1)+a_2v(t-2)\dots+a_n v(t-n)+\eta(t),\qquad \eta\sim WN(0,\sigma^2).
@@ -294,6 +417,20 @@ W(z)=\frac{1}{A(z)} =\frac{1}{1-a_1 z^{-1}-a_2z^{-2}-\dots-a_n z^{-n}} =\frac{z^
 \]
 n zeri nell'origine, n poli in funzione di $a_1,...,a_n$ \\
 Se tutti i poli sono nel cerchio unitario (stabilità), AR($n$) è un PSS (Processo stocastico stazionario).
+
+\begin{spiegazione}{Processo AR: retroazione dai valori passati}
+In un AR($n$), il valore corrente dipende direttamente dai valori passati del processo stesso:
+\[
+v(t)=a_1v(t-1)+\cdots+a_nv(t-n)+\eta(t).
+\]
+A differenza dell'MA, non si sommano direttamente solo rumori passati: i rumori passati influenzano $v(t)$ attraverso la dinamica ricorsiva. Questo introduce una memoria potenzialmente infinita, perche' $v(t-1)$ dipende da $v(t-2)$, che dipende da $v(t-3)$, e cosi' via.
+
+La stabilita' del filtro
+\[
+W(z)=\frac{1}{A(z)}
+\]
+garantisce che l'effetto di un rumore passato si attenui nel tempo. Se la dinamica non e' stabile, i contributi passati possono crescere e il processo non ha una varianza stazionaria ben definita.
+\end{spiegazione}
 
 \begin{example}[AR(1)]
 $v(t)=a v(t-1)+\eta(t)$  
@@ -344,10 +481,42 @@ Covarianza:
 
 \end{example}
 
+\begin{spiegazione}{L'esempio AR(1) passo per passo}
+Nel caso AR(1)
+\[
+v(t)=av(t-1)+\eta(t),
+\]
+la ricorsione puo' essere sostituita piu' volte all'indietro:
+\[
+v(t)=\eta(t)+a\eta(t-1)+a^2\eta(t-2)+\cdots.
+\]
+Ogni rumore passato entra nel valore corrente con peso $a^i$. Se $|a|<1$, questi pesi diventano sempre piu' piccoli e la somma ha senso come processo stazionario.
+
+La varianza si ottiene sommando i contributi indipendenti dei rumori:
+\[
+\mathrm{Var}[v(t)]=\sigma^2(1+a^2+a^4+\cdots)=\frac{\sigma^2}{1-a^2}.
+\]
+La covarianza a ritardo $\tau$ resta proporzionale ad $a^\tau$: se $a$ e' vicino a zero la memoria decade rapidamente; se $a$ e' vicino a uno la memoria e' lunga.
+\end{spiegazione}
+
 Nel caso AR($n$) le equazioni di Yule--Walker (Y-W) sono
 \[
 \gamma(\tau)=a_1\gamma(\tau-1)+\dots+a_n\gamma(\tau-n),
 \]
+
+\begin{spiegazione}{Equazioni di Yule--Walker}
+Le equazioni di Yule--Walker collegano i parametri di un modello AR alla funzione di autocovarianza. Si ottengono moltiplicando l'equazione AR per un valore ritardato del processo e poi facendo il valore atteso.
+
+Per un AR($n$), l'equazione
+\[
+v(t)=a_1v(t-1)+\cdots+a_nv(t-n)+\eta(t)
+\]
+porta, per ritardi positivi, a
+\[
+\gamma(\tau)=a_1\gamma(\tau-1)+\cdots+a_n\gamma(\tau-n).
+\]
+Questo significa che l'autocovarianza di un AR soddisfa la stessa dinamica lineare del processo. Per questo, osservando la forma della covarianza, si possono stimare o riconoscere modelli autoregressivi.
+\end{spiegazione}
 
 
 \subsection{Processo ARMA$(n_a,n_c)$}
@@ -383,6 +552,21 @@ W(z)= \frac{c_0+c_1 z^{-1}+\dots+c_{n_c}z^{-n_c}}{1-a_1 z^{-1}-\dots-a_{n_a}z^{-
 \]
 Se $W(z)$ è stabile, il processo ARMA è stazionario.
 
+\begin{spiegazione}{ARMA come combinazione di AR e MA}
+Un ARMA unisce due meccanismi:
+\begin{itemize}
+  \item la parte AR, descritta da $A(z)$, introduce dipendenza dai valori passati del processo;
+  \item la parte MA, descritta da $C(z)$, introduce dipendenza da rumori correnti e passati.
+\end{itemize}
+La forma compatta e'
+\[
+A(z)v(t)=C(z)\eta(t),
+\qquad
+v(t)=\frac{C(z)}{A(z)}\eta(t).
+\]
+Quindi l'ARMA e' ancora un filtro alimentato da rumore bianco, ma il filtro e' razionale. Rispetto a un AR puro o a un MA puro, un ARMA puo' descrivere dinamiche ricche usando meno parametri, perche' combina poli e zeri.
+\end{spiegazione}
+
 %==============================================================
 \section{Caratterizzazione in frequenza}
 Caratteristiche spettrali per un PSS
@@ -415,6 +599,20 @@ Per il \emph{rumore bianco}:
 \varphi(\omega)=\sum \gamma(\tau)e^{-j\omega\tau}=\gamma(0) \ \text{, costante.}
 \]
 
+\begin{spiegazione}{Densita' spettrale come distribuzione della varianza}
+La densita' spettrale di potenza e' la trasformata di Fourier della funzione di autocovarianza:
+\[
+\varphi(\omega)=\sum_{\tau=-\infty}^{+\infty}\gamma(\tau)e^{-j\omega\tau}.
+\]
+Essa descrive come la varianza del processo si distribuisce sulle frequenze. Infatti
+\[
+\gamma(0)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\varphi(\omega)\,d\omega,
+\]
+e $\gamma(0)$ e' proprio la varianza del processo.
+
+Se lo spettro ha picchi, il processo contiene componenti statisticamente forti in certe frequenze. Se lo spettro e' piatto, come nel rumore bianco, nessuna frequenza e' privilegiata.
+\end{spiegazione}
+
 
 \subsection{Spettro (complesso)}
 \[
@@ -426,6 +624,14 @@ Per il \emph{rumore bianco}:
 \begin{center}
     Coincide con lo spettro valutato sulla circonferenza unitaria
 \end{center}
+
+\begin{spiegazione}{Relazione tra spettro complesso e densita' spettrale}
+Lo spettro complesso $\Phi(z)$ e' una rappresentazione algebrica della stessa informazione contenuta nella densita' spettrale. La densita' spettrale si ottiene valutando $\Phi(z)$ sulla circonferenza unitaria:
+\[
+z=e^{j\omega}.
+\]
+Questa idea e' utile per i modelli razionali, perche' se il processo e' generato da una funzione di trasferimento $W(z)$, allora lo spettro si puo' scrivere direttamente in termini di $W(z)$ e $W(z^{-1})$.
+\end{spiegazione}
 
 \subsection{Teorema fondamentale dell'analisi spettrale}
 Ciò che conosciamo attualmente:
@@ -444,6 +650,14 @@ Dato un sistema SISO con f.d.t. $W(z)$, ingresso stazionario con spettro $\Phi_{
 \Phi_{yy}(z)=W(z)W(z^{-1})\sigma^2,\qquad \varphi_{yy}(\omega)=|W(e^{j\omega})|^2\sigma^2.
 \]
 
+\begin{spiegazione}{Cosa dice il teorema spettrale}
+Il teorema fondamentale dell'analisi spettrale dice come cambia lo spettro quando un processo passa attraverso un sistema lineare. Se l'ingresso ha densita' spettrale $\varphi_{uu}(\omega)$ e il sistema ha funzione di trasferimento $W(z)$, allora l'uscita ha densita'
+\[
+\varphi_{yy}(\omega)=|W(e^{j\omega})|^2\varphi_{uu}(\omega).
+\]
+Il modulo quadro del filtro amplifica o attenua la potenza alle varie frequenze. Nel caso in cui l'ingresso sia rumore bianco, lo spettro in ingresso e' costante; quindi tutta la forma dello spettro in uscita e' determinata da $|W(e^{j\omega})|^2$.
+\end{spiegazione}
+
 \begin{example}[MA(1)]
 \[
 v(t)=\eta(t)+c\eta(t-1), W(z)=1+cz^{-1}
@@ -457,6 +671,18 @@ v(t)=\eta(t)+c\eta(t-1), W(z)=1+cz^{-1}
 \]
 Valutando $\varPhi(z)$ per $z=e^{j\omega}$ e usando formula di Eulero per il coseno, otterrei $\varphi(\omega)$ come sopra.
 \end{example}
+
+\begin{spiegazione}{L'esempio MA(1) nello spettro}
+Nel processo
+\[
+v(t)=\eta(t)+c\eta(t-1),
+\]
+il campione corrente e quello precedente condividono un termine di rumore, quindi la covarianza e' non nulla solo per ritardo $0$ e $1$. La densita' spettrale risultante e'
+\[
+\varphi(\omega)=\sigma^2(1+c^2+2c\cos\omega).
+\]
+Il termine $2c\cos\omega$ mostra come il parametro $c$ modella la distribuzione frequenziale. Se $c>0$, le basse frequenze sono favorite; se $c<0$, vengono favorite frequenze piu' alte. Quindi anche un modello MA molto semplice puo' colorare un rumore bianco.
+\end{spiegazione}
 
 \paragraph{Generalizzazione multivariabile.}
 \[
@@ -537,6 +763,16 @@ con \[
 \]
 (notare che $\Phi_{uu}(z^{-1}) = \Phi_{uu}(z)$ 
 
+\begin{spiegazione}{Idea della dimostrazione}
+La dimostrazione parte dalla convoluzione nel tempo:
+\[
+y(t)=\sum_{i=0}^{\infty}w_i u(t-i).
+\]
+Per trovare lo spettro dell'uscita si studiano prima le covarianze tra ingresso e uscita e poi tra uscita e uscita. La convoluzione nel tempo diventa prodotto nel dominio $z$. Per questo compaiono i fattori $W(z)$ e $W(z^{-1})$: uno deriva dal filtro applicato al primo segnale, l'altro dal filtro applicato al segnale ritardato nella covarianza.
+
+Il risultato finale e' che un filtro lineare modifica lo spettro moltiplicandolo per il proprio guadagno in frequenza al quadrato.
+\end{spiegazione}
+
 
 %==============================================================
 \section{Caratteristiche statistiche e spettrali da dati (realizzazione)}
@@ -575,6 +811,18 @@ m
 
 \hfill NON Polarizzato
 
+\begin{spiegazione}{Media teorica e media campionaria}
+La media teorica
+\[
+m=\mathbb E[v(t)]
+\]
+e' una proprieta' del processo. Nella pratica, pero', si osserva una sola realizzazione finita $x(1),\dots,x(N)$, quindi si usa la media campionaria
+\[
+\hat m_N=\frac{1}{N}\sum_{t=1}^{N}x(t).
+\]
+Dire che lo stimatore e' non polarizzato significa che, se si potesse ripetere l'esperimento molte volte, la media delle stime ottenute sarebbe uguale al valore vero $m$. Dire che e' consistente significa invece che, aumentando il numero di campioni, la stima tende a concentrarsi attorno al valore vero.
+\end{spiegazione}
+
 
 
 \subsection{Correlogramma}
@@ -583,6 +831,16 @@ Stima della funzione di covarianza:
 \hat\gamma_N(\tau,x)=\frac{1}{N}\sum_{t=1}^{N-\tau}\bigl(x(t)-\hat m(x)\bigr)\bigl(x(t+\tau)-\hat m(x)\bigr).
 \]
 Richiede $N\gtrsim 50$, $\tau<N/4$. Questo stimatore è asintoticamente non polarizzato.
+
+\begin{spiegazione}{Correlogramma come stima della memoria}
+Il correlogramma stima la covarianza a diversi ritardi. Per ogni ritardo $\tau$, si moltiplicano campioni distanti $\tau$ istanti e si fa una media:
+\[
+\hat\gamma_N(\tau)=\frac{1}{N}\sum_{t=1}^{N-\tau}(x(t)-\hat m)(x(t+\tau)-\hat m).
+\]
+Se $\hat\gamma_N(\tau)$ e' grande in modulo, i campioni separati da quel ritardo sono statisticamente legati. Se invece e' vicino a zero, quel ritardo non mostra una relazione lineare evidente.
+
+Per ritardi grandi ci sono meno coppie disponibili, quindi la stima diventa meno affidabile. Per questo si usano solo ritardi abbastanza piccoli rispetto a $N$.
+\end{spiegazione}
 
 \subsection{Periodogramma}
 \paragraph{Caratteristiche nel dominio della frequenza:} 
@@ -607,6 +865,12 @@ Proprietà:
 \mathbb{E}\bigl[(\hat\varphi_N(\omega,x)-\varphi(\omega))(\hat\varphi_N(\tilde\omega,x)-\varphi(\tilde\omega))\bigr]\xrightarrow{N\to\infty}0\quad(\omega\neq\tilde\omega).
 \]
 Servono metodi di regolarizzazione.
+
+\begin{spiegazione}{Periodogramma e bisogno di regolarizzazione}
+Il periodogramma nasce applicando la trasformata di Fourier al correlogramma stimato. Serve a ottenere una stima della densita' spettrale a partire dai dati. Il problema e' che, anche con molti campioni, il periodogramma resta molto oscillante: e' asintoticamente non polarizzato, ma non consistente.
+
+Per renderlo piu' leggibile e utile si introducono tecniche di regolarizzazione, ad esempio medie su finestre o modelli parametrici. L'idea e' ridurre la variabilita' della stima accettando una piccola perdita di risoluzione.
+\end{spiegazione}
 
 \subsection{Test di bianchezza (Anderson)}
 Basato sull'analisi del correlogramma (stima di $\gamma(\tau)$ per $WN$ = 0 $\ \forall\tau\neq0$). Sia $\varepsilon(\cdot)$ il segnale da testare (media nulla),
@@ -634,6 +898,16 @@ Test con intervallo di confidenza $\alpha\in(0,1)$: si contano i $\hat\rho(\tau)
 \begin{example}
 $\alpha=5\%=0{,}05$; 95\% di area tra $-\beta$ e $\beta$, si valutano $\hat\rho(1),\hat\rho(2),\dots,\hat\rho(30)$, quanti cascano fuori? più o meno del 5$\%$?
 \end{example}
+
+\begin{spiegazione}{Come leggere il test di bianchezza}
+Il test di bianchezza controlla se un segnale residuo contiene ancora correlazioni temporali significative. Per un rumore bianco, le autocorrelazioni normalizzate
+\[
+\hat\rho(\tau)=\frac{\hat\gamma(\tau)}{\hat\gamma(0)}
+\]
+devono essere vicine a zero per $\tau>0$.
+
+Il grafico con la gaussiana rappresenta l'idea di intervallo di confidenza: se il residuo fosse davvero bianco, la maggior parte dei valori stimati di $\hat\rho(\tau)$ dovrebbe cadere dentro le bande. Se molti valori cadono fuori, significa che l'errore contiene ancora struttura e quindi il modello non ha catturato tutta la dinamica presente nei dati.
+\end{spiegazione}
 
 \begin{center}
 \begin{tikzpicture}[scale=1]
@@ -702,6 +976,20 @@ All'aumentare di r aumenta la varianza. \\
     \item $r\to\infty \quad \rightarrow \quad (w_0^2+w_1^2+\dots)\sigma^2 \quad \rightarrow \quad $ Varianza di $v(t)$ 
 \end{itemize} 
 
+\begin{spiegazione}{Predizione ottima nel fake prediction problem}
+In questa sezione si assume di conoscere direttamente il rumore bianco $\eta(t)$ che genera il processo. Per predire $v(t+r)$ si separano i termini in due gruppi:
+\[
+v(t+r)=\alpha(t)+\beta(t).
+\]
+La parte $\beta(t)$ contiene rumori fino al tempo $t$, quindi e' nota al predittore. La parte $\alpha(t)$ contiene rumori futuri, da $\eta(t+1)$ a $\eta(t+r)$, quindi non e' prevedibile usando l'informazione disponibile al tempo $t$.
+
+Il miglior predittore e' dunque
+\[
+\hat v(t+r\mid t)=\beta(t),
+\]
+mentre l'errore di predizione e' $\alpha(t)$. All'aumentare di $r$ entrano piu' rumori futuri nell'errore, percio' la varianza dell'errore cresce fino ad avvicinarsi alla varianza complessiva del processo.
+\end{spiegazione}
+
 \subsection{Predittore ottimo dai dati}
 Sia
 \[
@@ -761,6 +1049,20 @@ Nota: il denominatore rimane sempre quello di $W(z)$ ad ogni passo.
 Varianza dell'errore di predizione a $r$ passi: $(1+a^2+a^4+\dots+a^{2(r-1)})\sigma^2$.
 \end{example}
 (Ps: eventualmente aggiungere passaggi intermedi)
+
+\begin{spiegazione}{Lunga divisione e predittore a piu' passi}
+La lunga divisione serve a separare la risposta impulsiva di $W(z)$ in due parti:
+\[
+W(z)=w_0+w_1z^{-1}+\cdots+w_{r-1}z^{-(r-1)}+z^{-r}\hat W_r(z).
+\]
+I primi $r$ coefficienti moltiplicano rumori futuri quando si predice $v(t+r)$ dal tempo $t$, quindi generano l'errore di predizione. La coda, rappresentata da $\hat W_r(z)$, moltiplica rumori gia' disponibili e quindi genera il predittore.
+
+Nel caso AR(1), la divisione produce potenze di $a$:
+\[
+W(z)=1+az^{-1}+a^2z^{-2}+\cdots.
+\]
+Per questo il predittore a $r$ passi conserva lo stesso denominatore ma ha numeratore moltiplicato da $a^r$.
+\end{spiegazione}
 %==============================================================
 
 \paragraph{Esistono molteplici rappresentazioni ARMA per lo stesso processo stocastico $v(t)$}:
@@ -884,6 +1186,12 @@ Dato un processo ARMA stazionario, esiste un'unica rappresentazione tale che num
 
 Fissata la rappresentazione (Canonica) $\hat{W}(z)$ detto \textbf{Fattore spettrale canonico} $\implies$ Rumore bianco univoco $\xi(t)$ come conseguenza. 
 
+\begin{spiegazione}{Perche' serve la fattorizzazione spettrale}
+Lo stesso spettro puo' essere prodotto da piu' rappresentazioni filtro-rumore. Per esempio, si possono cambiare scale, introdurre ritardi o riflettere zeri senza modificare la densita' spettrale del processo. La fattorizzazione spettrale serve a scegliere una rappresentazione unica e ben normalizzata.
+
+La rappresentazione canonica richiede poli e zeri nel cerchio unitario, polinomi coprimi e normalizzazioni precise. In questa forma, il rumore bianco $\xi(t)$ e' l'innovazione del processo: la parte nuova che non puo' essere prevista dal passato. Questo rende possibile costruire un predittore ottimo direttamente dai dati osservati.
+\end{spiegazione}
+
 \begin{example}[MA]
 \[
 v(t)=2\eta(t-1)+4\eta(t-2) \quad \eta \sim WN(0, \sigma^2)
@@ -908,6 +1216,22 @@ v(t)=\xi(t)+0.5\,\xi(t-1),\quad \mathrm{Var}[v]=(1^2+0.5^2)\mu^2 =1.25\mu^2
 20\sigma^2 = 1.25\mu^2 \rightarrow \mu^2 =16\sigma^2
 \]
 \end{example}
+
+\begin{spiegazione}{L'esempio MA e il cambio di rappresentazione}
+Nell'esempio, il processo e' scritto inizialmente come
+\[
+v(t)=2\eta(t-1)+4\eta(t-2).
+\]
+Questa rappresentazione contiene un ritardo comune e coefficienti non normalizzati. La fattorizzazione porta a una rappresentazione equivalente ma canonica:
+\[
+v(t)=\xi(t)+0.5\,\xi(t-1).
+\]
+Le due scritture descrivono lo stesso processo, quindi devono produrre la stessa varianza. Per questo si confrontano le varianze:
+\[
+20\sigma^2=1.25\mu^2.
+\]
+Il cambio di filtro viene compensato da un cambio della varianza del rumore bianco in ingresso.
+\end{spiegazione}
 
 \paragraph{Filtro sbiancante.} Per un processo a rappresentazione canonica $\hat W(z)$, l'inverso $\hat W^{-1}(z) = \check W(z)$ è stabile (poli nel cerchio unitario) e può essere usato per recuperare $\xi(t)$ da $v(t)$. 
 
@@ -934,6 +1258,18 @@ v(t)=\xi(t)+0.5\,\xi(t-1),\quad \mathrm{Var}[v]=(1^2+0.5^2)\mu^2 =1.25\mu^2
   \draw[->] ([yshift=-2mm]blk.south) -- (lab.north);
 \end{tikzpicture}
 \end{center}
+
+\begin{spiegazione}{Filtro sbiancante}
+Il filtro sbiancante e' l'inverso del fattore spettrale canonico:
+\[
+\check W(z)=\hat W^{-1}(z).
+\]
+Applicandolo al processo osservato $v(t)$ si recupera l'innovazione:
+\[
+\xi(t)=\check W(z)v(t).
+\]
+Il nome ``sbiancante'' deriva dal fatto che trasforma un processo colorato, cioe' con correlazioni temporali, in rumore bianco. Questo passaggio e' fondamentale per la predizione: una volta recuperata l'innovazione, si puo' usare la teoria del predittore da rumore.
+\end{spiegazione}
 
 
 %==============================================================
@@ -1047,6 +1383,22 @@ Nota: Manca la tabellina della lunga divisione ma tant'è.
 \frac{C_r(z)}{C(z)} \rightarrow \text{ottimo dai dati}
 \]
 
+\begin{spiegazione}{Dal predittore da rumore al predittore dai dati}
+Nel fake prediction problem si assumeva di conoscere il rumore bianco. Nei dati reali, invece, si osserva solo $v(t)$. Per questo si usa il filtro sbiancante:
+\[
+\xi(t)=\frac{A(z)}{C(z)}v(t).
+\]
+Poi si applica il predittore da rumore:
+\[
+\hat v(t+r\mid t)=\hat W_r(z)\xi(t).
+\]
+Componendo i due filtri si ottiene il predittore direttamente dai dati:
+\[
+W_r(z)=\frac{A(z)}{C(z)}\frac{C_r(z)}{A(z)}=\frac{C_r(z)}{C(z)}.
+\]
+Questa formula spiega perche' nel predittore dai dati compare il denominatore $C(z)$: esso nasce dal fatto che bisogna stimare l'innovazione a partire dal processo osservato.
+\end{spiegazione}
+
 \paragraph{AR(1):}
 \[
 \hat W(z) = \frac{1}{1-az^{-1}} \quad |a|<1
@@ -1084,6 +1436,26 @@ Nel tempo:
 \[
 r\to\infty \quad \hat v(t+r|t) = 0
 \]
+
+\begin{spiegazione}{Predizione AR(1) dai dati}
+Per un AR(1),
+\[
+v(t)=av(t-1)+\xi(t),
+\]
+tutta l'informazione utile per predire il futuro e' contenuta nell'ultimo valore osservato. Il predittore a un passo e'
+\[
+\hat v(t+1\mid t)=av(t),
+\]
+quello a due passi e'
+\[
+\hat v(t+2\mid t)=a^2v(t),
+\]
+e in generale
+\[
+\hat v(t+r\mid t)=a^rv(t).
+\]
+Se $|a|<1$, al crescere dell'orizzonte $r$ il termine $a^r$ tende a zero: molto lontano nel futuro, la miglior previsione torna alla media del processo, che qui e' nulla.
+\end{spiegazione}
 
 
 \paragraph{MA(1)}
@@ -1161,6 +1533,20 @@ più in generale (più passi),
 \qquad r>1.
 \]
 
+\begin{spiegazione}{Predizione MA(1)}
+Un MA(1) ha memoria molto corta:
+\[
+v(t)=\xi(t)+c\xi(t-1).
+\]
+Per predire $v(t+1)$, il termine $c\xi(t)$ e' in parte ricostruibile dai dati passati tramite il filtro inverso. Per questo il predittore a un passo non e' nullo.
+
+Per $r>1$, invece, $v(t+r)$ dipende da innovazioni future che non sono note al tempo $t$. Poiche' il processo ha media nulla e non c'e' altra informazione sfruttabile, il predittore ottimo diventa
+\[
+\hat v(t+r\mid t)=0,\qquad r>1.
+\]
+Questa e' una conseguenza diretta della memoria finita degli MA.
+\end{spiegazione}
+
 
 \paragraph{Processo ARMA}
 
@@ -1225,6 +1611,19 @@ $C(z)\,\hat v(t+1\mid t)$ è una combinazione di $\hat v(t+1\mid t)$ a istanti p
 \textbf{Nel tempo:} \quad 
 \hat v(t+1\mid t)=-c_1\hat v(t\mid t-1)-c_2\hat v(t-1\mid t-2)-\dots+(c_1+a_1)v(t)+(c_2+a_2)v(t-1)+\dots
 \]
+
+\begin{spiegazione}{Predittore ARMA a un passo}
+Nel caso ARMA, il predittore a un passo contiene due tipi di termini:
+\begin{itemize}
+  \item valori passati del processo $v(t),v(t-1),\dots$;
+  \item predizioni passate $\hat v(t\mid t-1),\hat v(t-1\mid t-2),\dots$.
+\end{itemize}
+Le predizioni passate compaiono perche' il denominatore $C(z)$ introduce una ricorsione nel predittore. La formula
+\[
+C(z)\hat v(t+1\mid t)=(C(z)-A(z))v(t+1)
+\]
+va letta ricordando che $C(z)-A(z)$ non ha termine costante quando $A$ e $C$ sono monici. Quindi, applicato a $v(t+1)$, produce solo campioni disponibili fino al tempo $t$.
+\end{spiegazione}
 
 
 \subsection{ARMAX}
@@ -1352,6 +1751,20 @@ C(z)y(t+k)=B(z)E(z)u(t)+\bigl(C(z)-A(z)E(z)\bigr)y(t+k)+ C(z)E(z)\xi(t+k)
     \item $E(z)\xi(t+k) \rightarrow e_0\xi(t+k)+e_1\xi(t+k-1)+\cdots+e_{k-1}\xi(t+1)$
 \end{itemize}
 
+\begin{spiegazione}{Predizione ARMAX e ruolo dell'ingresso}
+Nel modello ARMAX si aggiunge un ingresso esterno $u(t)$:
+\[
+A(z)y(t)=B(z)u(t-k)+C(z)\xi(t).
+\]
+La predizione deve quindi usare due fonti di informazione: il passato dell'uscita $y$ e i valori dell'ingresso $u$ disponibili o programmati. La divisione
+\[
+C(z)=A(z)E(z)+z^{-k}\tilde F(z)
+\]
+serve a separare i contributi futuri del rumore, non predicibili, dai contributi legati a $y$ e $u$, che invece sono utilizzabili.
+
+La forma finale del predittore contiene quindi una parte dovuta alla dinamica libera del sistema, tramite $y(t)$, e una parte forzata dall'ingresso, tramite $u(t)$.
+\end{spiegazione}
+
 
 
 
@@ -1392,6 +1805,16 @@ Formulare una famiglia andidata per i modelli (vari modelli nella stessa famigli
 \end{itemize}
 
 Denoteremo $\mathcal{M}=\{M(\theta)\mid \theta\in\Theta\}$ con $\theta$ vettore dei parametri (non $\theta$ minuscolo). Obiettivo: determinare $\theta$ dall'analisi dei dati (Misura di una o più variabili sul sistema S).
+
+\begin{spiegazione}{Che cosa significa scegliere una famiglia di modelli}
+Una famiglia di modelli e' un insieme di possibili descrizioni del sistema, tutte con la stessa struttura ma con parametri diversi:
+\[
+\mathcal M=\{M(\theta)\mid \theta\in\Theta\}.
+\]
+Scegliere la famiglia significa decidere quali dinamiche si vogliono ammettere: AR, MA, ARMA, ARX, ARMAX, Box--Jenkins, ecc. Una volta fissata la famiglia e l'ordine, l'identificazione diventa il problema di trovare il valore di $\theta$ che rende il modello piu' coerente con i dati.
+
+La scelta della famiglia e' delicata: una famiglia troppo semplice non riesce a rappresentare il sistema; una troppo complessa rischia di adattarsi al rumore e perdere capacita' predittiva su nuovi dati.
+\end{spiegazione}
 
 \subsection{Approccio predittivo }
 (stima dei parametri, ipotizzando di aver già fatto tutti gli altri step)\\
@@ -1479,6 +1902,22 @@ Con $\theta\in\Theta$
 
 Identificazione $\equiv$ Ottimizzazione, ci vogliono algoritmi di ottimizzazione adeguati alle peculiarità del sistema, ma la valutazione della bontà del modello deve passare anche da altri aspetti (Es: Test di bianchezza su errore di predizione).
 
+\begin{spiegazione}{Approccio predittivo}
+Nell'approccio predittivo ogni modello $M(\theta)$ genera un proprio predittore:
+\[
+\hat y_\theta(t\mid t-1)=f(u^t,y^t,\theta).
+\]
+Il parametro migliore e' quello che rende piccolo l'errore di predizione:
+\[
+\varepsilon_\theta(t)=y(t)-\hat y_\theta(t\mid t-1).
+\]
+Il funzionale
+\[
+J(\theta)=\frac{1}{N}\sum_{t=1}^{N}\varepsilon_\theta^2(t)
+\]
+misura l'errore quadratico medio sui dati disponibili. Quindi stimare $\theta$ significa risolvere un problema di ottimizzazione. Dopo la stima, pero', bisogna controllare se il residuo e' davvero privo di struttura: un errore piccolo ma correlato segnala che il modello non ha ancora catturato tutta la dinamica.
+\end{spiegazione}
+
 \subsection*{Modelli Box--Jenkins}
 
 \begin{center}
@@ -1560,6 +1999,19 @@ Sistema
   \item ARXAR: $A(z)y(t)=B(z)u(t-1)+\tfrac{1}{D(z)}\xi(t)$ con $\tfrac{1}{D(z)}\xi(t)$ AR, da cui \\$A(z)D(z)y(t)=B(z)D(z)u(t-1)+\xi(t)$. Da qui derivo G(z) e W(z) B-J. 
 \end{itemize}
 
+\begin{spiegazione}{Lettura dei modelli Box--Jenkins}
+La forma Box--Jenkins
+\[
+y(t)=G(z)u(t-1)+W(z)\xi(t)
+\]
+separa due effetti:
+\begin{itemize}
+  \item $G(z)$ descrive come l'ingresso controllabile $u$ influenza l'uscita;
+  \item $W(z)$ descrive come il disturbo non misurato $\xi$ entra nell'uscita.
+\end{itemize}
+Le varie famiglie nascono imponendo vincoli diversi su $G$ e $W$. Per esempio, nel modello ARX il denominatore $A(z)$ e' condiviso tra dinamica ingresso-uscita e dinamica del rumore. Nei modelli piu' generali, come BJ, le due dinamiche possono essere separate, aumentando flessibilita' ma anche complessita' di stima.
+\end{spiegazione}
+
 \subsection{Predittore in forma unificata (BJ)}
 Uniformare trattazione a livello di predittore.
 
@@ -1584,12 +2036,28 @@ Casi particolari:
   \item ARMA: $\hat{\mathcal{M(\theta})}: C(z)\hat y(t)=[C(z)-A(z)]y(t)$
 \end{itemize}
 
+\begin{spiegazione}{Predittore BJ in forma unificata}
+La forma
+\[
+\hat y_\theta(t\mid t-1)=\left[1-\frac{1}{W(z)}\right]y(t)+\frac{G(z)}{W(z)}u(t-1)
+\]
+mostra che il predittore usa due blocchi: uno costruito dal passato dell'uscita e uno costruito dall'ingresso. Il termine $\xi(t)$ non compare nel predittore perche' e' l'innovazione al tempo $t$, quindi non e' nota al tempo $t-1$.
+
+Questa formula e' utile per confrontare famiglie diverse con un'unica logica: dato un modello, si ricava il suo predittore; dato il predittore, si definisce l'errore; dato l'errore, si costruisce il criterio di stima.
+\end{spiegazione}
+
 \subsection{Peculiarità del predittore (Linearità nei parametri)}
 \begin{itemize}
   \item ARX: predittore \emph{lineare} nei parametri.
   \item ARMAX: non lineare nei parametri (per $C(z)\neq 1$).
   (da aggiungere esempio ARMAX(1,1,1).
 \end{itemize}
+
+\begin{spiegazione}{Perche' la linearita' nei parametri conta}
+Se il predittore e' lineare nei parametri, come nel caso ARX, il criterio quadratico $J(\theta)$ diventa una funzione quadratica di $\theta$. Il minimo si trova allora con formule chiuse di minimi quadrati.
+
+Se invece il predittore contiene i parametri anche al denominatore, come nei modelli ARMAX con $C(z)\neq 1$, il problema diventa non lineare. In quel caso non basta risolvere equazioni normali: servono algoritmi iterativi come Gauss--Newton.
+\end{spiegazione}
 
 %==============================================================
 \section{Stima ai minimi quadrati (ARX/AR)}
@@ -1635,6 +2103,28 @@ Se $R(N)$ (o equivalentemente $S(N)$, dato che differiscono solo per un 1/N) non
 \hat\theta=\Bigl[\sum_{t=1}^{N}\varphi(t)\varphi^{\top}(t)\Bigr]^{-1}\sum_{t=1}^{N}\varphi(t)y(t),
 \]
 \emph{stima ai minimi quadrati}. Se $R(N)$ è singolare, esistono infinite soluzioni tutte associate allo stesso valore (minimo) del funzionale.
+
+\begin{spiegazione}{Minimi quadrati per ARX e AR}
+Nel modello ARX il predittore ha la forma
+\[
+\hat y(t)=\varphi^T(t)\theta.
+\]
+Quindi l'errore e'
+\[
+\varepsilon(t)=y(t)-\varphi^T(t)\theta.
+\]
+Poiche' $\theta$ compare linearmente, minimizzare
+\[
+J(\theta)=\frac{1}{N}\sum_{t=1}^{N}(y(t)-\varphi^T(t)\theta)^2
+\]
+porta alle equazioni normali:
+\[
+\left(\sum_{t=1}^{N}\varphi(t)\varphi^T(t)\right)\hat\theta
+=
+\sum_{t=1}^{N}\varphi(t)y(t).
+\]
+La matrice $\sum\varphi\varphi^T$ contiene l'informazione disponibile nei regressori. Se e' invertibile, i dati permettono di distinguere tutti i parametri; se e' singolare, alcune combinazioni di parametri producono lo stesso predittore.
+\end{spiegazione}
 
 %==============================================================
 \section{Identificabilità}
@@ -1682,6 +2172,19 @@ Osservazione: in questo modo non si riesce a risalire ai singoli parametri, ma s
 Per questo motivo bisogna lavorare con quantità aggregate come $S(N)$ oppure $R(N)$; noi studieremo una delle due formulazioni, che è equivalente all'altra.
     
 \end{example}
+
+\begin{spiegazione}{Identificabilita' strutturale e sperimentale}
+L'identificabilita' strutturale riguarda la famiglia scelta: chiede se parametri diversi possono descrivere lo stesso sistema. Se la struttura e' sovradimensionata, possono esistere infiniti parametri equivalenti.
+
+L'identificabilita' sperimentale riguarda invece i dati raccolti. Anche se la struttura e' corretta, un esperimento poco informativo puo' non eccitare abbastanza il sistema. L'esempio dell'ingresso costante mostra che da dati a regime si puo' stimare il guadagno statico, ma non i singoli parametri dinamici.
+
+Per questo si studia la matrice
+\[
+R(N)=\frac{1}{N}\sum_{t=1}^{N}\varphi(t)\varphi^T(t),
+\]
+che misura quanta informazione sui parametri e' contenuta nei regressori.
+\end{spiegazione}
+
 Studiamo $R(N)$
 \[
 R(N) = \frac{1}{N}\sum_{t=1}^{N}\varphi(t)\varphi^T(t)
@@ -1832,6 +2335,20 @@ Quindi una condizione necessaria per l'identificabilità è
 
 Questa è quindi una condizione sugli ingressi, e fornisce un criterio utile per la progettazione dell'esperimento.
 
+\begin{spiegazione}{Ruolo della matrice $\bar R$}
+La matrice limite
+\[
+\bar R=\mathbb E[\varphi(t)\varphi^T(t)]
+\]
+riassume l'informazione media contenuta nei dati. Se $\bar R$ e' definita positiva, allora ogni direzione nello spazio dei parametri modifica in modo osservabile il predittore. Se invece esiste un vettore non nullo $x$ tale che
+\[
+x^T\bar R x=0,
+\]
+allora una certa combinazione dei regressori e' nulla o ridondante, quindi i parametri lungo quella direzione non possono essere stimati in modo univoco.
+
+La sottomatrice $\bar R_{uu}^{n_b}$ riguarda solo l'ingresso. Per identificare bene la parte legata a $B(z)$, l'ingresso deve essere abbastanza ricco da rendere questa matrice definita positiva.
+\end{spiegazione}
+
 \subsection{Ingressi persistentemente eccitanti di ordine n}
 \begin{definition}
 $u(\cdot)$ è un segnale persistentemente eccitante di ordine $n$ se $\bar R_{uu}^{n}$ è invertibile.
@@ -1909,6 +2426,16 @@ se esiste almeno un $\alpha\neq 0$ tale che
 non è persistentemente eccitante di ordine n.
 
 Se la densità spettrale di $u(\cdot)$ è non nulla per almeno $n$ frequenze $\omega$ distinte, allora non esiste $\alpha\neq 0$ che annulli l'integrale, dunque $u(\cdot)$ è PE di ordine $n$.
+
+\begin{spiegazione}{Ingressi persistentemente eccitanti}
+Un ingresso persistentemente eccitante di ordine $n$ contiene abbastanza variazione per stimare modelli con $n$ ritardi dell'ingresso. In termini matriciali, significa che la matrice di autocovarianza dei regressori d'ingresso e' invertibile:
+\[
+\bar R_{uu}^{n}>0.
+\]
+In termini frequenziali, significa che lo spettro dell'ingresso non e' concentrato in troppo poche frequenze. Un rumore bianco e' l'esempio ideale: ha spettro piatto e quindi eccita tutte le frequenze.
+
+Questa nozione e' importante nella progettazione dell'esperimento: se posso scegliere $u(t)$, devo sceglierlo in modo da rendere osservabili le dinamiche che voglio identificare.
+\end{spiegazione}
 %==============================================================
 \section{Stima ARMA/ARMAX: Gauss--Newton iterativo}
 
@@ -2010,6 +2537,16 @@ Si itera fino a convergenza: $\Delta\theta$ o $\Delta J$ sono ``piccoli''
 \item Può portare Dìdirezione di salita (se Hessiano non è Semi Def. Positivo)
 \end{itemize}
 
+\begin{spiegazione}{Idea del metodo di Gauss--Newton}
+Nei modelli ARMA/ARMAX il criterio
+\[
+J(\theta)=\frac{1}{N}\sum_{t=1}^{N}\varepsilon^2(t)
+\]
+non e' una funzione quadratica semplice dei parametri, perche' l'errore dipende da filtri che contengono i parametri stessi. Per questo non esiste, in generale, una formula chiusa come nei minimi quadrati ARX.
+
+Gauss--Newton procede iterativamente. A partire da una stima corrente $\theta^{(r)}$, si approssima localmente il criterio con una funzione quadratica piu' semplice, si minimizza questa approssimazione e si ottiene un nuovo valore $\theta^{(r+1)}$. Il procedimento si ripete finche' i parametri o il valore di $J$ cambiano poco.
+\end{spiegazione}
+
 
 \paragraph{Gradiente e Hessiano dai dati.} Introduciamo $\psi(t)=-\tfrac{d\varepsilon(t)}{d\theta}^{T}$, Abbiamo
 \[
@@ -2029,8 +2566,27 @@ Quindi
 \theta^{(r+1)}\approx\theta^{(r)}+\Bigl(\sum_{t=1}^{N}\psi(t)\psi^{T}(t)\Bigr)^{-1}\sum_{t=1}^{N}\varepsilon(t)\psi(t).
 \]
 (il trasposto va via col trasposto di $\psi$)
+
+\begin{spiegazione}{Ruolo di $\psi(t)$}
+Il vettore
+\[
+\psi(t)=-\frac{d\varepsilon(t)}{d\theta}^{T}
+\]
+misura quanto l'errore di predizione cambia se si modificano i parametri. E' quindi una sensibilita' del residuo rispetto al modello.
+
+La matrice
+\[
+\sum_{t=1}^{N}\psi(t)\psi^T(t)
+\]
+ha un ruolo analogo alla matrice dei regressori nei minimi quadrati. Se questa matrice e' ben condizionata, le direzioni dei parametri sono distinguibili localmente. Il termine
+\[
+\sum_{t=1}^{N}\varepsilon(t)\psi(t)
+\]
+indica invece in quale direzione modificare i parametri per ridurre l'errore.
+\end{spiegazione}
+
 \paragraph{Determinazione di $\varepsilon(t)$ e $\psi(t)$ dai dati}. \\
-$\varpsilon(t)$ è legato ai dati $C(z)\epsilon(t) = A(z)y(t) - B(z)u(t-1)$, filtrando $y(t)$ e $u(t-1)$ con $A(z)/C(z)$ e $B(z)/C(z)$ si ottiene $\varepsilon(t)$.
+$\varepsilon(t)$ è legato ai dati $C(z)\varepsilon(t) = A(z)y(t) - B(z)u(t-1)$, filtrando $y(t)$ e $u(t-1)$ con $A(z)/C(z)$ e $B(z)/C(z)$ si ottiene $\varepsilon(t)$.
 E per quanto riguarda $\psi$? 
 ricordo $\psi(t) = -\tfrac{d\varepsilon^T}{d\theta}$, $\theta$ contiene $a_i, b_j, c_k$. \\
 Ho il vettore:
@@ -2201,6 +2757,17 @@ C(z)\gamma(t)=\varepsilon(t)
 
 \end{enumerate}
 
+\begin{spiegazione}{Schema iterativo e filtri ausiliari}
+A ogni iterazione si fissano temporaneamente i polinomi $A^{(r)}$, $B^{(r)}$, $C^{(r)}$. Con questi si filtrano i dati per ottenere:
+\[
+C^{(r)}(z)\alpha(t)=y(t),\qquad
+C^{(r)}(z)\beta(t)=u(t),
+\]
+e poi si calcola il residuo $\varepsilon(t)$ e la sequenza $\gamma(t)$. Queste sequenze filtrate servono a costruire il vettore $\psi(t)$.
+
+Il metodo somiglia ai minimi quadrati, ma con regressori che cambiano a ogni iterazione. Questa e' la differenza essenziale rispetto al caso ARX: nei modelli ARMAX i regressori dipendono dai parametri stimati, quindi devono essere aggiornati progressivamente.
+\end{spiegazione}
+
 %==============================================================
 \section{Analisi asintotica e scenari di identificazione}
 
@@ -2317,6 +2884,18 @@ se abbiamo più minimi globali convergiamo a $\theta^0$ o ad un $\bar\theta$ t.c
 
 \end{example}
 
+\begin{spiegazione}{Quando il sistema vero appartiene alla famiglia}
+Se il sistema vero $S$ appartiene alla famiglia di modelli scelta, allora esiste un parametro $\theta^0$ che lo descrive. In quel caso il predittore costruito con $\theta^0$ lascia come errore solo il rumore bianco generatore.
+
+La scomposizione
+\[
+\varepsilon_\theta(t)=
+\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)
++\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr)
+\]
+separa l'innovazione vera dalla differenza tra il predittore corretto e quello parametrizzato da $\theta$. Il termine incrociato ha media nulla perche' l'innovazione e' incorrelata con l'informazione passata. Di conseguenza $\theta^0$ minimizza il costo medio $\bar J(\theta)$.
+\end{spiegazione}
+
 \begin{example}
     Altro esempio:\\
     
@@ -2401,6 +2980,16 @@ y(t) = \eta(t) + c\eta(t-1)
 \]
 ovvero, $y(t)$ comb lineare di $\eta(t)$ e$\eta(t-1)$ mentre $y(t-1)$ comb lineare di $\eta(t-1)$ e$\eta(t-2)$ $\rightarrow \varepsilon$ combinazione lineare di $\eta(t)$ ,$\eta(t-1)$ ed   $\eta(t-2) \rightarrow MA(2)$ DUNQUE NON è WN!  
 \end{example}
+
+\begin{spiegazione}{Quando il sistema vero non appartiene alla famiglia}
+Se il sistema vero non e' contenuto nella famiglia scelta, la stima non puo' convergere al sistema vero. Converge invece al modello che, dentro quella famiglia, minimizza l'errore di predizione medio.
+
+Nell'esempio, il sistema vero e' MA(1), ma si identifica un AR(1). Il valore ottimo di $a$ diventa
+\[
+\bar a=\frac{\gamma_{yy}(1)}{\gamma_{yy}(0)}.
+\]
+Questo e' il miglior AR(1) possibile secondo il criterio quadratico, ma non coincide con il processo vero. Il residuo risultante non e' bianco: contiene ancora struttura. Questo mostra perche' la validazione dei residui e' essenziale.
+\end{spiegazione}
 
 
 \paragraph{Piccolo Recap}
@@ -2517,6 +3106,17 @@ Chiamiamo $\Delta$ (insieme dei punti di minimo di $\bar J(\theta)$).
 La stima convergerà a uno dei punti all'interno di $\Delta$.
 \end{enumerate}
 
+\begin{spiegazione}{Interpretazione dei quattro scenari}
+Gli scenari combinano due domande:
+\begin{itemize}
+  \item il sistema vero appartiene alla famiglia scelta?
+  \item il minimo del costo medio $\bar J(\theta)$ e' unico?
+\end{itemize}
+Se il sistema appartiene alla famiglia e il minimo e' unico, la stima converge al parametro vero. Se il sistema non appartiene alla famiglia ma il minimo e' unico, si converge alla migliore approssimazione disponibile.
+
+Quando i minimi sono molteplici, i dati e il criterio di stima non distinguono tra piu' modelli equivalenti. In quel caso non ha senso parlare di un singolo parametro identificato, ma di un insieme $\Delta$ di parametri che danno la stessa prestazione asintotica.
+\end{spiegazione}
+
 
 %==============================================================
 \section{Incertezza di stima}
@@ -2526,6 +3126,21 @@ In altri termini:
 \[
 \sqrt N(\hat\theta_N-\theta^\circ)\sim \mathcal{N}(0,\bar P),\qquad \bar P=\mathrm{Var}[\varepsilon(t,\theta^\circ)]\bar R^{-1}.
 \]
+
+\begin{spiegazione}{Significato dell'incertezza di stima}
+Anche quando il modello e' corretto e la stima converge al parametro vero, con un numero finito di dati resta sempre incertezza. La relazione
+\[
+\sqrt N(\hat\theta_N-\theta^\circ)\sim \mathcal N(0,\bar P)
+\]
+indica che l'errore di stima decresce come $1/\sqrt N$. Equivalentemente, la covarianza della stima decresce come $1/N$.
+
+La matrice
+\[
+\bar P=\mathrm{Var}[\varepsilon(t,\theta^\circ)]\bar R^{-1}
+\]
+mostra due fattori: piu' rumore aumenta l'incertezza, mentre piu' informazione nei regressori, cioe' una $\bar R$ grande e ben condizionata, la riduce.
+\end{spiegazione}
+
 \paragraph{Quantità campionarie.}
 Ricavo una stima della covarianza usando quantità campionarie:
 
@@ -2632,6 +3247,12 @@ Se $\hat{theta}_N$ è il punto di minimo adottato, il funzionale $J(\hat\theta_N
 \end{enumerate}
 Nella realtà è più frequente che $J(\hat\theta_N)$ decresca senza cambio netto di comportamento e che non superi il test di bianchezza. Inoltre, aumentare $N$ favorisce il fit sui dati (in parte sul modello e in parte sulla realizzazione del rumore), questo porta all'\textbf{OVERFITTING}. 
 
+\begin{spiegazione}{Complessita' e overfitting}
+Aumentare la complessita' del modello significa aumentare il numero di parametri o l'ordine dei polinomi. Un modello piu' complesso riesce quasi sempre a ridurre l'errore sui dati usati per la stima, perche' ha piu' gradi di liberta'. Tuttavia, una parte di questa riduzione puo' derivare dall'adattamento alla specifica realizzazione del rumore.
+
+Questo fenomeno si chiama overfitting: il modello descrive molto bene il dataset di identificazione, ma generalizza peggio su nuovi dati. Per evitarlo si confrontano modelli di complessita' diversa usando dati di validazione o criteri che penalizzano il numero di parametri.
+\end{spiegazione}
+
 \subsection{Processo di Cross-validazione}
 Questo risolve l'overfitting, dato un dataset di $N$ campioni:
 \begin{itemize}
@@ -2639,6 +3260,19 @@ Questo risolve l'overfitting, dato un dataset di $N$ campioni:
   \item (B) una parte la uso per la validazione (20--30\% di N).
 \end{itemize}
 Per $n_1<n<n_2$ uso (A) per ricavare $\hat\theta_N$, poi calcolo l'indice di prestazione $J$ su (B). Si sceglie l'$N$ ``giusto'' per $J$ minimo.
+
+\begin{spiegazione}{Cross-validazione}
+La cross-validazione separa i dati in due insiemi: uno per stimare il modello e uno per valutarlo. Il punto e' che il modello non deve essere giudicato solo sui dati che ha gia' usato per scegliere i parametri.
+
+La procedura e':
+\begin{itemize}
+  \item si sceglie una complessita';
+  \item si stimano i parametri usando il dataset A;
+  \item si calcola l'errore di predizione sul dataset B;
+  \item si ripete per complessita' diverse e si sceglie quella con errore di validazione minore.
+\end{itemize}
+In questo modo si privilegia il modello che predice meglio dati nuovi, non quello che si adatta meglio ai dati di stima.
+\end{spiegazione}
 
 
 
@@ -2661,7 +3295,20 @@ Minimizzare FPE porta alla complessità ottima (non c'è più il problema di ove
 Dove n corrisponde al grado di complessità, calcolo quindi J in una complessità di tipo n, e per l'n per cui è minimo ho un comportamento ottimo sulla rappresentazione del modello.
 Quando $n$ cresce, $\tfrac{N+n}{N-n}$ cresce ($\tfrac{N+n}{N-n} \to \infty$ per $n\to\infty$), mentre $J(\hat\theta_N)$ decresce: FPE inizialmente decresce (domina $J(\hat \theta_N)$), poi inizia a crescere (domina il fattore $\tfrac{N+n}{N-n}$). La complessità scelta è quella che minimizza la FPE.
 
-\subsection{Criterio AIC (Akaike Information Criterion:}
+\begin{spiegazione}{FPE, AIC e MDL}
+FPE, AIC e MDL cercano di bilanciare due effetti opposti:
+\begin{itemize}
+  \item il fit sui dati, misurato da $J(\hat\theta_N)$;
+  \item la complessita' del modello, misurata dal numero di parametri $n$.
+\end{itemize}
+La FPE moltiplica l'errore di stima per un fattore che cresce con $n$:
+\[
+\mathrm{FPE}=\frac{N+n}{N-n}J(\hat\theta_N)^{(n)}.
+\]
+AIC e MDL usano invece una penalizzazione additiva sul logaritmo dell'errore. AIC tende a essere piu' permissivo, mentre MDL penalizza maggiormente la complessita' quando $N$ cresce, favorendo modelli piu' parsimoniosi.
+\end{spiegazione}
+
+\subsection{Criterio AIC (Akaike Information Criterion)}
 Usa il Kullback distance tra PDF e PDF dei dati che sarebbero generati dal modello.
 \[
 AIC = 2\tfrac{n}{N}+\ln J(\hat\theta_N)^{(n)}
@@ -2679,7 +3326,7 @@ ln(FPE) = ln(1+\frac{n}{N}) - ln(1-\frac{n}{N}) + ln(J(\hat \theta_N)^{(n)}
 ln(FPE) \approx \frac{n}{N} + \frac{n}{N} + ln(J(\hat \theta_N)^{(n)} = \frac{2n}{N}+ln(J(\hat \theta_N)^{(n)}
 \]
 Con N "grande" FPE e AIC danno circa lo stesso risultato.
-\subsection{Criterio MDL (Minimum Description Lenght):}
+\subsection{Criterio MDL (Minimum Description Length)}
 \[
 MDL=(\ln N)\tfrac{n}{N}+\ln J(\hat\theta_N)^{(n)}
 \]
@@ -2707,10 +3354,8 @@ Per le equazioni di Y-W:
 
 \[
 \begin{cases}
-
-\gamma(0) = a_1\gamma(1) + \sigma^2 \quad \tau = 0 \\
-\gamma(\tau) = a_1\gamma(\tau - 1) \quad \text{per} \quad \tau\geq1
-
+\gamma(0) = a_1\gamma(1) + \sigma^2, & \tau = 0,\\
+\gamma(\tau) = a_1\gamma(\tau - 1), & \tau\geq1.
 \end{cases}
 \]
 
@@ -2850,6 +3495,16 @@ Guardo la funzione di covarianza $\gamma(\tau)$, la funzione di covarianza parzi
 \text{Se}\  a_{n+1}^{(n+1)}= 0 \rightarrow AR(n)
 \]
 Nella realtà sollecitare con un rumore bianco non è banale, si usano solitamente delle approssimazioni del rumore bianco.
+
+\begin{spiegazione}{Scelta tra AR, MA e ARMA}
+La scelta della famiglia puo' essere guidata dalla forma della funzione di autocovarianza e della covarianza parziale:
+\begin{itemize}
+  \item nei modelli MA, l'autocovarianza si annulla oltre l'ordine del modello;
+  \item nei modelli AR, la covarianza parziale si annulla oltre l'ordine del modello;
+  \item nei modelli ARMA, entrambe tendono a decadere senza un taglio netto immediato.
+\end{itemize}
+Sui dati reali non si osservano zeri esatti, ma valori piccoli rispetto all'incertezza statistica. Quindi ACF e PACF servono per proporre modelli candidati; la scelta finale va poi verificata con criteri di complessita' e test sui residui.
+\end{spiegazione}
 %==============================================================
 \section{Stima:}
 Comprendere una variabile dalle osservazioni.
@@ -2871,8 +3526,17 @@ Vogliamo quantificare l'errore di stima $\tilde x:=x-\hat x$. Dove $x$ è il val
 Stimiamo una quantità costante con valore vero e con $x_0$ non aleatorio (deterministico).
 
 \paragraph{Approccio Bayesiano}
-Stimiamo la variabile aleatoria, descritta da una PDF a priori $f_\overline{\underline{x}}(x)$. Osserviamo che si sia verificata una realizzazione di $\overline{\underline{x}}$ secondo $f_\overline{\underline{x}}(x)$ e che il valore assunto rimanga costante durante l'osservazione. \\
+Stimiamo la variabile aleatoria, descritta da una PDF a priori $f_{\overline{\underline{x}}}(x)$. Osserviamo che si sia verificata una realizzazione di $\overline{\underline{x}}$ secondo $f_{\overline{\underline{x}}}(x)$ e che il valore assunto rimanga costante durante l'osservazione. \\
 Nel caso di identificazione abbiamo determinato le misure attraverso le osservazionie quindi eravamo nel caso Non bayesiano. 
+
+\begin{spiegazione}{Stima statica: approccio non bayesiano e bayesiano}
+Nella stima statica si vuole stimare un parametro costante $x$ usando osservazioni $z(1),\dots,z(k)$. Ci sono due modi concettualmente diversi di vedere $x$:
+\begin{itemize}
+  \item nell'approccio non bayesiano, $x$ e' un valore deterministico ignoto;
+  \item nell'approccio bayesiano, $x$ e' una variabile aleatoria con distribuzione a priori.
+\end{itemize}
+Nel primo caso si usa la verosimiglianza per capire quali valori di $x$ rendono piu' plausibili le misure osservate. Nel secondo caso si combina la verosimiglianza con l'informazione a priori per ottenere una distribuzione a posteriori.
+\end{spiegazione}
 
 \subsection{Approccio Bayesiano:}
 Abbiamo PDF a priori $f_{\overline{\underline{x}}}(x)$ e vogliamo ricavare una caratterizzazione statistica (PDF) a posteriori rispetto alle osservazioni (esperimento).
@@ -2895,6 +3559,20 @@ f_{z\mid \overline{\underline{x}}}(\bar z\mid x)=\Lambda_z(x)
 \
 {\text{Ovvero quanto }x\text{ è verosimile rispetto alle mis. }\bar z.}
 \]
+
+\begin{spiegazione}{Verosimiglianza e posterior}
+La verosimiglianza
+\[
+\Lambda_z(x)=f_{z\mid x}(\bar z\mid x)
+\]
+non e' una PDF di $x$: e' una funzione che misura quanto il valore $x$ rende plausibile il dato osservato $\bar z$.
+
+Nel caso bayesiano, invece, si costruisce la PDF a posteriori:
+\[
+f_{x\mid z}(x\mid z)\propto f_{z\mid x}(z\mid x)f_x(x).
+\]
+Quindi la posterior e' proporzionale al prodotto tra cio' che dicono i dati e cio' che si sapeva prima dell'osservazione.
+\end{spiegazione}
 
 \newpage
 
@@ -2955,7 +3633,7 @@ z=x+w
 \text{caso Gaussiano } W\sim \mathcal N(0,\sigma^2)
 \]
 
-\paragraph{PDF a Priori non disponibile {caso non Bayesiano})}\\
+\paragraph{PDF a Priori non disponibile (caso non Bayesiano)}
 Determino la max verosimiglianza ML.
 
 \[
@@ -2970,9 +3648,8 @@ e^{-\frac{(z-x)^2}{2\sigma^2}}
 \]
 
 \begin{itemize}
-Dove:
-    \item z è una V.A
-    \item x (media) e $\sigma^2$ sono parametri
+    \item $z$ è una V.A.
+    \item $x$ (media) e $\sigma^2$ sono parametri.
 \end{itemize}
 
 \[
@@ -2983,10 +3660,26 @@ Dove:
 z
 \]
 
+\begin{spiegazione}{Esempio ML con una misura gaussiana}
+Se
+\[
+z=x+w,\qquad w\sim\mathcal N(0,\sigma^2),
+\]
+allora, fissato $x$, la misura $z$ ha distribuzione gaussiana centrata in $x$. La verosimiglianza e'
+\[
+\Lambda_z(x)\propto e^{-\frac{(z-x)^2}{2\sigma^2}}.
+\]
+Massimizzare questa funzione equivale a minimizzare $(z-x)^2$. Il valore che rende minima la distanza quadratica tra parametro e misura e' quindi
+\[
+\hat x^{ML}=z.
+\]
+Con una sola misura e senza prior, la stima di massima verosimiglianza coincide semplicemente con la misura osservata.
+\end{spiegazione}
+
 \paragraph{PDF a Priori disponibile}
 
 \[
-f_\overline{\underline{x}}(x)\sim \mathcal N(x;\bar x,\sigma_0^2)
+f_{\overline{\underline{x}}}(x)\sim \mathcal N(x;\bar x,\sigma_0^2)
 \qquad
 \text{ci aspettiamo che }x\text{ è indip da }W
 \]
@@ -3025,6 +3718,17 @@ f_{\overline{\underline{x}}\mid z}(x\mid z)
 \[
 \hat x^{MAP}(z)=\xi(z)
 \]
+
+\begin{spiegazione}{MAP gaussiano come media pesata}
+Quando sia la prior sia il rumore di misura sono gaussiani, anche la posterior e' gaussiana. La stima MAP e' la media della posterior:
+\[
+\hat x^{MAP}(z)=
+\frac{\sigma^2}{\sigma_0^2+\sigma^2}\bar x
++
+\frac{\sigma_0^2}{\sigma_0^2+\sigma^2}z.
+\]
+La stima e' una media pesata tra informazione a priori $\bar x$ e misura $z$. Se la misura e' molto precisa, cioe' $\sigma^2$ e' piccola, pesa di piu' $z$. Se la prior e' molto precisa, cioe' $\sigma_0^2$ e' piccola, pesa di piu' $\bar x$.
+\end{spiegazione}
 
 \[
 \frac{1}{\sigma_0^2}+\frac{1}{\sigma^2}
@@ -3122,6 +3826,16 @@ f_{z\mid x}(z\mid x)
 \text{Con} \ \int_{-\infty}^{+\infty}f_{z\mid \overline{\underline{x}}}( z,x)\,dx \ \text{costante su x}
 \]
 PDF diffusa a tutto il dominio è \textbf{non informativa}, non aggiunge niente, tutti i valori sono equiprobabili $\rightarrow \hat x^{ML}(z)\equiv \hat x^{MAP}(z)$
+
+\begin{spiegazione}{Relazione tra ML e MAP}
+ML e MAP coincidono quando la prior non introduce preferenze tra i valori possibili di $x$. In modo intuitivo, una prior uniforme molto larga assegna quasi lo stesso peso a tutti i valori rilevanti di $x$, quindi il massimo della posterior coincide con il massimo della verosimiglianza.
+
+Nel caso gaussiano, questo corrisponde al limite
+\[
+\sigma_0^2\to\infty.
+\]
+La prior diventa sempre meno informativa, il peso di $\bar x$ tende a zero e la stima MAP tende alla stima ML.
+\end{spiegazione}
 
 
 

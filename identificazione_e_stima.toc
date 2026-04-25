@@ -1,0 +1,82 @@
+\babel@toc {italian}{}\relax 
+\contentsline {section}{\numberline {1}Introduzione all'identificazione e alla predizione}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Identificazione}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Errore di predizione}{3}{subsection.1.2}%
+\contentsline {paragraph}{Intuizione.}{4}{section*.3}%
+\contentsline {section}{\numberline {2}Processi stocastici}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Caratterizzazione attraverso momenti}{5}{subsection.2.1}%
+\contentsline {paragraph}{Proprietà.}{5}{section*.4}%
+\contentsline {subsection}{\numberline {2.2}Processi stazionari (in senso lato, PSS)}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Rumore bianco (WN)}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Processi MA, AR e ARMA}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Processo MA (Moving Average (Media Mobile)}{7}{subsection.3.1}%
+\contentsline {paragraph}{In funzione di $z^{-1}$:}{8}{section*.5}%
+\contentsline {paragraph}{MA($\infty $):}{8}{section*.6}%
+\contentsline {subsection}{\numberline {3.2}Processo AR (Auto Regressivo), AR($n$) (di ordine n)}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Processo ARMA$(n_a,n_c)$}{11}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Caratterizzazione in frequenza}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Densità spettrale (di potenza)}{11}{subsection.4.1}%
+\contentsline {paragraph}{Proprietà}{12}{section*.7}%
+\contentsline {subsection}{\numberline {4.2}Spettro (complesso)}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Teorema fondamentale dell'analisi spettrale}{13}{subsection.4.3}%
+\contentsline {paragraph}{Caso ARMA con $W(z)$ e ingresso $u(t)\sim WN(0,\sigma ^2)$:}{13}{section*.8}%
+\contentsline {paragraph}{Generalizzazione multivariabile.}{13}{section*.9}%
+\contentsline {subsection}{\numberline {4.4}Dimostrazione del teorema fondamentale dell'analisi spettrale}{14}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Caratteristiche statistiche e spettrali da dati (realizzazione)}{15}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Stima della media}{15}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Correlogramma}{15}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Periodogramma}{16}{subsection.5.3}%
+\contentsline {paragraph}{Caratteristiche nel dominio della frequenza:}{16}{section*.10}%
+\contentsline {subsection}{\numberline {5.4}Test di bianchezza (Anderson)}{16}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Predizione ottima}{17}{section.6}%
+\contentsline {subsection}{\numberline {6.1}\emph {Fake prediction problem}: predittore da rumore}{17}{subsection.6.1}%
+\contentsline {paragraph}{Casi limite:}{18}{section*.11}%
+\contentsline {subsection}{\numberline {6.2}Predittore ottimo dai dati}{18}{subsection.6.2}%
+\contentsline {paragraph}{Esistono molteplici rappresentazioni ARMA per lo stesso processo stocastico $v(t)$}{19}{section*.12}%
+\contentsline {section}{\numberline {7}Teorema di fattorizzazione spettrale}{20}{section.7}%
+\contentsline {paragraph}{Filtro sbiancante.}{21}{section*.13}%
+\contentsline {section}{\numberline {8}Predizione dai dati:}{22}{section.8}%
+\contentsline {paragraph}{Esprimere $W(z)$ in potenze negative di $z$ (Lunga divisione)}{22}{section*.14}%
+\contentsline {paragraph}{AR(1):}{23}{section*.15}%
+\contentsline {paragraph}{MA(1)}{24}{section*.16}%
+\contentsline {paragraph}{Processo ARMA}{25}{section*.17}%
+\contentsline {subsection}{\numberline {8.1}ARMAX}{26}{subsection.8.1}%
+\contentsline {paragraph}{ARMAX (predizione)}{26}{section*.18}%
+\contentsline {paragraph}{Predittore ottimo ($k$ passi)}{27}{section*.19}%
+\contentsline {section}{\numberline {9}Identificazione: famiglia di modelli}{27}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Approccio predittivo }{28}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Predittore in forma unificata (BJ)}{30}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Peculiarità del predittore (Linearità nei parametri)}{31}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Stima ai minimi quadrati (ARX/AR)}{31}{section.10}%
+\contentsline {section}{\numberline {11}Identificabilità}{32}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Ingressi persistentemente eccitanti di ordine n}{35}{subsection.11.1}%
+\contentsline {paragraph}{Interpretazione in frequenza.}{35}{section*.21}%
+\contentsline {section}{\numberline {12}Stima ARMA/ARMAX: Gauss--Newton iterativo}{36}{section.12}%
+\contentsline {paragraph}{Gradiente e Hessiano dai dati.}{38}{section*.22}%
+\contentsline {paragraph}{Determinazione di $\varepsilon (t)$ e $\psi (t)$ dai dati}{38}{section*.23}%
+\contentsline {paragraph}{Schema iterativo.}{40}{section*.24}%
+\contentsline {section}{\numberline {13}Analisi asintotica e scenari di identificazione}{40}{section.13}%
+\contentsline {paragraph}{Piccolo Recap}{43}{section*.25}%
+\contentsline {paragraph}{Scenari.}{43}{section*.26}%
+\contentsline {section}{\numberline {14}Incertezza di stima}{44}{section.14}%
+\contentsline {paragraph}{Quantità campionarie.}{45}{section*.27}%
+\contentsline {paragraph}{Minimi quadrati}{45}{section*.28}%
+\contentsline {section}{\numberline {15}Selezione della complessità del modello}{46}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Processo di Cross-validazione}{46}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Final Prediction Error (FPE)}{46}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Criterio AIC (Akaike Information Criterion)}{47}{subsection.15.3}%
+\contentsline {subsection}{\numberline {15.4}Criterio MDL (Minimum Description Length)}{47}{subsection.15.4}%
+\contentsline {section}{\numberline {16}Scelta della famiglia via dati}{48}{section.16}%
+\contentsline {paragraph}{Covarianza parziale:}{49}{section*.29}%
+\contentsline {paragraph}{AR, MA, ARMA?}{49}{section*.30}%
+\contentsline {section}{\numberline {17}Stima:}{50}{section.17}%
+\contentsline {paragraph}{Parametri:}{50}{section*.31}%
+\contentsline {subsection}{\numberline {17.1}Stima statica:}{50}{subsection.17.1}%
+\contentsline {paragraph}{Approccio non Bayesiano (alla Fisher)}{50}{section*.32}%
+\contentsline {paragraph}{Approccio Bayesiano}{50}{section*.33}%
+\contentsline {subsection}{\numberline {17.2}Approccio Bayesiano:}{50}{subsection.17.2}%
+\contentsline {subsection}{\numberline {17.3}Approccio Non Bayesiano:}{51}{subsection.17.3}%
+\contentsline {paragraph}{Esercizio}{52}{section*.34}%
+\contentsline {paragraph}{PDF a Priori non disponibile (caso non Bayesiano)}{52}{section*.35}%
+\contentsline {paragraph}{PDF a Priori disponibile}{53}{section*.36}%
+\contentsline {paragraph}{MAP Gaussiano:}{54}{section*.38}%
