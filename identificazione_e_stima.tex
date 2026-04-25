@@ -3857,6 +3857,26 @@ PDF a Priori NON informativa: $\sigma_0^2 \to \infty$
 
 Minimi quadrati che tira fuori una $\hat x$ dai dati è un altro modo di fare stima Non-Bayesiana.
 
+\begin{spiegazione}{MAP gaussiano e prior non informativa}
+La formula MAP gaussiana e' una media pesata tra informazione a priori e misura:
+\[
+\hat x^{MAP}
+=
+\frac{\sigma^2}{\sigma_0^2+\sigma^2}\bar x
++
+\frac{\sigma_0^2}{\sigma_0^2+\sigma^2}z.
+\]
+Il peso di $\bar x$ dipende dall'incertezza della misura $\sigma^2$, mentre il peso di $z$ dipende dall'incertezza a priori $\sigma_0^2$. Se la prior e' molto incerta, cioe' $\sigma_0^2\to\infty$, allora il modello a priori non aiuta piu' a localizzare $x$.
+
+In quel limite,
+\[
+\frac{\sigma^2}{\sigma_0^2+\sigma^2}\to 0,
+\qquad
+\frac{\sigma_0^2}{\sigma_0^2+\sigma^2}\to 1,
+\]
+quindi $\hat x^{MAP}(z)\to z$, cioe' la stima coincide con quella ottenuta guardando solo i dati. Questo e' il collegamento concettuale con ML: ML usa la sola verosimiglianza, mentre MAP usa verosimiglianza piu' prior.
+\end{spiegazione}
+
 \paragraph{Piccolo Recap:}
 
 Si distinguono due approcci principali:
@@ -3879,6 +3899,20 @@ Nel caso non bayesiano si considera invece la massima verosimiglianza, da cui si
 
 Se \(f_{\bar{X}}(x)\) è una PDF diffusa, allora MAP e MLE tendono a coincidere.
 
+\begin{spiegazione}{Recap tra approccio bayesiano e non bayesiano}
+La differenza centrale e' il ruolo assegnato al parametro $x$. Nell'approccio non bayesiano, $x$ e' un numero fisso ma ignoto: non gli si assegna una distribuzione di probabilita'. Per questo si lavora con
+\[
+f_{Z\mid \bar X}(z\mid x),
+\]
+cioe' con la probabilita' di osservare i dati $z$ se il parametro fosse $x$.
+
+Nell'approccio bayesiano, invece, $x$ e' trattato come variabile aleatoria. Prima dei dati si possiede una prior $f_{\bar X}(x)$; dopo avere osservato $z$, questa viene aggiornata nella posterior
+\[
+f_{\bar X\mid Z}(x\mid z).
+\]
+MAP sceglie il punto in cui la posterior e' massima; ML sceglie il punto in cui la verosimiglianza e' massima. Se la prior e' piatta o poco informativa, la posterior e' dominata dalla verosimiglianza e i due criteri danno praticamente lo stesso risultato.
+\end{spiegazione}
+
 \vspace{1em}
 
 \subsection{Approccio Non Bayesiano con i minimi quadrati}
@@ -3893,6 +3927,20 @@ dove:
     \item \(h(j,x)\) è, in generale, \textbf{non lineare};
     \item \(W(j)\) rappresenta un \textbf{rumore additivo}.
 \end{itemize}
+
+\begin{spiegazione}{Modello di misura e minimi quadrati}
+Il modello
+\[
+z(j)=h(j,x)+W(j)
+\]
+separa cio' che il modello deterministico prevede, $h(j,x)$, da cio' che non viene spiegato, $W(j)$. Per ogni valore candidato di $x$, si puo' calcolare il residuo
+\[
+z(j)-h(j,x).
+\]
+Il metodo dei minimi quadrati sceglie il valore di $x$ che rende piccoli, complessivamente, tutti questi residui.
+
+Il quadrato serve per due ragioni: evita cancellazioni tra errori positivi e negativi, e penalizza maggiormente errori grandi. Se $h(j,x)$ e' lineare in $x$, il problema spesso ha una soluzione esplicita; se e' non lineare, la minimizzazione puo' richiedere metodi iterativi.
+\end{spiegazione}
 
 \subsubsection*{Minimi quadrati (\emph{least squares})}
 
@@ -3915,6 +3963,16 @@ Caso particolare: \(W(j)\) i.i.d., cioè \emph{indipendenti e identicamente dist
 \[
 W(j)\sim \mathcal{N}(0,\sigma^2).
 \]
+
+\begin{spiegazione}{Perche' LS non richiede una distribuzione del rumore}
+La definizione LS usa solo una distanza tra dati osservati e dati predetti dal modello:
+\[
+\sum_{j=1}^{k}\bigl(z(j)-h(j,x)\bigr)^2.
+\]
+Non serve conoscere la PDF del rumore per scrivere questo criterio. Per questo LS e' un criterio piu' geometrico che probabilistico: cerca il punto del modello piu' vicino alle osservazioni, nel senso della somma dei quadrati.
+
+Quando pero' si aggiunge l'ipotesi che il rumore sia gaussiano i.i.d. a media nulla e varianza $\sigma^2$, allora LS acquista anche un significato probabilistico: coincide con la massima verosimiglianza. In altre parole, sotto rumore gaussiano, minimizzare i quadrati equivale a massimizzare la probabilita' dei dati osservati.
+\end{spiegazione}
 
 \subsubsection*{Massima verosimiglianza}
 
@@ -3951,6 +4009,24 @@ ossia coincide con la stima ai minimi quadrati:
 \[
 \boxed{\text{Nel caso gaussiano}}
 \]
+
+\begin{spiegazione}{Perche' ML coincide con LS nel caso gaussiano}
+Per dati indipendenti con rumore gaussiano, la verosimiglianza e' un prodotto di gaussiane. Ogni termine contiene un esponenziale del tipo
+\[
+\exp\!\left(
+-\frac{(z(j)-h(j,x))^2}{2\sigma^2}
+\right).
+\]
+Moltiplicando questi termini, gli esponenti si sommano e compare
+\[
+\exp\!\left(
+-\frac{1}{2\sigma^2}
+\sum_{j=1}^{K}(z(j)-h(j,x))^2
+\right).
+\]
+
+Massimizzare questo esponenziale equivale a rendere il suo esponente il meno negativo possibile, cioe' equivale a minimizzare la somma dei quadrati. Le costanti moltiplicative e il fattore $1/(2\sigma^2)$ non cambiano il punto di massimo/minimo, quindi il criterio ML diventa esattamente il criterio LS.
+\end{spiegazione}
 
 \paragraph{Per continuare l'esempio}
 Si consideri
@@ -4008,6 +4084,32 @@ Quindi
 \]
 cioè la media campionaria.
 
+\begin{spiegazione}{Derivazione della media campionaria}
+Nel caso
+\[
+z(j)=x+w(j),
+\]
+il modello prevede lo stesso parametro $x$ per tutte le misure. Il criterio LS diventa
+\[
+\sum_{j=1}^{k}(z(j)-x)^2.
+\]
+La derivata rispetto a $x$ misura come cambia la somma dei quadrati spostando il valore candidato del parametro. Ponendo la derivata uguale a zero si impone che non convenga spostare ulteriormente $x$ ne' verso l'alto ne' verso il basso.
+
+L'equazione ottenuta e'
+\[
+\sum_{j=1}^{k}(z(j)-x)=0,
+\]
+cioe'
+\[
+\sum_{j=1}^{k}z(j)=kx.
+\]
+Da qui segue
+\[
+\hat x=\frac{1}{k}\sum_{j=1}^{k}z(j).
+\]
+La stima e' quindi la media delle osservazioni: ogni misura contribuisce allo stesso modo perche' tutte hanno la stessa varianza e lo stesso modello.
+\end{spiegazione}
+
 \subsubsection*{Analogo di LS che sia Bayesiano}
 
 \paragraph{MMSE (\emph{Minimum Mean Square Error})}
@@ -4019,6 +4121,19 @@ cioè la media campionaria.
 \operatorname*{arg\,min}_{\hat x}
 E\!\left[(\hat x-x)^2 \mid z\right]
 \]
+
+\begin{spiegazione}{Idea dello stimatore MMSE}
+MMSE significa scegliere una stima $\hat x$ che minimizza l'errore quadratico medio, dopo avere osservato $z$. A differenza di ML e LS, qui si ragiona in modo bayesiano: dopo la misura, $x$ resta incerto ed e' descritto dalla posterior
+\[
+f_{\bar X\mid Z}(x\mid z).
+\]
+
+Il criterio
+\[
+E[(\hat x-x)^2\mid z]
+\]
+fa la media dell'errore quadratico su tutti i valori possibili di $x$, pesati secondo la posterior. Quindi non si cerca il valore piu' probabile in assoluto, ma il valore che minimizza la perdita quadratica media condizionata ai dati osservati.
+\end{spiegazione}
 
 \paragraph{Caso scalare}
 Nel caso scalare si può calcolare la condizione di ottimo derivando rispetto a \(\hat x\):
@@ -4059,6 +4174,23 @@ La stima \textbf{MMSE} coincide quindi con la stima \textbf{EAP}
 MMSE \equiv EAP
 \]
 
+\begin{spiegazione}{Perche' MMSE coincide con la media a posteriori}
+Nel caso scalare, la funzione da minimizzare e'
+\[
+E[(\hat x-x)^2\mid z].
+\]
+Derivando rispetto alla variabile scelta $\hat x$ si ottiene
+\[
+2(\hat x-E[x\mid z]).
+\]
+Il minimo si trova quando questa quantita' e' nulla, quindi
+\[
+\hat x=E[x\mid z].
+\]
+
+Questo risultato e' importante: con perdita quadratica, la stima ottima non e' necessariamente il punto piu' probabile, ma la media della posterior. Per questo MMSE coincide con EAP, cioe' \emph{Expected A Posteriori}.
+\end{spiegazione}
+
 \subsubsection*{MMSE e MAP nel caso Gaussiano}
 
 \paragraph{MAP nel caso Gaussiano}
@@ -4090,6 +4222,20 @@ Quindi, nel caso gaussiano, MMSE e MAP coincidono,
 perché valore atteso e valore di massimo coincidono
 quando la PDF a posteriori è gaussiana.
 
+\begin{spiegazione}{Quando MAP e MMSE danno la stessa stima}
+MAP e MMSE usano due criteri diversi: MAP cerca il massimo della posterior, mentre MMSE cerca la media della posterior. In generale questi due valori possono essere diversi, soprattutto se la distribuzione e' asimmetrica o multimodale.
+
+Nel caso gaussiano, pero', la posterior ha forma simmetrica attorno al suo centro $\xi(z)$. Per una gaussiana, media, moda e mediana coincidono. Quindi
+\[
+\operatorname*{arg\,max}_x f_{\bar X\mid Z}(x\mid z)
+=
+E[x\mid z]
+=
+\xi(z).
+\]
+Per questo, con posterior gaussiana, MAP e MMSE producono la stessa stima anche se nascono da criteri diversi.
+\end{spiegazione}
+
 
 \subsubsection*{Indici di bontà}
 
@@ -4114,6 +4260,19 @@ Uno stimatore si dice \emph{asintoticamente non polarizzato} se la proprietà va
 \[
 k\to\infty.
 \]
+
+\begin{spiegazione}{Non polarizzazione e significato del bias}
+La non polarizzazione riguarda l'errore medio dello stimatore. Se
+\[
+E[\hat x]=E[x],
+\]
+allora lo stimatore non tende sistematicamente a sovrastimare o sottostimare il parametro. Nel caso non bayesiano, dove il valore vero e' $x_0$, questa condizione si legge spesso come
+\[
+E[\hat x]=x_0.
+\]
+
+Uno stimatore puo' essere polarizzato per un numero finito di misure ma diventare asintoticamente non polarizzato quando $k$ cresce. Questo significa che l'errore sistematico si riduce al crescere dell'informazione disponibile, anche se per campioni piccoli puo' rimanere un bias.
+\end{spiegazione}
 
 \subsubsection*{ML nel caso Gaussiano}
 
@@ -4143,6 +4302,20 @@ x_0.
 \]
 
 Quindi lo stimatore ML è \textbf{non polarizzato}.
+
+\begin{spiegazione}{ML con singola misura gaussiana}
+Con una singola misura
+\[
+z=x_0+w,
+\]
+e rumore a media nulla, la stima ML e' semplicemente $\hat x^{ML}=z$. La ragione e' intuitiva: con una sola osservazione e nessuna prior, il valore piu' plausibile del parametro e' quello che renderebbe nullo il residuo.
+
+La non polarizzazione segue dal fatto che il rumore ha media nulla:
+\[
+E[z]=E[x_0+w]=x_0.
+\]
+Questo non significa che una singola stima sia sempre vicina a $x_0$; significa solo che, ripetendo idealmente l'esperimento molte volte, la media delle stime sarebbe centrata su $x_0$.
+\end{spiegazione}
 
 \subsubsection*{MAP nel caso Gaussiano}
 
@@ -4188,6 +4361,22 @@ E[x].
 
 Quindi anche lo stimatore MAP, in questo caso, è \textbf{non polarizzato}.
 
+\begin{spiegazione}{MAP come compromesso tra prior e misura}
+Lo stimatore MAP gaussiano ha la forma
+\[
+\hat x^{MAP}
+=
+\alpha \bar x+(1-\alpha)z,
+\]
+dove
+\[
+\alpha=\frac{\sigma^2}{\sigma^2+\sigma_0^2}.
+\]
+Quindi la stima e' un compromesso: si avvicina alla prior quando la misura e' rumorosa, e si avvicina alla misura quando la prior e' molto incerta.
+
+Nel calcolo del valore atteso bisogna distinguere tra media rispetto al rumore di misura e media rispetto alla variabile aleatoria $x$. Se il modello bayesiano e' centrato correttamente, cioe' se la prior ha media $\bar x$, allora il valore atteso dello stimatore resta centrato sulla media del parametro. Per questo, nel caso riportato, MAP risulta non polarizzato rispetto alla media a priori.
+\end{spiegazione}
+
 \subsubsection*{Altri indici di bontà}
 
 \paragraph{Varianza e MSE dello stimatore}
@@ -4228,6 +4417,24 @@ E\!\left[
 \]
 dove MSE sta per \emph{Mean Square Error}.
 
+\begin{spiegazione}{Varianza, MSE e ruolo della polarizzazione}
+Nel caso non bayesiano, il parametro vero $x_0$ e' fisso. L'MSE misura direttamente quanto lo stimatore si discosta da questo valore:
+\[
+\mathrm{MSE}=E[(\hat x-x_0)^2].
+\]
+La varianza, invece, misura quanto lo stimatore oscilla attorno alla propria media:
+\[
+\operatorname{Var}[\hat x]
+=E[(\hat x-E[\hat x])^2].
+\]
+
+Se lo stimatore e' non polarizzato, allora $E[\hat x]=x_0$ e le due quantita' coincidono:
+\[
+\operatorname{Var}[\hat x]=\mathrm{MSE}.
+\]
+Se invece lo stimatore e' polarizzato, l'MSE contiene due contributi: la variabilita' casuale dello stimatore e il quadrato del bias. Per questo uno stimatore con bassa varianza non e' automaticamente buono: bisogna anche controllare se e' centrato sul valore corretto.
+\end{spiegazione}
+
 \subparagraph*{Caso bayesiano}
 Nel caso bayesiano si considera la media sia su \(z\) sia su \(x\), perché qui \(x\) è una variabile aleatoria.
 
@@ -4249,6 +4456,20 @@ E\!\left[
 \right]
 \right].
 \]
+
+\begin{spiegazione}{MSE bayesiano e valore atteso iterato}
+Nel caso bayesiano l'errore dipende da due sorgenti di incertezza: il parametro aleatorio $x$ e i dati $z$. Per questo l'MSE e' una media globale:
+\[
+E[(\hat x(z)-x)^2].
+\]
+Si puo' calcolare in due passi usando il valore atteso iterato. Prima si fissa il dato osservato $z$ e si calcola l'errore medio rispetto alla posterior:
+\[
+E[(\hat x(z)-x)^2\mid z].
+\]
+Poi si fa la media di questa quantita' su tutti i possibili dati $z$.
+
+Questo passaggio spiega perche' MMSE minimizza l'MSE bayesiano: per ogni valore osservato di $z$, sceglie la stima che minimizza l'errore quadratico medio condizionato a quel dato.
+\end{spiegazione}
 
 \paragraph{Proprietà di regolarizzazione del valore atteso}
 Vale la proprietà
@@ -4284,6 +4505,16 @@ E\!\left[
 \right],
 \]
 cioè la media su tutti i possibili esiti dell'esperimento di misura.
+
+\begin{spiegazione}{Proprieta' della media condizionata}
+La proprieta'
+\[
+E[E[X\mid Y]]=E[X]
+\]
+si chiama anche legge dell'aspettazione totale. L'idea e' che prima si fa una media di $X$ sapendo il valore di $Y$, poi si fa la media rispetto a tutti i valori possibili di $Y$.
+
+Nel contesto della stima, questa proprieta' permette di passare da un errore medio condizionato ai dati a un errore medio complessivo. Quindi le quantita' bayesiane possono essere lette su due livelli: livello locale, fissato il dato osservato, e livello globale, mediando su tutti gli esperimenti possibili.
+\end{spiegazione}
 
 \subsubsection*{Varianza di ML e MAP (singola misura gaussiana)}
 
@@ -4326,6 +4557,23 @@ Dunque
 \[
 \operatorname{Var}\!\bigl[\hat x^{ML}\bigr]=\sigma^2.
 \]
+
+\begin{spiegazione}{Varianza ML con una sola misura}
+Per ML con una singola misura gaussiana, lo stimatore coincide con il dato:
+\[
+\hat x^{ML}=z=x_0+w.
+\]
+L'unica fonte di variabilita' della stima e' quindi il rumore $w$. Di conseguenza,
+\[
+\operatorname{Var}[\hat x^{ML}]
+=
+\operatorname{Var}[w]
+=
+\sigma^2.
+\]
+
+Questo risultato dice che, con una sola misura e senza informazione a priori, non si puo' ridurre la varianza sotto quella del rumore di misura: lo stimatore eredita tutta l'incertezza presente nel dato.
+\end{spiegazione}
 
 \paragraph{Varianza dello stimatore MAP}
 
@@ -4420,6 +4668,26 @@ Quindi
 \operatorname{Var}\!\bigl[\hat x^{MAP}\bigr].
 \]
 
+\begin{spiegazione}{Perche' MAP puo' avere varianza minore di ML}
+MAP non usa solo la misura $z$, ma anche la prior. Per questo lo stimatore e' una combinazione pesata:
+\[
+\hat x^{MAP}
+=
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}z.
+\]
+Il termine associato a $z$ ha peso minore di $1$, quindi il rumore di misura viene attenuato.
+
+La varianza risultante e'
+\[
+\operatorname{Var}[\hat x^{MAP}]
+=
+\frac{\sigma^2\sigma_0^2}{\sigma^2+\sigma_0^2},
+\]
+che e' minore di $\sigma^2$ quando $\sigma_0^2$ e' finita. Il prezzo di questa riduzione e' che la stima dipende dalla prior: se la prior e' informativa e coerente col problema, MAP migliora la stabilita'; se la prior e' poco affidabile, puo' spostare la stima in modo indesiderato.
+\end{spiegazione}
+
 
 
 \subsubsection*{LS gaussiano, multimisura}
@@ -4440,6 +4708,20 @@ In questo caso
 =
 \frac{1}{k}\sum_{j=1}^{k} z(j).
 \]
+
+\begin{spiegazione}{Perche' con piu' misure compare la media}
+Con piu' misure indipendenti dello stesso parametro,
+\[
+z(j)=x_0+w(j),
+\]
+ogni osservazione contiene lo stesso valore vero piu' un rumore diverso. La media campionaria
+\[
+\frac{1}{k}\sum_{j=1}^{k}z(j)
+\]
+somma i contributi utili, tutti uguali a $x_0$, e tende a compensare i rumori, che hanno media nulla.
+
+Questo e' il motivo per cui LS e ML coincidono ancora e producono la media: tutte le misure sono ugualmente affidabili, quindi il modo naturale di combinarle e' dare a ciascuna lo stesso peso.
+\end{spiegazione}
 
 \paragraph{Non polarizzazione}
 
@@ -4514,6 +4796,29 @@ Dato che i \(w(j)\) sono indipendenti e con varianza \(\sigma^2\),
 \frac{\sigma^2}{k}.
 \]
 
+\begin{spiegazione}{Varianza della media campionaria}
+La varianza dello stimatore LS diminuisce come $1/k$ perche' si sta facendo la media di $k$ rumori indipendenti. Infatti
+\[
+\hat x^{LS}-x_0
+=
+\frac{1}{k}\sum_{j=1}^{k}w(j).
+\]
+La varianza della somma di rumori indipendenti e' la somma delle varianze:
+\[
+\operatorname{Var}\!\left[\sum_{j=1}^{k}w(j)\right]
+=k\sigma^2.
+\]
+Il fattore $1/k$ davanti alla somma diventa $1/k^2$ nella varianza, quindi
+\[
+\operatorname{Var}[\hat x^{LS}]
+=
+\frac{1}{k^2}k\sigma^2
+=
+\frac{\sigma^2}{k}.
+\]
+Questo quantifica il guadagno dovuto alla ripetizione delle misure.
+\end{spiegazione}
+
 \paragraph{Consistenza}
 
 Per
@@ -4534,6 +4839,19 @@ In media quadratica:
 \lim_{k\to\infty} E\!\left[\tilde x^{\,2}(z)\right]=0.
 \]
 
+\begin{spiegazione}{Consistenza come effetto dell'aumento dei dati}
+La consistenza esprime una proprieta' asintotica: aumentando il numero di misure, lo stimatore deve avvicinarsi al valore vero. Nel caso della media campionaria gaussiana,
+\[
+\operatorname{Var}[\hat x^{LS}]
+=
+\frac{\sigma^2}{k}
+\to 0.
+\]
+Se lo stimatore e' anche non polarizzato, l'MSE coincide con la varianza; quindi anche l'errore quadratico medio tende a zero.
+
+In termini pratici, la singola misura puo' essere rumorosa, ma la media di molte misure indipendenti diventa sempre piu' stabile. La consistenza formalizza proprio questa idea.
+\end{spiegazione}
+
 \paragraph{Altra proprietà: efficienza}
 
 Esiste un limite inferiore all'MSE legato alla verosimiglianza:
@@ -4541,6 +4859,12 @@ Esiste un limite inferiore all'MSE legato alla verosimiglianza:
 \[
 \text{(CRLB)} \qquad \text{Cram\'er--Rao Lower Bound}.
 \]
+
+\begin{spiegazione}{Efficienza e limite inferiore dell'errore}
+L'efficienza riguarda quanto uno stimatore si avvicina al miglior errore teoricamente possibile. Il Cramer--Rao Lower Bound fornisce un limite inferiore alla varianza, o all'MSE nel caso non polarizzato, di qualunque stimatore non polarizzato.
+
+Se uno stimatore raggiunge questo limite, allora non esiste un altro stimatore non polarizzato con varianza piu' piccola, almeno all'interno delle ipotesi del bound. In questo senso lo stimatore e' efficiente: usa tutta l'informazione disponibile nei dati rispetto al parametro da stimare.
+\end{spiegazione}
 
 
 \subsubsection*{Caso scalare non bayesiano: CRLB}
@@ -4576,6 +4900,26 @@ Il \(\mathrm{CRLB}\) è quindi l'inverso dell'informazione di Fisher:
 \mathrm{CRLB}=J^{-1}.
 \]
 
+\begin{spiegazione}{Informazione di Fisher e CRLB}
+L'informazione di Fisher misura quanto la verosimiglianza cambia al variare del parametro. Se una piccola variazione di $x$ produce una grande variazione di $\Lambda_z(x)$, allora i dati sono molto informativi su $x$.
+
+Nel caso scalare non bayesiano,
+\[
+J
+=
+E\!\left[
+\left(
+\frac{\partial \ln \Lambda_z(x)}{\partial x}
+\right)^2
+\right]_{x=x_0}
+\]
+misura la sensibilita' media del logaritmo della verosimiglianza rispetto al parametro. Il CRLB e' l'inverso:
+\[
+\mathrm{CRLB}=J^{-1}.
+\]
+Quindi piu' grande e' l'informazione di Fisher, piu' piccolo e' il limite inferiore sull'errore di stima.
+\end{spiegazione}
+
 \subsubsection*{Nel caso bayesiano}
 
 La verosimiglianza
@@ -4587,6 +4931,19 @@ viene sostituita da
 f_{z,\overline{\underline{x}}}(z,x),
 \]
 cioè dalla PDF congiunta.
+
+\begin{spiegazione}{Lettura bayesiana del bound}
+Nel caso bayesiano il parametro e' aleatorio, quindi l'informazione non proviene solo dalla verosimiglianza dei dati dato il parametro, ma anche dalla distribuzione a priori del parametro stesso. Per questo, invece di ragionare solo su
+\[
+\Lambda_z(x)=f_{Z\mid \bar X}(z\mid x),
+\]
+si considera la struttura probabilistica congiunta tra dati e parametro:
+\[
+f_{Z,\bar X}(z,x).
+\]
+
+In questo modo il bound tiene conto sia dell'informazione portata dalle misure sia dell'informazione gia' presente nella prior.
+\end{spiegazione}
 
 \subsubsection*{Efficienza}
 
@@ -4619,12 +4976,34 @@ allora
 Di conseguenza, l'MSE di uno stimatore \emph{può} essere nullo per \(k\to\infty\).
 (Questo dipende anche dallo stimatore)
 
+\begin{spiegazione}{Consistenza ed efficienza non sono la stessa cosa}
+Consistenza ed efficienza descrivono aspetti diversi. La consistenza guarda il comportamento per $k\to\infty$: chiede che l'errore vada a zero quando aumentano i dati. L'efficienza guarda invece se, per un certo problema, lo stimatore raggiunge il limite inferiore imposto dall'informazione disponibile.
+
+L'aumento dell'informazione di Fisher e' una condizione favorevole alla consistenza, perche'
+\[
+J\to\infty
+\quad\Longrightarrow\quad
+J^{-1}\to 0.
+\]
+Pero' il fatto che il bound vada a zero non garantisce da solo che ogni stimatore sia consistente: serve che lo stimatore scelto riesca effettivamente a sfruttare quell'informazione. Per questo le note distinguono tra cio' che dipende dal problema e cio' che dipende dallo stimatore.
+\end{spiegazione}
+
 \subsubsection*{Caso matriciale}
 
 \paragraph{FIM}
 \[
 \mathrm{FIM} \;=\; \text{Fisher Information Matrix}.
 \]
+
+\begin{spiegazione}{Dal caso scalare alla matrice di Fisher}
+Quando il parametro non e' uno scalare ma un vettore, l'informazione non puo' piu' essere descritta da un solo numero. Serve una matrice:
+\[
+\mathrm{FIM}.
+\]
+Gli elementi diagonali misurano quanta informazione c'e' sui singoli parametri, mentre gli elementi fuori diagonale descrivono l'accoppiamento tra parametri diversi.
+
+Nel caso vettoriale, il CRLB diventa una disuguaglianza matriciale: la matrice di covarianza dello stimatore e' limitata inferiormente dall'inversa della Fisher Information Matrix. Intuitivamente, una FIM grande e ben condizionata indica che i parametri sono stimabili con precisione; una FIM quasi singolare indica che alcuni parametri sono difficili da distinguere dai dati.
+\end{spiegazione}
 
 \paragraph{Esempio: stima con misure multiple}
 
@@ -4715,6 +5094,28 @@ Poiché lo stimatore raggiunge il bound,
 \mathrm{MSE}\bigl[\hat x^{ML}(z)\bigr]=\mathrm{CRLB},
 \]
 segue che lo stimatore è \textbf{efficiente}.
+
+\begin{spiegazione}{Esempio CRLB con misure multiple gaussiane}
+Nell'esempio
+\[
+z(j)=x+w(j),
+\qquad w(j)\sim\mathcal N(0,\sigma^2),
+\]
+ogni misura aggiunge la stessa quantita' di informazione sul parametro. Per una misura, l'informazione e' proporzionale a $1/\sigma^2$; con $K$ misure indipendenti, le informazioni si sommano:
+\[
+J=\frac{K}{\sigma^2}.
+\]
+
+Il bound diventa quindi
+\[
+\mathrm{CRLB}=J^{-1}=\frac{\sigma^2}{K}.
+\]
+Ma la media campionaria, che coincide con LS e ML, ha proprio MSE
+\[
+\mathrm{MSE}=\frac{\sigma^2}{K}.
+\]
+Quindi raggiunge il limite teorico: in questo problema lo stimatore ML/LS e' efficiente.
+\end{spiegazione}
 
 %AGGIUNGERE LEZIONE DEL 20/04 E DEL 23/04
 \end{document}
