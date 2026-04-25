@@ -3857,6 +3857,864 @@ PDF a Priori NON informativa: $\sigma_0^2 \to \infty$
 
 Minimi quadrati che tira fuori una $\hat x$ dai dati è un altro modo di fare stima Non-Bayesiana.
 
-%DA SISTEMARE FINO A QUA
+\paragraph{Piccolo Recap:}
+
+Si distinguono due approcci principali:
+
+\begin{itemize}
+    \item \textbf{Bayesiano}
+    \[
+    f_{\bar{X}\mid Z}(x\mid z)
+    \]
+
+    \item \textbf{Non Bayesiano} (o di \emph{Fisher})
+    \[
+    f_{Z\mid \bar{X}}(z\mid x)
+    \]
+\end{itemize}
+
+Nel caso bayesiano si considera la densità \emph{a posteriori} e si cerca il massimo da cui si ottiene la stima \textbf{MAP}.
+
+Nel caso non bayesiano si considera invece la massima verosimiglianza, da cui si ottiene la stima \textbf{MLE}.
+
+Se \(f_{\bar{X}}(x)\) è una PDF diffusa, allora MAP e MLE tendono a coincidere.
+
+\vspace{1em}
+
+\subsection{Approccio Non Bayesiano con i minimi quadrati}
+Un altro approccio (non bayesiano) alla stima è quello dei \textbf{minimi quadrati}.
+
+\[
+z(j)=h(j,x)+W(j),
+\qquad j=1,\dots,K
+\]
+dove:
+\begin{itemize}
+    \item \(h(j,x)\) è, in generale, \textbf{non lineare};
+    \item \(W(j)\) rappresenta un \textbf{rumore additivo}.
+\end{itemize}
+
+\subsubsection*{Minimi quadrati (\emph{least squares})}
+
+Indicati con \(\mathrm{LS}\) oppure \(\mathrm{LSE}\) (\emph{least squares estimation}), sono definiti da:
+\[
+\hat{x}^{LS}(z^K)
+=
+\operatorname*{arg\,min}_{x}
+\left\{
+\sum_{j=1}^{k}\bigl(z(j)-h(j,x)\bigr)^2
+\right\}.
+\]
+
+Non si fa nessuna assunzione sul rumore.
+
+\vspace{1em}
+
+\noindent
+Caso particolare: \(W(j)\) i.i.d., cioè \emph{indipendenti e identicamente distribuiti}, gaussiani a media nulla:
+\[
+W(j)\sim \mathcal{N}(0,\sigma^2).
+\]
+
+\subsubsection*{Massima verosimiglianza}
+
+\textit{Esempio (caso particolare)}
+
+\[
+z(j)\mid x \sim \mathcal{N}\bigl(h(j,x),\sigma^2\bigr)
+\]
+
+La funzione di verosimiglianza è
+\[
+\Lambda_z(x)=f_{Z\mid \overline{\underline{x}}}(z\mid x)
+=\prod_{j=1}^{K}\mathcal{N}\bigl(h(j,x),\sigma^2\bigr).
+\]
+
+A meno di costanti di proporzionalità, si ha
+\[
+\Lambda_z(x)\propto
+\exp\!\left(
+-\frac{1}{2\sigma^2}\sum_{j=1}^{K}\bigl(z(j)-h(j,x)\bigr)^2
+\right).
+\]
+
+Quindi, nel caso gaussiano, la stima di massima verosimiglianza equivale a minimizzare
+\[
+\sum_{j=1}^{K}\bigl(z(j)-h(j,x)\bigr)^2 = (*),
+\]
+ossia coincide con la stima ai minimi quadrati:
+
+\[
+\text{stima ML} \equiv \text{minimizzare }(*) \equiv \text{LSE (minimi quadrati)}.
+\]
+
+\[
+\boxed{\text{Nel caso gaussiano}}
+\]
+
+\paragraph{Per continuare l'esempio}
+Si consideri
+\[
+z(j)=x+w(j),
+\qquad j=1,\dots,k.
+\]
+
+In questo caso
+\[
+h(j,x)=x.
+\]
+
+Allora la verosimiglianza diventa, ancora a meno di costanti moltiplicative,
+\[
+\Lambda_z(x)\propto
+\exp\!\left(
+-\frac{1}{2\sigma^2}\sum_{j=1}^{K}\bigl(z(j)-x\bigr)^2
+\right).
+\]
+
+Ne segue che
+\[
+\hat x^{ML}=\hat x^{LS}=?
+\]
+
+Calcoliamo il punto di minimo derivando rispetto a \(x\):
+\[
+\frac{d}{dx}\left(
+\frac{1}{2\sigma^2}\sum_{j=1}^{K}(z(j)-x)^2
+\right)
+=
+\frac{1}{\sigma^2}\sum_{j=1}^{K}(z(j)-x).
+=
+\frac{1}{\sigma^2}
+\left(
+-kx+\sum_{j=1}^{k}z(j)
+\right).
+\]
+
+Ponendo la derivata uguale a zero si ottiene
+\[
+\frac{d}{dx}(\cdot)=0
+\iff
+x=\frac{1}{k}\sum_{j=1}^{k}z(j).
+\]
+
+Quindi
+\[
+\hat x^{ML}=\hat x^{LS}
+=
+\frac{1}{k}\sum_{j=1}^{k}z(j)
+=
+\bar z,
+\]
+cioè la media campionaria.
+
+\subsubsection*{Analogo di LS che sia Bayesiano}
+
+\paragraph{MMSE (\emph{Minimum Mean Square Error})}
+(È sempre uno stimatore)
+
+\[
+\hat x^{\mathrm{MMSE}}(z)
+=
+\operatorname*{arg\,min}_{\hat x}
+E\!\left[(\hat x-x)^2 \mid z\right]
+\]
+
+\paragraph{Caso scalare}
+Nel caso scalare si può calcolare la condizione di ottimo derivando rispetto a \(\hat x\):
+
+\[
+\frac{d}{d\hat x}
+E\!\left[(\hat x-x)^2 \mid z\right]
+=
+E\!\left[\frac{d}{d\hat x}(\hat x-x)^2 \mid z\right]
+=
+E\!\left[2(\hat x-x)\mid z\right]
+\]
+
+\[
+=
+2\bigl(\hat x-E[x\mid z]\bigr)
+\]
+
+Ponendo la derivata uguale a zero si ottiene
+
+\[
+\frac{d}{d\hat x}(\cdot)=0
+\iff
+\hat x=E[x\mid z].
+\]
+
+Quindi
+
+\[
+\hat x^{\mathrm{MMSE}}(z)=E[x\mid z]
+=
+\int_{-\infty}^{+\infty} x\,f_{\overline{\underline{x}}\mid z}(x\mid z)\,dx.
+\]
+
+La stima \textbf{MMSE} coincide quindi con la stima \textbf{EAP}
+(\emph{Expected A Posteriori}).
+\[
+MMSE \equiv EAP
+\]
+
+\subsubsection*{MMSE e MAP nel caso Gaussiano}
+
+\paragraph{MAP nel caso Gaussiano}
+Se la PDF a posteriori è gaussiana, si può scrivere
+
+\[
+f_{\overline{\underline{x}}\mid Z}(x\mid z)
+=
+\frac{1}{\sqrt{2\pi\,\sigma^2}}
+\exp\!\left(
+-\frac{\bigl[x-\xi(z)\bigr]^2}{2\sigma^2}
+\right).
+\]
+
+Allora lo stimatore MAP vale
+
+\[
+\hat x^{\mathrm{MAP}}(z)=\xi(z).
+\]
+
+\paragraph{MMSE nel caso Gaussiano}
+Anche lo stimatore MMSE, cioè EAP, vale
+
+\[
+\hat x^{\mathrm{MMSE}}(z)=\hat x^{\mathrm{EAP}}(z)=\xi(z).
+\]
+
+Quindi, nel caso gaussiano, MMSE e MAP coincidono,
+perché valore atteso e valore di massimo coincidono
+quando la PDF a posteriori è gaussiana.
+
+
+\subsubsection*{Indici di bontà}
+
+\paragraph{Stimatori non polarizzati}
+Si definisce l'errore di stima
+\[
+\tilde x :=x -\hat x.
+\]
+
+Uno stimatore si dice \emph{non polarizzato} se
+\[
+E[\tilde x]=0
+\qquad \forall k,
+\]
+ossia se equivalentemente
+\[
+E[\hat x]=E[x].
+\]
+
+\paragraph{Stimatore asintoticamente non polarizzato}
+Uno stimatore si dice \emph{asintoticamente non polarizzato} se la proprietà vale per
+\[
+k\to\infty.
+\]
+
+\subsubsection*{ML nel caso Gaussiano}
+
+Sia \(x_0\) il valore ``vero''.
+
+\paragraph{Modello della singola misura}
+\[
+z=x+w.
+\]
+
+In questo caso lo stimatore di massima verosimiglianza è
+\[
+\hat x^{ML}(z)=z.
+\]
+
+Infatti
+\[
+E[\hat x^{ML}]
+=
+E[z]
+=
+E[x_0+w]
+=
+x_0+E[w]
+=
+x_0.
+\]
+
+Quindi lo stimatore ML è \textbf{non polarizzato}.
+
+\subsubsection*{MAP nel caso Gaussiano}
+
+Si consideri ancora
+\[
+z=x+w.
+\]
+
+Nel caso gaussiano, lo stimatore MAP è
+\[
+\hat x^{MAP}(z)=\xi(z)
+=
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\,\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,z.
+\]
+
+Calcolandone il valore atteso si ottiene
+\[
+E[\hat x^{MAP}(z)]
+=
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\,\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,E[z].
+\]
+
+Poiché
+\[
+E[z]=\bar x,
+\]
+segue che
+\[
+E[\hat x^{MAP}(z)]
+=
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\,\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,\bar x
+=
+\bar x
+=
+E[x].
+\]
+
+Quindi anche lo stimatore MAP, in questo caso, è \textbf{non polarizzato}.
+
+\subsubsection*{Altri indici di bontà}
+
+\paragraph{Varianza e MSE dello stimatore}
+
+\subparagraph*{Caso non bayesiano}
+Sia $\hat x(z)$ uno stimatore.
+
+La sua varianza è definita come
+\[
+\operatorname{Var}\!\bigl[\hat x(z)\bigr]
+=
+E\!\left[
+\left\{\hat x(z)-E[\hat x(z)]\right\}^2
+\right].
+\]
+
+Se \(\hat x\) è non polarizzato, allora
+\[
+E[\hat x(z)] = x_0.
+\]
+
+Di conseguenza,
+\[
+\operatorname{Var}\!\bigl[\hat x(z)\bigr]
+=
+E\!\left[
+\bigl(\hat x(z)-x_0\bigr)^2
+\right].
+\]
+
+In ogni caso si definisce
+\[
+E\!\left[
+\bigl(\hat x(z)-x_0\bigr)^2
+\right]
+=
+\mathrm{MSE},
+\]
+dove MSE sta per \emph{Mean Square Error}.
+
+\subparagraph*{Caso bayesiano}
+Nel caso bayesiano si considera la media sia su \(z\) sia su \(x\), perché qui \(x\) è una variabile aleatoria.
+
+\[
+\mathrm{MSE}\bigl[\hat x(z)\bigr]
+=
+E\!\left[
+\bigl(\hat x(z)-x\bigr)^2
+\right].
+\]
+
+Usando il valore atteso iterato, si può anche scrivere
+\[
+\mathrm{MSE}\bigl[\hat x(z)\bigr]
+=
+E\!\left[
+E\!\left[
+\bigl(\hat x(z)-x\bigr)^2 \mid z
+\right]
+\right].
+\]
+
+\paragraph{Proprietà di regolarizzazione del valore atteso}
+Vale la proprietà
+\[
+E\!\bigl[E[\overline{\underline{x}}\mid \overline{\underline{y}}]\bigr]=E[X].
+\]
+
+Infatti
+\[
+E\!\bigl[E[\overline{\underline{x}}\mid \overline{\underline{y}}]\bigr]
+=
+\int_{y=-\infty}^{+\infty}
+\left[
+\int_{x=-\infty}^{+\infty}
+x\,f_{\overline{\underline{x}}\mid \overline{\underline{y}}}(x\mid y)\,dx
+\right]
+f_{\overline{\underline{y}}}(y)\,dy = 
+\]
+\[
+\int_{x=-\infty}^{+\infty}x\int_{y=-\infty}^{+\infty}f_{\overline{\underline{x}}\mid \overline{\underline{y}}}(x,y)dydx =
+\]
+\[
+\int_{x=-\infty}^{+\infty} f_{\overline{\underline{x}}}(x) dx = E[\overline{\underline{x}}]
+\]
+Questa scrittura giustifica il passaggio
+\[
+\mathrm{MSE}\bigl[\hat x(z)\bigr]
+=
+E\!\left[
+E\!\left[
+\bigl(\hat x(z)-x\bigr)^2 \mid z
+\right]
+\right],
+\]
+cioè la media su tutti i possibili esiti dell'esperimento di misura.
+
+\subsubsection*{Varianza di ML e MAP (singola misura gaussiana)}
+
+Si consideri il modello
+\[
+z=x+w,
+\]
+con \(w\) gaussiano.
+
+\paragraph{Varianza dello stimatore ML}
+
+Per lo stimatore di massima verosimiglianza, nel caso di singola misura,
+\[
+\hat x^{ML}=z.
+\]
+
+Quindi
+\[
+\operatorname{Var}\!\bigl[\hat x^{ML}\bigr]
+=
+E\!\left[\bigl(\hat x^{ML}-x_0\bigr)^2\right]
+=
+E\!\left[(z-x_0)^2\right].
+\]
+
+Poiché
+\[
+z=x_0+w,
+\]
+si ottiene
+\[
+E\!\left[(z-x_0)^2\right]
+=
+E[w^2]
+=
+\sigma^2.
+\]
+
+Dunque
+\[
+\operatorname{Var}\!\bigl[\hat x^{ML}\bigr]=\sigma^2.
+\]
+
+\paragraph{Varianza dello stimatore MAP}
+
+Nel caso gaussiano, lo stimatore MAP è
+\[
+\hat x^{MAP}
+=
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\,\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,z.
+\]
+
+Allora
+\[
+\operatorname{Var}\!\bigl[\hat x^{MAP}\bigr]
+=
+E\!\left[\bigl(\hat x^{MAP}-x\bigr)^2\right].
+\]
+
+Sostituendo l'espressione di \(\hat x^{MAP}\),
+\[
+\operatorname{Var}\!\bigl[\hat x^{MAP}\bigr]
+=
+E\!\left[
+\left(
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}\,\bar x
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,z
+-x
+\right)^2
+\right].
+\]
+
+Usando \(z=x+w\), si ha
+\[
+\operatorname{Var}\!\bigl[\hat x^{MAP}\bigr]
+=
+E\!\left[
+\left(
+\frac{\sigma^2}{\sigma^2+\sigma_0^2}(\bar x-x)
++
+\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\,w
+\right)^2
+\right].
+\]
+
+
+\[
+\bar x-x=\sigma_0^2
+\qquad
+\text{(varianza a priori),}
+\]
+per cui il risultato finale riportato è
+\[
+\operatorname{Var}\!\bigl[\hat x^{MAP}\bigr]
+= \frac{\sigma^4\sigma_0^2}{(\sigma^2+\sigma_0^2)^2}+\frac{\sigma_0^4\sigma^2}{(\sigma^2+\sigma_0^2)^2} = 
+\frac{\sigma^2\sigma_0^2}{\sigma^2+\sigma_0^2}.
+\]
+
+\paragraph{Confronto tra ML e MAP}
+
+Si confrontano quindi le due varianze:
+\[
+\operatorname{Var}\!\bigl[\hat x^{ML}\bigr]=\sigma^2,
+\qquad
+\operatorname{Var}\!\bigl[\hat X^{MAP}\bigr]
+=
+\frac{\sigma^2\sigma_0^2}{\sigma^2+\sigma_0^2}.
+\]
+
+Poiché
+\[
+\sigma^2
+=
+\frac{\sigma^2(\sigma^2+\sigma_0^2)}{\sigma^2+\sigma_0^2}
+=
+\frac{\sigma^2\sigma_0^2}{\sigma^2+\sigma_0^2}
++
+\frac{\sigma^4}{\sigma^2+\sigma_0^2},
+\]
+segue che
+\[
+\sigma^2
+>
+\frac{\sigma^2\sigma_0^2}{\sigma^2+\sigma_0^2}.
+\]
+
+Quindi
+\[
+\operatorname{Var}\!\bigl[\hat x^{ML}\bigr]
+>
+\operatorname{Var}\!\bigl[\hat x^{MAP}\bigr].
+\]
+
+
+
+\subsubsection*{LS gaussiano, multimisura}
+
+Si consideri
+\[
+z(j)=x_0+w(j),
+\qquad j=1,\dots,K,
+\]
+con
+\[
+w(j)\ \text{i.i.d.} \sim \mathcal{N}(0,\sigma^2).
+\]
+
+In questo caso
+\[
+\hat x^{LS}=\hat x^{ML}
+=
+\frac{1}{k}\sum_{j=1}^{k} z(j).
+\]
+
+\paragraph{Non polarizzazione}
+
+Si ha
+\[
+E[\hat x^{LS}]
+=
+E\!\left[
+\frac{1}{k}\sum_{j=1}^{k} z(j)
+\right]
+=
+\frac{1}{k}\sum_{j=1}^{k} E[z(j)].
+\]
+
+Poiché
+\[
+E[z(j)] = x_0,
+\]
+segue che
+\[
+E[\hat x^{LS}]
+=
+\frac{1}{k}\,k\,x_0
+=
+x_0.
+\]
+
+Quindi lo stimatore è \textbf{non polarizzato}.
+
+\paragraph{Varianza dello stimatore}
+
+\[
+\operatorname{Var}\!\bigl[\hat x^{LS}\bigr]
+=
+E\!\left[
+\bigl(\hat x^{LS}-x_0\bigr)^2
+\right].
+\]
+
+Sostituendo l'espressione dello stimatore,
+\[
+\operatorname{Var}\!\bigl[\hat x^{LS}\bigr]
+=
+E\!\left[
+\left(
+\frac{1}{k}\sum_{j=1}^{k} z(j)-x_0
+\right)^2
+\right].
+\]
+
+Poiché
+\[
+z(j)-x_0 = w(j),
+\]
+si ottiene
+\[
+\operatorname{Var}\!\bigl[\hat x^{LS}\bigr]
+=
+E\!\left[
+\left(
+\frac{1}{k}\sum_{j=1}^{k} w(j)
+\right)^2
+\right].
+\]
+
+Dato che i \(w(j)\) sono indipendenti e con varianza \(\sigma^2\),
+\[
+\operatorname{Var}\!\bigl[\hat x^{LS}\bigr]
+=
+\frac{1}{k^2}\,k\,\sigma^2
+=
+\frac{\sigma^2}{k}.
+\]
+
+\paragraph{Consistenza}
+
+Per
+\[
+k\to\infty,
+\]
+si ha
+\[
+\operatorname{Var}\!\bigl[\hat x^{LS}\bigr]\to 0.
+\]
+
+Per questo lo stimatore si dice \textbf{consistente}.
+
+Uno stimatore è consistente se, per \(k\to\infty\), l'errore di stima tende a zero in qualche senso statistico.
+
+In media quadratica:
+\[
+\lim_{k\to\infty} E\!\left[\tilde x^{\,2}(z)\right]=0.
+\]
+
+\paragraph{Altra proprietà: efficienza}
+
+Esiste un limite inferiore all'MSE legato alla verosimiglianza:
+
+\[
+\text{(CRLB)} \qquad \text{Cram\'er--Rao Lower Bound}.
+\]
+
+
+\subsubsection*{Caso scalare non bayesiano: CRLB}
+
+Nel caso scalare non bayesiano, per uno stimatore \(\hat x(z)\) non polarizzato, vale la disuguaglianza
+\[
+E\!\left[(\hat x(z)-x_0)^2\right]\geq J^{-1},
+\]
+dove \(J\) è l'\emph{informazione di Fisher}.
+
+Più precisamente,
+\[
+J
+:=
+-\,E\!\left[
+\frac{\partial^2 \ln \Lambda_z(x)}{\partial x^2}
+\right]_{x=x_0}
+\]
+
+e, in forma equivalente,
+\[
+J
+=
+E\!\left[
+\left(
+\frac{\partial \ln \Lambda_z(x)}{\partial x}
+\right)^2
+\right]_{x=x_0}.
+\]
+
+Il \(\mathrm{CRLB}\) è quindi l'inverso dell'informazione di Fisher:
+\[
+\mathrm{CRLB}=J^{-1}.
+\]
+
+\subsubsection*{Nel caso bayesiano}
+
+La verosimiglianza
+\[
+\Lambda_z(x)
+\]
+viene sostituita da
+\[
+f_{z,\overline{\underline{x}}}(z,x),
+\]
+cioè dalla PDF congiunta.
+
+\subsubsection*{Efficienza}
+
+Se la disuguaglianza vale per un particolare stimatore con "=", cioè se
+\[
+\mathrm{MSE}\ \text{dello stimatore}=\mathrm{CRLB},
+\]
+allora lo stimatore è detto \textbf{efficiente}.
+
+Uno stimatore efficiente ``estrae'' o ``sfrutta'' tutta l'informazione disponibile.
+
+\subsubsection*{Legame tra consistenza ed efficienza}
+
+Ci si può chiedere come siano legate consistenza ed efficienza.
+
+Una condizione necessaria per la consistenza in media quadratica è l'aumento dell'informazione (di Fisher) all'aumentare del numero di misure.
+
+In particolare, se
+\[
+\text{Informazione} \to \infty
+\qquad \text{per } k\to\infty,
+\]
+allora
+\[
+\mathrm{CRLB}\to 0
+\qquad \text{per } k\to\infty.
+\]
+(Questo dipende solo dal problema)
+
+Di conseguenza, l'MSE di uno stimatore \emph{può} essere nullo per \(k\to\infty\).
+(Questo dipende anche dallo stimatore)
+
+\subsubsection*{Caso matriciale}
+
+\paragraph{FIM}
+\[
+\mathrm{FIM} \;=\; \text{Fisher Information Matrix}.
+\]
+
+\paragraph{Esempio: stima con misure multiple}
+
+Si considerino \(k\) misure
+\[
+z(j)=x+w(j),
+\qquad j=1,\dots,K,
+\]
+con rumore gaussiano i.i.d.
+
+La verosimiglianza si può scrivere come
+\[
+\Lambda_z(x)
+=
+C\,
+\exp\!\left(
+-\frac{1}{2\sigma^2}\sum_{j=1}^{k}\bigl(z(j)-x\bigr)^2
+\right),
+\]
+Che non dipende dallo stimatore (non definito ancora) e dove \(C\) è una costante.
+
+Prendendo il logaritmo:
+\[
+\ln \Lambda_z(x)
+=
+\ln C
+-
+\frac{1}{2\sigma^2}\sum_{j=1}^{K}\bigl(z(j)-x\bigr)^2 .
+\]
+
+Derivando rispetto a \(x\), si ottiene
+\[
+\frac{d}{dx}\ln \Lambda_z(x)
+=
+\frac{1}{\sigma^2}\sum_{j=1}^{k}\bigl(z(j)-x\bigr).
+\]
+
+Derivando una seconda volta:
+\[
+\frac{d^2}{dx^2}\ln \Lambda_z(x)
+=
+-\frac{k}{\sigma^2}.
+\]
+
+Quindi l'informazione di Fisher vale
+\[
+J
+=
+-\;E\!\left[
+\frac{d^2}{dx^2}\ln \Lambda_z(x)
+\right]
+=
+\frac{K}{\sigma^2}.
+\]
+(Media e valutato per $x = x_0$)
+
+Di conseguenza, il \emph{Cram\'er--Rao Lower Bound} è
+\[
+\mathrm{CRLB}
+=
+J^{-1}
+=
+\frac{\sigma^2}{K}.
+\]
+
+Perciò
+\[
+\mathrm{MSE}\bigl[\hat x(z)\bigr]\geq \frac{\sigma^2}{K}
+\]
+per qualunque stimatore non polarizzato.
+
+\vspace{0.5em}
+
+Consideriamo ora lo stimatore ML, che in questo caso coincide con LS:
+\[
+\hat x^{ML}(z)\equiv \hat x^{LS}(z).
+\]
+
+Dalle note precedenti,
+\[
+\mathrm{MSE}\bigl[\hat x^{ML}(z)\bigr]
+=
+\frac{\sigma^2}{K}.
+\]
+
+Poiché lo stimatore raggiunge il bound,
+\[
+\mathrm{MSE}\bigl[\hat x^{ML}(z)\bigr]=\mathrm{CRLB},
+\]
+segue che lo stimatore è \textbf{efficiente}.
+
 %AGGIUNGERE LEZIONE DEL 20/04 E DEL 23/04
 \end{document}
