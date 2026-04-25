@@ -5160,6 +5160,20 @@ Abbiamo visto anche:
 \mathrm{FIM}.
 \]
 
+\begin{spiegazione}{Quadro generale degli stimatori}
+Il recap mette ordine tra due modi diversi di impostare la stima. Nel caso non bayesiano, il parametro $x$ e' considerato fisso ma ignoto: si stimano i valori compatibili con i dati usando criteri come ML e LS. Nel caso bayesiano, invece, $x$ e' una variabile aleatoria: si parte da una prior e, dopo avere osservato i dati, si usa la posterior.
+
+Gli stimatori MAP e MMSE nascono entrambi dalla posterior ma rispondono a domande diverse. MAP cerca il valore piu' probabile:
+\[
+\hat x^{MAP}=\operatorname*{arg\,max}_x f_{X\mid Z}(x\mid z),
+\]
+mentre MMSE cerca il valore che minimizza l'errore quadratico medio:
+\[
+\hat x^{MMSE}=E[x\mid z].
+\]
+Gli indici di bonta' servono poi a valutare lo stimatore ottenuto: bias, varianza, MSE, consistenza, efficienza e confronto con il CRLB.
+\end{spiegazione}
+
 \subsection*{Approfondimento del caso gaussiano}
 
 Si assume che \(x\) e \(z\) siano variabili aleatorie congiuntamente gaussiane.
@@ -5203,6 +5217,26 @@ Si considera quindi la densità marginale
 f_{\overline{\underline{x}}}(x).
 \]
 
+\begin{spiegazione}{Perche' il caso gaussiano e' speciale}
+Assumere che $x$ e $z$ siano congiuntamente gaussiane rende il problema molto piu' semplice. Tutta l'informazione probabilistica rilevante e' contenuta nella media e nella covarianza:
+\[
+\bar y,
+\qquad
+\Sigma_y.
+\]
+La matrice a blocchi
+\[
+\Sigma_y=
+\begin{bmatrix}
+\Sigma_x & \Sigma_{xz}\\
+\Sigma_{zx} & \Sigma_z
+\end{bmatrix}
+\]
+separa le incertezze di $x$ e $z$ e il modo in cui sono correlate.
+
+Il blocco $\Sigma_x$ descrive l'incertezza a priori su $x$, $\Sigma_z$ descrive la variabilita' delle osservazioni, mentre $\Sigma_{xz}$ misura quanto le osservazioni sono informative su $x$. Se $\Sigma_{xz}=0$, osservare $z$ non aiuta a stimare $x$ in senso lineare.
+\end{spiegazione}
+
 \subsubsection*{Stima MMSE (EAP)}
 
 \[
@@ -5218,6 +5252,22 @@ E[x\mid z]
 +
 \Sigma_{xz}\,\Sigma_z^{-1}\,(z-\bar z).
 \]
+
+\begin{spiegazione}{Formula della media condizionata gaussiana}
+Nel caso congiuntamente gaussiano, la media a posteriori e' un aggiornamento della media a priori:
+\[
+E[x\mid z]
+=
+\bar x+\Sigma_{xz}\Sigma_z^{-1}(z-\bar z).
+\]
+Il termine $z-\bar z$ e' l'innovazione: misura quanto l'osservazione effettiva si discosta dal suo valore medio previsto.
+
+Il guadagno
+\[
+\Sigma_{xz}\Sigma_z^{-1}
+\]
+traduce questa innovazione nello spazio del parametro $x$. Se $z$ e' molto variabile o poco correlato con $x$, il guadagno e' piccolo e la stima resta vicina a $\bar x$. Se invece $z$ e' molto correlato con $x$, l'osservazione modifica in modo significativo la stima.
+\end{spiegazione}
 
 \paragraph{Matrice di covarianza}
 
@@ -5242,6 +5292,18 @@ Da qui seguono due proprietà importanti:
 
 Queste sono proprietà che discendono dall'ipotesi di gaussianità.
 
+\begin{spiegazione}{Covarianza condizionata e riduzione dell'incertezza}
+La matrice
+\[
+\Sigma_{xx\mid z}
+=
+\Sigma_x-\Sigma_{xz}\Sigma_z^{-1}\Sigma_{zx}
+\]
+descrive l'incertezza residua su $x$ dopo avere osservato $z$. Parte da $\Sigma_x$, cioe' dall'incertezza prima della misura, e sottrae il contributo informativo portato dall'osservazione.
+
+Il termine sottratto e' tanto piu' grande quanto piu' $x$ e $z$ sono correlati. Se le osservazioni sono molto informative, la covarianza a posteriori diminuisce molto. Nel caso gaussiano questa covarianza non dipende dal valore specifico osservato, ma solo dalla struttura statistica del problema.
+\end{spiegazione}
+
 \paragraph{Negli altri casi}
 
 In generale, negli altri casi:
@@ -5250,6 +5312,20 @@ In generale, negli altri casi:
 \end{itemize}
  Conviene ricercare uno stimatore più "semplice", ad esempio un'espressione lineare delle osservazioni.
 Quindi si cerca uno stimatore "semplice" minimizzando l'MSE $\rightarrow MMSE$ lineare.
+
+\begin{spiegazione}{Perche' cercare uno stimatore lineare}
+Fuori dal caso gaussiano, la posterior puo' avere una forma complicata: puo' essere asimmetrica, multimodale o difficile da integrare. Calcolare
+\[
+E[x\mid z]
+\]
+puo' quindi diventare oneroso o non avere una formula chiusa.
+
+Una scelta pratica e' limitare la ricerca agli stimatori lineari o affini:
+\[
+\hat x=Az+b.
+\]
+Non si sta piu' cercando lo stimatore migliore in assoluto, ma il migliore dentro una classe semplice. Il risultato e' il miglior stimatore lineare in senso MSE, spesso chiamato BLUE quando si impone anche la non polarizzazione.
+\end{spiegazione}
 
 \subsubsection*{Condizioni per lo stimatore lineare ottimo}
 
@@ -5264,6 +5340,17 @@ Si impongono le seguenti condizioni:
 \]
  
  
+\begin{spiegazione}{Principio di ortogonalita'}
+Il principio di ortogonalita' dice che, per uno stimatore ottimo in senso quadratico, l'errore residuo non deve contenere informazione lineare ancora estraibile dalle osservazioni. Se l'errore fosse correlato con $z$, allora si potrebbe usare quella correlazione per correggere ulteriormente la stima.
+
+Le due condizioni hanno ruoli distinti: la non polarizzazione impone che lo stimatore sia centrato correttamente, mentre l'incorrelazione tra errore e osservazioni impone che non resti una componente lineare sfruttabile. In forma compatta:
+\[
+E[\tilde x]=0,
+\qquad
+E[\tilde x z^T]=0.
+\]
+\end{spiegazione}
+
 Consideriamo \(x\) e \(z\) senza particolari assunzioni. 
 
 Si cerca uno stimatore della forma affine (che in realtà chiameremo lineare)
@@ -5303,6 +5390,27 @@ Az+\bar x-A\bar z
 =
 \bar x + A(z-\bar z).
 \]
+
+\begin{spiegazione}{Perche' compare la forma centrata}
+Partendo da uno stimatore affine
+\[
+\hat x=Az+b,
+\]
+la non polarizzazione impone che la media della stima coincida con la media di $x$:
+\[
+E[\hat x]=A\bar z+b=\bar x.
+\]
+Da qui si ricava
+\[
+b=\bar x-A\bar z.
+\]
+
+Sostituendo $b$, lo stimatore diventa
+\[
+\hat x=\bar x+A(z-\bar z).
+\]
+Questa forma e' molto utile: la stima parte dal valore medio a priori $\bar x$ e aggiunge un aggiornamento proporzionale all'innovazione $z-\bar z$.
+\end{spiegazione}
 
 Errore di stima:
 \[
@@ -5353,6 +5461,38 @@ Da cui si ricava
 A=\Sigma_{xz}\Sigma_z^{-1}.
 \]
 (Che verifica la seconda condizione)
+
+\begin{spiegazione}{Derivazione del guadagno lineare ottimo}
+Dopo avere imposto la non polarizzazione, resta da scegliere la matrice $A$. L'errore e'
+\[
+\tilde x=x-\bar x-A(z-\bar z).
+\]
+La condizione di ortogonalita' richiede
+\[
+E[\tilde x(z-\bar z)^T]=0.
+\]
+Sostituendo l'errore:
+\[
+E[(x-\bar x)(z-\bar z)^T]
+-
+A\,E[(z-\bar z)(z-\bar z)^T]=0.
+\]
+I due valori attesi sono proprio
+\[
+\Sigma_{xz}
+\qquad\text{e}\qquad
+\Sigma_z.
+\]
+Quindi
+\[
+\Sigma_{xz}-A\Sigma_z=0,
+\]
+da cui
+\[
+A=\Sigma_{xz}\Sigma_z^{-1}.
+\]
+\end{spiegazione}
+
 \[
 \hat x
 =
@@ -5374,6 +5514,24 @@ E[\tilde x\,\tilde x^T]
 
 Quindi si ottiene il miglior stimatore lineare cercato tra sole funzioni lineari.
 
+\begin{spiegazione}{BLUE e covarianza dell'errore}
+Inserendo il guadagno ottimo nella forma centrata si ottiene
+\[
+\hat x
+=
+\bar x+\Sigma_{xz}\Sigma_z^{-1}(z-\bar z).
+\]
+Questo e' il miglior stimatore lineare non polarizzato, cioe' BLUE. E' anche il MMSE lineare: tra tutti gli stimatori lineari, minimizza la covarianza dell'errore.
+
+La covarianza residua e'
+\[
+E[\tilde x\tilde x^T]
+=
+\Sigma_x-\Sigma_{xz}\Sigma_z^{-1}\Sigma_{zx}.
+\]
+Il secondo termine rappresenta la parte di incertezza eliminata grazie alle osservazioni. Se l'osservazione e' informativa, questa sottrazione e' grande; se e' poco informativa, la covarianza rimane vicina a $\Sigma_x$.
+\end{spiegazione}
+
 
 
 \subsubsection*{Approfondiamo il caso di \(h(\cdot,\cdot)\) lineare}
@@ -5388,6 +5546,20 @@ Quindi si ottiene il miglior stimatore lineare cercato tra sole funzioni lineari
 \]
 
 Stimatore BLUE, ci mancano $\bar y, \Sigma_{xy}, \Sigma_y$ (verifica che sia Y o y)
+
+\begin{spiegazione}{Modello lineare di misura}
+Il modello
+\[
+Y=Cx+V
+\]
+dice che l'osservazione $Y$ e' una trasformazione lineare del parametro $x$, piu' un rumore additivo $V$. La matrice $C$ descrive come il parametro entra nelle misure.
+
+Per usare la formula del BLUE servono tre quantita':
+\[
+\bar y,\qquad \Sigma_{xy},\qquad \Sigma_y.
+\]
+La media $\bar y$ dice quale osservazione ci si aspetta prima di misurare; la covarianza incrociata $\Sigma_{xy}$ dice quanto $x$ e $Y$ sono collegati; la covarianza $\Sigma_y$ misura l'incertezza complessiva delle osservazioni.
+\end{spiegazione}
 
 \paragraph{Media di \(y\)}
 \[
@@ -5443,6 +5615,27 @@ Ancora, usando l'incorrelazione tra \(x\) e \(V\),
 C\Sigma_x C^T+\Sigma_V.
 \]
 
+\begin{spiegazione}{Media e covarianze nel modello lineare}
+Nel modello lineare, la media delle osservazioni si ottiene propagando la media di $x$:
+\[
+\bar y=C\bar x.
+\]
+La parte aleatoria centrata e'
+\[
+\tilde Y=C\tilde x+V.
+\]
+
+La covarianza incrociata diventa
+\[
+\Sigma_{xy}=E[\tilde x\tilde Y^T]=\Sigma_x C^T,
+\]
+perche' il termine con $V$ sparisce grazie all'incorrelazione tra $x$ e rumore. La covarianza delle osservazioni e'
+\[
+\Sigma_y=C\Sigma_xC^T+\Sigma_V.
+\]
+Il primo termine e' l'incertezza su $Y$ dovuta all'incertezza su $x$, il secondo e' l'incertezza dovuta al rumore di misura.
+\end{spiegazione}
+
 \[
 \hat x^{\mathrm{BLUE}}(y)
 =
@@ -5458,6 +5651,26 @@ Sostituendo le espressioni ricavate in precedenza,
 \[
 [I + \Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}C]\bar x + \Sigma_x C^T\bigl(C\Sigma_x C^T+\Sigma_V\bigr)^{-1}y
 \]
+
+\begin{spiegazione}{BLUE nel modello lineare}
+Sostituendo le covarianze del modello $Y=Cx+V$ nella formula generale, si ottiene
+\[
+\hat x^{BLUE}(y)
+=
+\bar x+\Sigma_x C^T(C\Sigma_xC^T+\Sigma_V)^{-1}(y-C\bar x).
+\]
+Anche qui la stima ha la forma ``prior piu' aggiornamento''.
+
+Il residuo
+\[
+y-C\bar x
+\]
+e' l'innovazione della misura rispetto a cio' che ci si aspettava dalla prior. La matrice
+\[
+\Sigma_x C^T(C\Sigma_xC^T+\Sigma_V)^{-1}
+\]
+e' il guadagno: decide quanto fidarsi dell'innovazione. Se il rumore $\Sigma_V$ e' grande, il guadagno diminuisce; se la prior e' molto incerta, il guadagno tende a dare piu' peso alla misura.
+\end{spiegazione}
 
 \subsubsection*{Lemma di inversione di matrice}
 
@@ -5522,6 +5735,19 @@ Pertanto, mettendo tutto insieme e poi raccogliendo i due contributi, si ottiene
 \bigl(\Sigma_x^{-1}\bar x+C^T\Sigma_V^{-1}y\bigr)
 \]
 
+\begin{spiegazione}{Forma in informazione dello stimatore BLUE}
+Il lemma di inversione permette di riscrivere lo stimatore in una forma molto interpretabile:
+\[
+\hat x^{BLUE}
+=
+(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C)^{-1}
+(\Sigma_x^{-1}\bar x+C^T\Sigma_V^{-1}y).
+\]
+Qui compaiono le inverse delle covarianze, cioe' le informazioni.
+
+Il termine $\Sigma_x^{-1}$ rappresenta l'informazione a priori, mentre $C^T\Sigma_V^{-1}C$ rappresenta l'informazione portata dalle osservazioni. Anche il vettore a destra e' una somma di contributi: $\Sigma_x^{-1}\bar x$ e' il contributo della prior, $C^T\Sigma_V^{-1}y$ e' il contributo dei dati. La stima e' quindi una media pesata in termini di informazione.
+\end{spiegazione}
+
 \[
 \hat\Sigma_X^{\mathrm{BLUE}}
 =
@@ -5555,6 +5781,23 @@ Di conseguenza,
 \Sigma_x^{-1}+C^T\Sigma_V^{-1}C.
 \]
 
+\begin{spiegazione}{Covarianza BLUE e somma delle informazioni}
+La covarianza finale dello stimatore e'
+\[
+\hat\Sigma_x^{BLUE}
+=
+(\Sigma_x^{-1}+C^T\Sigma_V^{-1}C)^{-1}.
+\]
+Prendendo l'inversa si vede meglio il significato:
+\[
+(\hat\Sigma_x^{BLUE})^{-1}
+=
+\Sigma_x^{-1}+C^T\Sigma_V^{-1}C.
+\]
+
+Quindi l'informazione a posteriori e' la somma dell'informazione a priori e dell'informazione portata dalle misure. Questa e' una delle forme piu' importanti della stima gaussiana lineare: ogni osservazione riduce l'incertezza solo nella misura in cui porta informazione rispetto al rumore.
+\end{spiegazione}
+
 \subsection*{Osservazioni non informative}
 
 Se le osservazioni sono non informative, allora
@@ -5572,6 +5815,24 @@ e
 \]
 
 Quindi, se il rumore è molto elevato e le osservazioni portano poca informazione, lo stimatore tende semplicemente al valore medio \(\bar x\), e la covarianza a posteriori tende a quella a priori.
+
+\begin{spiegazione}{Caso di osservazioni poco informative}
+Dire che
+\[
+\Sigma_V^{-1}\approx 0
+\]
+significa che il rumore di misura ha varianza molto grande, quindi la sua informazione e' quasi nulla. In questo limite il termine dei dati nella formula BLUE scompare.
+
+Lo stimatore tende a
+\[
+\hat x^{BLUE}\to \bar x,
+\]
+perche' non conviene fidarsi dell'osservazione. Anche la covarianza resta quella a priori:
+\[
+\hat\Sigma_x^{BLUE}\to \Sigma_x.
+\]
+In parole semplici: se le misure sono troppo rumorose, il modo migliore di stimare e' restare alla conoscenza precedente.
+\end{spiegazione}
 
 \subsubsection*{Assenza di informazione a priori}
 
@@ -5592,6 +5853,21 @@ e
 \to
 \bigl(C^T\Sigma_V^{-1}C\bigr)^{-1}.
 \]
+
+\begin{spiegazione}{Caso senza informazione a priori}
+La condizione
+\[
+\Sigma_x^{-1}\approx 0
+\]
+significa che la prior e' molto incerta, quindi porta pochissima informazione. In questo caso la stima e la covarianza dipendono quasi solo dai dati:
+\[
+\hat x^{BLUE}
+\to
+(C^T\Sigma_V^{-1}C)^{-1}C^T\Sigma_V^{-1}y.
+\]
+
+Questa e' la stessa struttura dei minimi quadrati pesati. L'inversa della covarianza del rumore, $\Sigma_V^{-1}$, pesa le misure: misure piu' precise hanno peso maggiore, misure piu' rumorose hanno peso minore.
+\end{spiegazione}
 
 \subsubsection*{Legame con i minimi quadrati pesati}
 
@@ -5620,6 +5896,27 @@ La soluzione è
 \]
 
 Questa è la pseudoinversa pesata con \(W\).
+
+\begin{spiegazione}{Minimi quadrati pesati}
+Nei minimi quadrati ordinari si minimizza la norma dei residui:
+\[
+(y-Cx)^T(y-Cx).
+\]
+Nei minimi quadrati pesati si introduce
+\[
+W=\Sigma_V^{-1},
+\]
+e si minimizza
+\[
+(y-Cx)^TW(y-Cx).
+\]
+
+Questo significa che gli errori non vengono tutti trattati allo stesso modo: un residuo associato a una misura precisa pesa di piu', mentre un residuo associato a una misura rumorosa pesa di meno. La soluzione
+\[
+\hat x^{LS}=(C^TWC)^{-1}C^TWy
+\]
+coincide con il limite del BLUE quando non si ha informazione a priori e resta solo l'informazione contenuta nelle osservazioni.
+\end{spiegazione}
 
 \subsection*{Caso non lineare}
 
@@ -5659,5 +5956,15 @@ Per affrontare il problema si possono seguire diversi approcci:
     \item usare la \emph{Unscented Transform};
     \item usare metodi Monte Carlo.
 \end{enumerate}
+
+\begin{spiegazione}{Cosa cambia nel caso non lineare}
+Nel modello non lineare
+\[
+Y=h(x,V)
+\]
+la media e le covarianze di $Y$ non si ottengono piu' semplicemente propagando $x$ con una matrice $C$. Anche se $x$ e $V$ sono gaussiani, l'uscita $Y$ puo' non essere gaussiana dopo la trasformazione non lineare.
+
+Per questo diventano utili tre strategie. La linearizzazione approssima $h$ localmente con una funzione lineare e permette di riusare formule simili al BLUE. L'Unscented Transform propaga un insieme scelto di punti rappresentativi della distribuzione. I metodi Monte Carlo generano molti campioni casuali e stimano media e covarianza empiricamente. Tutte e tre sono tecniche per ottenere approssimazioni pratiche quando la formula chiusa non e' disponibile.
+\end{spiegazione}
 
 \end{document}

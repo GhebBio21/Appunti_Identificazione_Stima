@@ -101,3 +101,11 @@
 \contentsline {paragraph}{Altra proprietà: efficienza}{67}{section*.68}%
 \contentsline {paragraph}{FIM}{69}{section*.74}%
 \contentsline {paragraph}{Esempio: stima con misure multiple}{69}{section*.75}%
+\contentsline {paragraph}{Matrice di covarianza}{73}{section*.79}%
+\contentsline {paragraph}{Negli altri casi}{73}{section*.80}%
+\contentsline {paragraph}{Errore di stima}{74}{section*.82}%
+\contentsline {paragraph}{Prima condizione: non polarizzazione}{74}{section*.83}%
+\contentsline {paragraph}{Seconda condizione: Errore di stima incorrelato con le osservazioni}{75}{section*.84}%
+\contentsline {paragraph}{Media di \(y\)}{76}{section*.86}%
+\contentsline {paragraph}{Covarianza incrociata}{76}{section*.87}%
+\contentsline {paragraph}{Covarianza di \(Y\)}{77}{section*.88}%
