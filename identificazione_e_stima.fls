@@ -2,7 +2,7 @@ PWD /Users/gab/Appunti_Identificazione_Stima
 INPUT /usr/local/texlive/2026/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT identificazione_e_stima.tex
+INPUT /Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex
 OUTPUT identificazione_e_stima.log
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/article.cls

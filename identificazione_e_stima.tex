@@ -1742,7 +1742,7 @@ C(z)y(t+k)=B(z)E(z)u(t)+\bigl(C(z)-A(z)E(z)\bigr)y(t+k)+ C(z)E(z)\xi(t+k)
 \]
 
 \[
-\text{dunque } \ \hat y(t+k)=\frac{\tilde F(z)}{C(z)}\,y(t)+\frac{B(z)E(z)}{C(z)}\,u(t)+E(z)\xi(t+k)
+\text{dunque } \ y(t+k)=\frac{\tilde F(z)}{C(z)}\,y(t)+\frac{B(z)E(z)}{C(z)}\,u(t)+E(z)\xi(t+k)
 \]
 
 \begin{itemize}
@@ -1804,7 +1804,7 @@ Formulare una famiglia andidata per i modelli (vari modelli nella stessa famigli
   \item Analisi critica dei risultati (validazione).
 \end{itemize}
 
-Denoteremo $\mathcal{M}=\{M(\theta)\mid \theta\in\Theta\}$ con $\theta$ vettore dei parametri (non $\theta$ minuscolo). Obiettivo: determinare $\theta$ dall'analisi dei dati (Misura di una o più variabili sul sistema S).
+Denoteremo $\mathcal{M}=\{M(\theta)\mid \theta\in\Theta\}$ con $\theta$ vettore dei parametri. Obiettivo: determinare $\theta$ dall'analisi dei dati (Misura di una o più variabili sul sistema S).
 
 \begin{spiegazione}{Che cosa significa scegliere una famiglia di modelli}
 Una famiglia di modelli e' un insieme di possibili descrizioni del sistema, tutte con la stessa struttura ma con parametri diversi:
@@ -2678,15 +2678,15 @@ Per $\gamma_k$:
 
 
 \[
--C(z)\gamma_k(t)+\xi(t-k)=0
+-C(z)\gamma_k(t)+\varepsilon(t-k)=0
 \]
 
 \[
-C(z)\gamma_k(t)=\xi(t-k)
+C(z)\gamma_k(t)=\varepsilon(t-k)
 \]
 
 \[
-C(z)\gamma(t)=\xi(t)
+C(z)\gamma(t)=\varepsilon(t)
 \]
 
 \[
@@ -2773,11 +2773,11 @@ Il metodo somiglia ai minimi quadrati, ma con regressori che cambiano a ogni ite
 
 Sia $\{\mathcal{M}(\theta)\mid \theta\in\Theta\}$ modello ottimo minimizzando
 \[
-J_N(\theta)=\tfrac{1}{N}\sum_t\varepsilon_\theta^2(t),\qquad \varepsilon_\theta(t)=y(t)-\hat y_\theta(t)\quad \text{(errore di predizione)}.
+J_N(\theta)=\tfrac{1}{N}\sum_t\varepsilon_\theta^2(t),\qquad \text{con} \quad \varepsilon_\theta(t)=y(t)-\hat y_\theta(t)\quad \text{(errore di predizione)}.
 \]
 Si arriva alla soluzione $\hat{\theta}_N$.\\
-Analisi asintotica per $N\to\infty$, $J_N(\theta,s)\to \bar J(\theta)$ (funzione deterministica). Sia $\Delta$ l'insieme dei punti di minimo di $\bar J$. (s è l'esperimento)\\
-$\hat{\theta}_N \rightarrow \bar{\theta}$ minimo della funzione deterministica $\bar{J}\theta)$.\\
+Analisi asintotica per $N\to\infty$, $J_N(\theta,s)\to \bar J(\theta)$ (s è l'esperimento)\\
+$\hat{\theta}_N \rightarrow \bar{\theta}$ minimo della funzione deterministica $\bar{J}(\theta)$.\\
 Il modello per cui andiamo a studiare la bontà, ovvero quanto bene rappresenta i dati, è il modello stimato asintoticamente $\mathcal{M(\bar{\theta)}}$. Se il minimo non è unico studiamo $\Delta$, insieme dei punti di minimo e $\{\mathcal{M(\theta)}|\theta\in\Delta\}$
 
 
@@ -2885,15 +2885,104 @@ se abbiamo più minimi globali convergiamo a $\theta^0$ o ad un $\bar\theta$ t.c
 \end{example}
 
 \begin{spiegazione}{Quando il sistema vero appartiene alla famiglia}
-Se il sistema vero $S$ appartiene alla famiglia di modelli scelta, allora esiste un parametro $\theta^0$ che lo descrive. In quel caso il predittore costruito con $\theta^0$ lascia come errore solo il rumore bianco generatore.
-
-La scomposizione
+Supponiamo che il sistema vero $S$ appartenga alla famiglia di modelli considerata. Questo significa che esiste almeno un parametro $\theta^0 \in \Theta$ tale che
 \[
-\varepsilon_\theta(t)=
-\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)
-+\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr)
+\mathcal M(\theta^0)=S.
 \]
-separa l'innovazione vera dalla differenza tra il predittore corretto e quello parametrizzato da $\theta$. Il termine incrociato ha media nulla perche' l'innovazione e' incorrelata con l'informazione passata. Di conseguenza $\theta^0$ minimizza il costo medio $\bar J(\theta)$.
+In altre parole, per una scelta opportuna dei parametri, il modello coincide esattamente con il sistema che ha generato i dati.
+
+Il sistema vero può essere scritto nella forma
+\[
+A^0(z)y(t)=B^0(z)u(t-1)+C^0(z)\eta(t),
+\]
+dove $\eta(t)$ è il rumore bianco generatore del processo. Se si costruisce l'errore di predizione usando proprio i polinomi veri $A^0(z)$, $B^0(z)$ e $C^0(z)$, si ottiene
+\[
+\varepsilon_{\theta^0}(t)
+=
+\frac{A^0(z)}{C^0(z)}y(t)
+-
+\frac{B^0(z)}{C^0(z)}u(t-1)
+=
+\eta(t).
+\]
+Quindi, usando il modello corretto, l'errore di predizione coincide con l'innovazione del processo: la parte nuova di $y(t)$ che non può essere prevista a partire dal passato.
+
+Per un generico parametro $\theta$, l'errore di predizione può essere scomposto aggiungendo e sottraendo la predizione ottenuta con il parametro vero:
+\[
+\varepsilon_\theta(t)
+=
+y(t)-\hat y_\theta(t)
+=
+\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)
++
+\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr).
+\]
+Il primo termine,
+\[
+y(t)-\hat y_{\theta^0}(t),
+\]
+è l'innovazione vera. Il secondo termine,
+\[
+\hat y_{\theta^0}(t)-\hat y_\theta(t),
+\]
+misura invece quanto il predittore associato a $\theta$ differisce dal predittore corretto.
+
+Passando al costo medio asintotico,
+\[
+\bar J(\theta)=E[\varepsilon_\theta^2(t)],
+\]
+si ottiene
+\[
+\bar J(\theta)
+=
+E\left[
+\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)^2
+\right]
++
+E\left[
+\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr)^2
+\right]
++
+2E\left[
+\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)
+\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr)
+\right].
+\]
+Il termine incrociato è nullo perché l'innovazione al tempo $t$ è incorrelata con qualunque quantità costruita usando l'informazione disponibile fino a $t-1$. Entrambi i predittori, infatti, dipendono solo dai dati passati.
+
+Rimane quindi
+\[
+\bar J(\theta)
+=
+J(\theta^0)
++
+E\left[
+\bigl(\hat y_{\theta^0}(t)-\hat y_\theta(t)\bigr)^2
+\right],
+\]
+dove
+\[
+J(\theta^0)
+=
+E\left[
+\bigl(y(t)-\hat y_{\theta^0}(t)\bigr)^2
+\right].
+\]
+Poiché il secondo termine è sempre non negativo, segue che
+\[
+\bar J(\theta)\geq J(\theta^0).
+\]
+Dunque $\theta^0$ è un punto di minimo della funzione costo asintotica.
+
+Se tale minimo è unico, allora la stima asintotica converge al parametro vero:
+\[
+\hat \theta_N \to \theta^0.
+\]
+Se invece esistono più minimi globali, la stima può convergere a un parametro diverso $\bar\theta$, purché produca lo stesso valore minimo del costo:
+\[
+\bar J(\bar\theta)=J(\theta^0).
+\]
+In questo caso il modello stimato è equivalente al sistema vero dal punto di vista della predizione, ma il parametro non è identificabile in modo univoco.
 \end{spiegazione}
 
 \begin{example}

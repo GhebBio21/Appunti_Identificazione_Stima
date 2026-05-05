@@ -56,56 +56,56 @@
 \contentsline {paragraph}{Determinazione di $\varepsilon (t)$ e $\psi (t)$ dai dati}{38}{section*.23}%
 \contentsline {paragraph}{Schema iterativo.}{40}{section*.24}%
 \contentsline {section}{\numberline {13}Analisi asintotica e scenari di identificazione}{40}{section.13}%
-\contentsline {paragraph}{Piccolo Recap}{43}{section*.25}%
-\contentsline {paragraph}{Scenari.}{43}{section*.26}%
-\contentsline {section}{\numberline {14}Incertezza di stima}{44}{section.14}%
-\contentsline {paragraph}{Quantità campionarie.}{45}{section*.27}%
-\contentsline {paragraph}{Minimi quadrati}{45}{section*.28}%
-\contentsline {section}{\numberline {15}Selezione della complessità del modello}{46}{section.15}%
-\contentsline {subsection}{\numberline {15.1}Processo di Cross-validazione}{46}{subsection.15.1}%
-\contentsline {subsection}{\numberline {15.2}Final Prediction Error (FPE)}{46}{subsection.15.2}%
-\contentsline {subsection}{\numberline {15.3}Criterio AIC (Akaike Information Criterion)}{47}{subsection.15.3}%
-\contentsline {subsection}{\numberline {15.4}Criterio MDL (Minimum Description Length)}{47}{subsection.15.4}%
-\contentsline {section}{\numberline {16}Scelta della famiglia via dati}{48}{section.16}%
-\contentsline {paragraph}{Covarianza parziale:}{49}{section*.29}%
-\contentsline {paragraph}{AR, MA, ARMA?}{49}{section*.30}%
-\contentsline {section}{\numberline {17}Stima:}{50}{section.17}%
-\contentsline {paragraph}{Parametri:}{50}{section*.31}%
-\contentsline {subsection}{\numberline {17.1}Stima statica:}{50}{subsection.17.1}%
-\contentsline {paragraph}{Approccio non Bayesiano (alla Fisher)}{50}{section*.32}%
-\contentsline {paragraph}{Approccio Bayesiano}{50}{section*.33}%
-\contentsline {subsection}{\numberline {17.2}Approccio Bayesiano:}{50}{subsection.17.2}%
-\contentsline {subsection}{\numberline {17.3}Approccio Non Bayesiano:}{51}{subsection.17.3}%
-\contentsline {paragraph}{Esercizio}{52}{section*.34}%
-\contentsline {paragraph}{PDF a Priori non disponibile (caso non Bayesiano)}{52}{section*.35}%
-\contentsline {paragraph}{PDF a Priori disponibile}{53}{section*.36}%
-\contentsline {paragraph}{MAP Gaussiano:}{54}{section*.38}%
-\contentsline {paragraph}{Piccolo Recap:}{55}{section*.39}%
-\contentsline {subsection}{\numberline {17.4}Approccio Non Bayesiano con i minimi quadrati}{55}{subsection.17.4}%
-\contentsline {paragraph}{Per continuare l'esempio}{57}{section*.42}%
-\contentsline {paragraph}{MMSE (\emph {Minimum Mean Square Error})}{58}{section*.44}%
-\contentsline {paragraph}{Caso scalare}{59}{section*.45}%
-\contentsline {paragraph}{MAP nel caso Gaussiano}{60}{section*.47}%
-\contentsline {paragraph}{MMSE nel caso Gaussiano}{60}{section*.48}%
-\contentsline {paragraph}{Stimatori non polarizzati}{60}{section*.50}%
-\contentsline {paragraph}{Stimatore asintoticamente non polarizzato}{60}{section*.51}%
-\contentsline {paragraph}{Modello della singola misura}{61}{section*.53}%
-\contentsline {paragraph}{Varianza e MSE dello stimatore}{62}{section*.56}%
-\contentsline {paragraph}{Proprietà di regolarizzazione del valore atteso}{63}{section*.59}%
-\contentsline {paragraph}{Varianza dello stimatore ML}{64}{section*.61}%
-\contentsline {paragraph}{Varianza dello stimatore MAP}{64}{section*.62}%
-\contentsline {paragraph}{Confronto tra ML e MAP}{65}{section*.63}%
-\contentsline {paragraph}{Non polarizzazione}{66}{section*.65}%
-\contentsline {paragraph}{Varianza dello stimatore}{66}{section*.66}%
-\contentsline {paragraph}{Consistenza}{67}{section*.67}%
-\contentsline {paragraph}{Altra proprietà: efficienza}{67}{section*.68}%
-\contentsline {paragraph}{FIM}{69}{section*.74}%
-\contentsline {paragraph}{Esempio: stima con misure multiple}{69}{section*.75}%
-\contentsline {paragraph}{Matrice di covarianza}{73}{section*.79}%
-\contentsline {paragraph}{Negli altri casi}{73}{section*.80}%
-\contentsline {paragraph}{Errore di stima}{74}{section*.82}%
-\contentsline {paragraph}{Prima condizione: non polarizzazione}{74}{section*.83}%
-\contentsline {paragraph}{Seconda condizione: Errore di stima incorrelato con le osservazioni}{75}{section*.84}%
-\contentsline {paragraph}{Media di \(y\)}{76}{section*.86}%
-\contentsline {paragraph}{Covarianza incrociata}{76}{section*.87}%
-\contentsline {paragraph}{Covarianza di \(Y\)}{77}{section*.88}%
+\contentsline {paragraph}{Piccolo Recap}{44}{section*.25}%
+\contentsline {paragraph}{Scenari.}{44}{section*.26}%
+\contentsline {section}{\numberline {14}Incertezza di stima}{45}{section.14}%
+\contentsline {paragraph}{Quantità campionarie.}{46}{section*.27}%
+\contentsline {paragraph}{Minimi quadrati}{46}{section*.28}%
+\contentsline {section}{\numberline {15}Selezione della complessità del modello}{47}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Processo di Cross-validazione}{47}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Final Prediction Error (FPE)}{48}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Criterio AIC (Akaike Information Criterion)}{48}{subsection.15.3}%
+\contentsline {subsection}{\numberline {15.4}Criterio MDL (Minimum Description Length)}{49}{subsection.15.4}%
+\contentsline {section}{\numberline {16}Scelta della famiglia via dati}{49}{section.16}%
+\contentsline {paragraph}{Covarianza parziale:}{50}{section*.29}%
+\contentsline {paragraph}{AR, MA, ARMA?}{50}{section*.30}%
+\contentsline {section}{\numberline {17}Stima:}{51}{section.17}%
+\contentsline {paragraph}{Parametri:}{51}{section*.31}%
+\contentsline {subsection}{\numberline {17.1}Stima statica:}{51}{subsection.17.1}%
+\contentsline {paragraph}{Approccio non Bayesiano (alla Fisher)}{51}{section*.32}%
+\contentsline {paragraph}{Approccio Bayesiano}{51}{section*.33}%
+\contentsline {subsection}{\numberline {17.2}Approccio Bayesiano:}{52}{subsection.17.2}%
+\contentsline {subsection}{\numberline {17.3}Approccio Non Bayesiano:}{52}{subsection.17.3}%
+\contentsline {paragraph}{Esercizio}{53}{section*.34}%
+\contentsline {paragraph}{PDF a Priori non disponibile (caso non Bayesiano)}{53}{section*.35}%
+\contentsline {paragraph}{PDF a Priori disponibile}{54}{section*.36}%
+\contentsline {paragraph}{MAP Gaussiano:}{55}{section*.38}%
+\contentsline {paragraph}{Piccolo Recap:}{56}{section*.39}%
+\contentsline {subsection}{\numberline {17.4}Approccio Non Bayesiano con i minimi quadrati}{56}{subsection.17.4}%
+\contentsline {paragraph}{Per continuare l'esempio}{58}{section*.42}%
+\contentsline {paragraph}{MMSE (\emph {Minimum Mean Square Error})}{59}{section*.44}%
+\contentsline {paragraph}{Caso scalare}{60}{section*.45}%
+\contentsline {paragraph}{MAP nel caso Gaussiano}{61}{section*.47}%
+\contentsline {paragraph}{MMSE nel caso Gaussiano}{61}{section*.48}%
+\contentsline {paragraph}{Stimatori non polarizzati}{61}{section*.50}%
+\contentsline {paragraph}{Stimatore asintoticamente non polarizzato}{61}{section*.51}%
+\contentsline {paragraph}{Modello della singola misura}{62}{section*.53}%
+\contentsline {paragraph}{Varianza e MSE dello stimatore}{63}{section*.56}%
+\contentsline {paragraph}{Proprietà di regolarizzazione del valore atteso}{64}{section*.59}%
+\contentsline {paragraph}{Varianza dello stimatore ML}{65}{section*.61}%
+\contentsline {paragraph}{Varianza dello stimatore MAP}{65}{section*.62}%
+\contentsline {paragraph}{Confronto tra ML e MAP}{66}{section*.63}%
+\contentsline {paragraph}{Non polarizzazione}{67}{section*.65}%
+\contentsline {paragraph}{Varianza dello stimatore}{67}{section*.66}%
+\contentsline {paragraph}{Consistenza}{68}{section*.67}%
+\contentsline {paragraph}{Altra proprietà: efficienza}{68}{section*.68}%
+\contentsline {paragraph}{FIM}{70}{section*.74}%
+\contentsline {paragraph}{Esempio: stima con misure multiple}{70}{section*.75}%
+\contentsline {paragraph}{Matrice di covarianza}{74}{section*.79}%
+\contentsline {paragraph}{Negli altri casi}{74}{section*.80}%
+\contentsline {paragraph}{Errore di stima}{75}{section*.82}%
+\contentsline {paragraph}{Prima condizione: non polarizzazione}{75}{section*.83}%
+\contentsline {paragraph}{Seconda condizione: Errore di stima incorrelato con le osservazioni}{76}{section*.84}%
+\contentsline {paragraph}{Media di \(y\)}{77}{section*.86}%
+\contentsline {paragraph}{Covarianza incrociata}{77}{section*.87}%
+\contentsline {paragraph}{Covarianza di \(Y\)}{78}{section*.88}%
