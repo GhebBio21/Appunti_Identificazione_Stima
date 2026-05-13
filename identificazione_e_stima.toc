@@ -12,7 +12,7 @@
 \contentsline {subsection}{\numberline {3.1}Processo MA (Moving Average (Media Mobile)}{7}{subsection.3.1}%
 \contentsline {paragraph}{In funzione di $z^{-1}$:}{8}{section*.5}%
 \contentsline {paragraph}{MA($\infty $):}{8}{section*.6}%
-\contentsline {subsection}{\numberline {3.2}Processo AR (Auto Regressivo), AR($n$) (di ordine n)}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Processo AR (Auto Regressivo), AR$(n)$ (di ordine n)}{9}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Processo ARMA$(n_a,n_c)$}{11}{subsection.3.3}%
 \contentsline {section}{\numberline {4}Caratterizzazione in frequenza}{11}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Densità spettrale (di potenza)}{11}{subsection.4.1}%
@@ -109,3 +109,28 @@
 \contentsline {paragraph}{Media di \(y\)}{77}{section*.86}%
 \contentsline {paragraph}{Covarianza incrociata}{77}{section*.87}%
 \contentsline {paragraph}{Covarianza di \(Y\)}{78}{section*.88}%
+\contentsline {paragraph}{Facciamo un piccolo recap sulla stima statica:}{82}{section*.94}%
+\contentsline {paragraph}{Caso gaussiano}{82}{section*.95}%
+\contentsline {paragraph}{MMSE lineare: BLUE}{82}{section*.96}%
+\contentsline {paragraph}{Caso con stato e rumore}{84}{section*.100}%
+\contentsline {paragraph}{Fattorizzazione di \(\Sigma _X\)}{86}{section*.106}%
+\contentsline {paragraph}{Condizione sulla covarianza campionaria pesata}{86}{section*.107}%
+\contentsline {paragraph}{Ruolo di \(\beta \)}{89}{section*.117}%
+\contentsline {paragraph}{Ruolo di \(\beta \)}{91}{section*.121}%
+\contentsline {paragraph}{Stima MMSE (EAP)}{92}{section*.125}%
+\contentsline {paragraph}{Covarianza dell'errore MMSE}{92}{section*.126}%
+\contentsline {paragraph}{Approssimazione Monte Carlo}{92}{section*.127}%
+\contentsline {paragraph}{Recap delle scorse lezioni (sempre stima statica}{94}{section*.131}%
+\contentsline {paragraph}{Modelli non lineari}{94}{section*.132}%
+\contentsline {paragraph}{Recap sull'integrazione Monte Carlo}{95}{section*.134}%
+\contentsline {paragraph}{Osservazioni}{95}{section*.135}%
+\contentsline {paragraph}{1. Generazione dei campioni}{99}{section*.144}%
+\contentsline {paragraph}{2. Calcolo dei pesi non normalizzati}{99}{section*.145}%
+\contentsline {paragraph}{3. Normalizzazione dei pesi}{99}{section*.146}%
+\contentsline {paragraph}{4. Calcolo della stima}{99}{section*.147}%
+\contentsline {paragraph}{5. Calcolo della covarianza}{100}{section*.148}%
+\contentsline {paragraph}{Caso di rumore additivo}{100}{section*.150}%
+\contentsline {paragraph}{Problema del ricampionamento}{102}{section*.154}%
+\contentsline {paragraph}{Costruzione della distribuzione cumulativa}{102}{section*.156}%
+\contentsline {paragraph}{Generazione dei nuovi campioni}{103}{section*.157}%
+\contentsline {paragraph}{Risultato dell'algoritmo}{103}{section*.158}%

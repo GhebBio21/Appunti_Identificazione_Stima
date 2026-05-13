@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1778016501.45159 "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" "identificazione_e_stima.pdf" "identificazione_e_stima" 1778016504.46952 0
-  "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" 1778016497.60001 178805 de30a383e9db27c32c5247249254e9ae ""
+["pdflatex"] 1778686059.32539 "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" "identificazione_e_stima.pdf" "identificazione_e_stima" 1778686062.6911 0
+  "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" 1778686058.82343 217917 7b435680a7f9c160ee537bcd6ce87840 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -235,10 +235,10 @@
   "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1773845389 5541377 04880c840ca220163a28f1a3af0ee662 ""
   "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1773845112 3636762 2f8956604c3fb4c008b00d4a71152d0f ""
   "/usr/local/texlive/2026/texmf.cnf" 1772409725 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
-  "identificazione_e_stima.aux" 1778016504.28495 13733 059983b58e862ea70da167bf563785a5 "pdflatex"
-  "identificazione_e_stima.out" 1778016504.28829 10409 e8041779de2315e1b39cde28d2584481 "pdflatex"
-  "identificazione_e_stima.tex" 1778016497.60001 178805 de30a383e9db27c32c5247249254e9ae ""
-  "identificazione_e_stima.toc" 1778016504.28987 8970 3f7eaa1ac5267577a36ed4a54c8013f7 "pdflatex"
+  "identificazione_e_stima.aux" 1778686062.53849 16624 fc9e095fe1bee016d11abcfa12ef92fc "pdflatex"
+  "identificazione_e_stima.out" 1778686062.54055 10409 e8041779de2315e1b39cde28d2584481 "pdflatex"
+  "identificazione_e_stima.tex" 1778686058.82343 217917 7b435680a7f9c160ee537bcd6ce87840 ""
+  "identificazione_e_stima.toc" 1778686062.5408 10835 324360a3e16cff732f2a270a1bde699d "pdflatex"
   (generated)
   "identificazione_e_stima.aux"
   "identificazione_e_stima.log"

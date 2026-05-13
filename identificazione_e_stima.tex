@@ -407,7 +407,7 @@ v(t)=\sum_{i=0}^{\infty}c_i\eta(t-i)
 permette di rappresentare processi con memoria infinita ma decrescente. Questa forma e' centrale per capire gli AR stabili: un AR stabile puo' infatti essere sviluppato come un MA($\infty$), cioe' come una somma infinita di rumori passati pesati da coefficienti che tendono a zero.
 \end{spiegazione}
 
-\subsection{Processo AR (Auto Regressivo), AR($n$) (di ordine n)}
+\subsection{Processo AR (Auto Regressivo), AR\texorpdfstring{$(n)$}{(n)} (di ordine n)}
 \[
 v(t)=a_1 v(t-1)+a_2v(t-2)\dots+a_n v(t-n)+\eta(t),\qquad \eta\sim WN(0,\sigma^2).
 \]
@@ -519,7 +519,7 @@ Questo significa che l'autocovarianza di un AR soddisfa la stessa dinamica linea
 \end{spiegazione}
 
 
-\subsection{Processo ARMA$(n_a,n_c)$}
+\subsection{Processo ARMA\texorpdfstring{$(n_a,n_c)$}{(na,nc)}}
 \begin{align*}
 v(t)&=a_1 v(t-1)+a_2v(t-2)+\dots+a_{n_a}v(t-n_a)+c_0\eta(t)+c_1\eta(t-1)+\dots+c_{n_c}\eta(t-n_c).
 \end{align*}
@@ -3459,9 +3459,9 @@ e possiamo ricavare:
 \sigma^2 = \gamma(0) - a_1\gamma(1) 
 \]
 
-Questo vale $\forall\tau,$ ma sfruttiamo una stima di $\tau$:
+Questo vale $\forall\tau,$ ma sfruttiamo una stima (conviene usare indici di $\tau$ bassi, tipo $\tau = 1$):
 \[
-\hat \gamma_N(\tau) = \frac{1}{N}\sum_{t=1}^{N-\tau}y(t)y(t+\tau)a
+\hat \gamma_N(\tau) = \frac{1}{N}\sum_{t=1}^{N-\tau}y(t)y(t+\tau)
 \]
 Ho quindi:
 \[
@@ -3514,7 +3514,7 @@ $}
 \[
 \gamma(1),\gamma(2),\gamma(0)
 \quad
-\text{Posso ricavare dai coeff del Processo AR(2)? Sì!}
+\text{Posso ricavarli dai coeff del Processo AR(2)? Sì!}
 \]
 
 \[
@@ -3572,7 +3572,7 @@ a_i^{(n+1)}=a_i^{(n)}-a_{n+1}^{(n+1)}a_{n+1-i}^{(n)}
 \sigma^2_{(n+1)}=[1-(a_{n+1}^{(n+1)})^2]\sigma^2_{(n)}.
 \]
 
-$a_{n+1}^{n+1}$ può essere costruito e manipolato tale per cui se è = 0 può suggerire che il processo AR(1) è di ordine n. In parallelo la chiamo \textbf{Covarianza Parziale}
+$a_{n+1}^{n+1}$ può essere costruito e manipolato tale per cui se è = 0 può suggerire che il processo AR(1) è di ordine n (forse intendeva AR, non AR(1)). In parallelo la chiamo \textbf{Covarianza Parziale}
 
 \paragraph{AR, MA, ARMA?} 
 Guardo la funzione di covarianza $\gamma(\tau)$, la funzione di covarianza parziale $a_{\tau}^{(\tau)}$. 
@@ -5623,7 +5623,7 @@ Il secondo termine rappresenta la parte di incertezza eliminata grazie alle osse
 
 
 
-\subsubsection*{Approfondiamo il caso di \(h(\cdot,\cdot)\) lineare}
+\subsubsection*{Approfondiamo il caso di \(h(\cdot,\cdot)\) lineare (non per forza Gaussiano)}
 
 \[
 \begin{cases}
@@ -5884,7 +5884,7 @@ Prendendo l'inversa si vede meglio il significato:
 \Sigma_x^{-1}+C^T\Sigma_V^{-1}C.
 \]
 
-Quindi l'informazione a posteriori e' la somma dell'informazione a priori e dell'informazione portata dalle misure. Questa e' una delle forme piu' importanti della stima gaussiana lineare: ogni osservazione riduce l'incertezza solo nella misura in cui porta informazione rispetto al rumore.
+Quindi l'informazione a posteriori e' la somma dell'informazione a priori e dell'informazione portata dalle misure. Questa e' una delle forme piu' importanti della stima lineare: ogni osservazione riduce l'incertezza solo nella misura in cui porta informazione rispetto al rumore.
 \end{spiegazione}
 
 \subsection*{Osservazioni non informative}
@@ -6055,5 +6055,2248 @@ la media e le covarianze di $Y$ non si ottengono piu' semplicemente propagando $
 
 Per questo diventano utili tre strategie. La linearizzazione approssima $h$ localmente con una funzione lineare e permette di riusare formule simili al BLUE. L'Unscented Transform propaga un insieme scelto di punti rappresentativi della distribuzione. I metodi Monte Carlo generano molti campioni casuali e stimano media e covarianza empiricamente. Tutte e tre sono tecniche per ottenere approssimazioni pratiche quando la formula chiusa non e' disponibile.
 \end{spiegazione}
+
+
+\paragraph{Facciamo un piccolo recap sulla stima statica:} (ps: fino ad ora tante x che dovevano essere X in quanto variabili aleatorie sono minuscole, magari sistemale)
+\[
+\mathrm{MMSE} \equiv \mathrm{EAP}.
+\]
+
+\paragraph{Caso gaussiano}
+Nel caso gaussiano lo stimatore MMSE è
+\[
+\hat x^{\mathrm{MMSE}}(z)
+=
+\bar x+\Sigma_{XZ}\Sigma_Z^{-1}(z-\bar z).
+\]
+
+\paragraph{MMSE lineare: BLUE}
+Lo stimatore MMSE lineare prende il nome di BLUE, cioè
+\[
+\mathrm{BLUE}
+=
+\text{\emph{Best Linear Unbiased Estimator}}.
+\]
+
+Nel caso di modello di osservazione lineare
+\[
+Y=CX+V,
+\]
+si ottiene
+\[
+\hat X^{\mathrm{BLUE}}(y)
+=
+\left(
+\Sigma_X^{-1}+C^T\Sigma_V^{-1}C
+\right)^{-1}
+\left(
+\Sigma_X^{-1}\bar x+C^T\Sigma_V^{-1}y
+\right).
+\]
+
+\subsubsection*{Modello di osservazione non lineare}
+
+Ci chiediamo cosa accade se il modello di osservazione non è lineare.
+
+In generale, i momenti
+\[
+\bar y,\qquad \Sigma_{XY},\qquad \Sigma_Y
+\]
+non sono facilmente calcolabili.
+
+Per affrontare il problema si possono seguire tre vie:
+\begin{enumerate}
+    \item linearizzazione;
+    \item trasformata unscented;
+    \item metodi Monte Carlo.
+\end{enumerate}
+
+\subsubsection*{Linearizzazione}
+
+Si consideri il modello non lineare
+\[
+Y=h(X,V),
+\]
+con
+\[
+\begin{bmatrix}
+X\\
+V
+\end{bmatrix}
+\sim
+\left(
+\begin{bmatrix}
+\bar x\\
+0
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_X & 0\\
+0 & \Sigma_V
+\end{bmatrix}
+\right).
+\]
+
+Si approssima la funzione non lineare \(h(X,V)\) tramite linearizzazione intorno ai valori medi a priori:
+\[
+Y=h(X,V)\simeq CX+BV.
+\]
+
+Le matrici \(C\) e \(B\) sono le matrici jacobiane valutate nelle medie a priori:
+
+\[
+C
+=
+\left.
+\frac{\partial h(X,V)}{\partial X}
+\right|_{\substack{X=\bar x\\ V=0}},
+\qquad
+B
+=
+\left.
+\frac{\partial h(X,V)}{\partial V}
+\right|_{\substack{X=\bar x\\ V=0}}.
+\]
+
+Quindi \(C\) e \(B\) sono matrici jacobiane calcolate rispettivamente rispetto a \(X\) e rispetto a \(V\), valutate in
+\[
+X=\bar x,
+\qquad
+V=0.
+\]
+La matrice \(B\) fa sì che tutte le volte in cui compare \(\Sigma_V\),
+essa debba essere sostituita da
+
+\[
+B\Sigma_VB^T.
+\]
+
+\subsubsection*{Trasformata Unscented}
+
+Un altro approccio è dato dalla \textbf{trasformata Unscented}.
+
+Si consideri una variabile aleatoria
+\[
+\overline{\underline{x}} \sim (\bar x,\Sigma_X)
+\]
+e una trasformazione non lineare
+\[
+g:\overline{\underline{x}}\longrightarrow \bar y.
+\]
+
+Allora
+\[
+\bar y = g(\overline{\underline{x}}).
+\]
+
+Il problema è calcolare i momenti di \(\overline{\underline{Y}}\), cioè
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}.
+\]
+
+La trasformata Unscented restituisce un'approssimazione di questi momenti:
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}.
+\]
+
+Storicamente, il metodo è dovuto a Uhlmann, 1995.
+
+Si può scrivere sinteticamente:
+\[
+UT(\bar x,\Sigma_X,g(\cdot))
+=
+\bigl[\bar y,\Sigma_Y,\Sigma_{XY}\bigr].
+\]
+
+\paragraph{Caso con stato e rumore}
+
+Definiamo la variabile aumentata
+\[
+X'
+=
+\begin{bmatrix}
+X\\
+V
+\end{bmatrix}.
+\]
+
+La trasformazione diventa
+\[
+g(X')=h(X,V).
+\]
+
+Dato che
+\[
+\begin{bmatrix}
+X\\
+V
+\end{bmatrix}
+\sim
+\left(
+\begin{bmatrix}
+\bar x\\
+0
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_X & 0\\
+0 & \Sigma_V
+\end{bmatrix}
+\right),
+\]
+si applica la trasformata Unscented come
+
+\[
+UT\!\left(
+\begin{bmatrix}
+\bar x\\
+0
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_X & 0\\
+0 & \Sigma_V
+\end{bmatrix},
+g(\cdot)
+\right)
+=
+\bigl[
+\bar y,\Sigma_Y,\Sigma_{X'Y}
+\bigr].
+\]
+
+Poiché
+\[
+X'=
+\begin{bmatrix}
+X\\
+V
+\end{bmatrix},
+\]
+la covarianza incrociata con \(Y\) si può scrivere come
+
+\[
+\Sigma_{X'Y}
+=
+\begin{bmatrix}
+\Sigma_{XY}\\
+\Sigma_{VY}
+\end{bmatrix}.
+\]
+
+Per la stima BLUE serve in particolare il blocco
+\[
+\Sigma_{XY}.
+\]
+
+Quindi, dalla trasformata Unscented, si ricavano approssimativamente i momenti necessari alla stima BLUE:
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}.
+\]
+
+
+\subsubsection*{Caso particolare con rumore additivo}
+
+Si consideri il modello
+\[
+Y=h(X)+V,
+\]
+cioè un caso particolare con rumore additivo.
+
+Definiamo la variabile aleatoria
+\[
+Z=h(X).
+\]
+
+Poiché \(X\) e \(V\) sono incorrelati, si ha:
+\[
+\bar y=\bar z,
+\]
+e
+\[
+\Sigma_Y=\Sigma_Z+\Sigma_V.
+\]
+
+Inoltre,
+\[
+\Sigma_{XY}=\Sigma_{XZ}.
+\]
+
+I momenti
+\[
+\bar z,\qquad \Sigma_Z,\qquad \Sigma_{XZ}
+\]
+possono essere approssimati tramite trasformata Unscented:
+\[
+[\bar z,\Sigma_Z,\Sigma_{XZ}]
+=
+UT[\bar x,\Sigma_X,h(\cdot)].
+\]
+
+Da questi si ottengono poi:
+\[
+\bar y=\bar z,
+\qquad
+\Sigma_Y=\Sigma_Z+\Sigma_V,
+\qquad
+\Sigma_{XY}=\Sigma_{XZ}.
+\]
+
+\subsubsection*{Sigma-points}
+
+L'idea della trasformata Unscented è generare un insieme minimale di campioni, detti
+\emph{sigma-points}, con peso associato.
+
+Questi punti devono essere \textbf{coerenti} con i momenti di \(X\), cioè con
+\[
+\bar x,\qquad \Sigma_X.
+\]
+(media e covarianza campionarie $\equiv  \bar x, \Sigma_X$ )
+In particolare, se i sigma-points sono indicati con \(X_i\) e i pesi associati con \(w_i\), devono valere:
+
+\[
+\sum_i w_i X_i = \bar x,
+\tag{1}
+\]
+
+\[
+\sum_i w_i (X_i-\bar x)(X_i-\bar x)^T = \Sigma_X.
+\tag{2}
+\]
+
+La prima condizione garantisce che la media campionaria pesata coincida con la media teorica \(\bar x\).
+
+La seconda condizione garantisce che la covarianza campionaria pesata coincida con la covarianza teorica \(\Sigma_X\).
+
+Se
+\[
+n=\dim(X),
+\]
+basterebbero in teoria \(n+1\) sigma-points.
+
+Per ragioni di simmetria, però, se ne usano
+\[
+2n+1.
+\]
+
+In particolare:
+\[
+1 \text{ punto centrale}
+\]
+e
+\[
+2n \text{ punti simmetrici a coppie rispetto al centrale}.
+\]
+
+\subsubsection*{Costruzione dei sigma-points}
+
+Siano
+\[
+X_i\in\mathbb{R}^n,
+\qquad
+i=-n,\dots,-1,0,1,\dots,n.
+\]
+
+\paragraph{Fattorizzazione di \(\Sigma_X\)}
+Si considera una fattorizzazione della matrice di covarianza
+\[
+\Sigma_X=\Gamma\Gamma^T.
+\]
+
+Indicando con \(\gamma_i\) la \(i\)-esima colonna di \(\Gamma\), si può scrivere
+\[
+\Sigma_X
+=
+\Gamma\Gamma^T
+=
+\sum_{i=1}^{n}\gamma_i\gamma_i^T.
+\]
+
+La matrice \(\Gamma\) può essere ottenuta in diversi modi, ad esempio:
+\begin{itemize}
+    \item decomposizione di Cholesky;
+    \item SVD:
+    \[
+    \Sigma_X=V\Lambda V^T
+    \qquad\Rightarrow\qquad
+    \Gamma=V\Lambda^{1/2};
+    \]
+    \item radice quadrata simmetrica:
+    \[
+    \Gamma=\Gamma^T.
+    \]
+\end{itemize}
+
+\paragraph{Condizione sulla covarianza campionaria pesata}
+
+La seconda condizione sui sigma-points è
+\[
+\sum_{i=-n}^{n} w_i(X_i-\bar x)(X_i-\bar x)^T
+=
+\sum_{i=1}^{n}\gamma_i\gamma_i^T
+=
+\Sigma_X.
+\tag{2}
+\]
+
+Si scelgono quindi i punti in modo simmetrico rispetto alla media.
+
+Sia \(a_i\) uno scalare. Allora:
+\[
+X_i-\bar x=
+\begin{cases}
+a_i\gamma_i, & i>0,\\[0.3em]
+0, & i=0,\\[0.3em]
+-a_i\gamma_i, & i<0.
+\end{cases}
+\]
+
+Equivalentemente, i sigma-points sono
+\[
+X_i=
+\begin{cases}
+\bar x+a_i\gamma_i, & i>0,\\[0.3em]
+\bar x, & i=0,\\[0.3em]
+\bar x-a_i\gamma_i, & i<0.
+\end{cases}
+\]
+
+Il punto \(X_0=\bar x\) è il sigma-point centrale.
+
+Per simmetria si scelgono pesi uguali per le coppie opposte:
+\[
+w_i=w_{-i}.
+\]
+Tornando alla condizione sulla covarianza, si ha
+
+\[
+\sum_{i=1}^{n} 2w_i a_i^2 \gamma_i\gamma_i^T
+=
+\sum_{i=1}^{n}\gamma_i\gamma_i^T.
+\]
+
+Quindi è sufficiente imporre
+
+\[
+2w_i a_i^2 = 1.
+\]
+
+Da cui
+
+\[
+a_i=\frac{1}{\sqrt{2w_i}},
+\qquad
+\forall i=1,2,\dots,n.
+\]
+
+\subsubsection*{Condizione sulla media}
+
+La prima condizione sui sigma-points è
+
+\[
+\sum_{i=-n}^{n} w_i X_i = \bar x.
+\tag{1}
+\]
+
+Questa condizione vale se
+
+\[
+\sum_{i=-n}^{n} w_i = 1.
+\]
+
+Infatti,
+
+\[
+\sum_{i=-n}^{n} w_i X_i
+=
+\left(\sum_{i=-n}^{n} w_i\right)\bar x
+=
+\bar x.
+\]
+
+\subsubsection*{Scelta dei pesi}
+
+Tutti i pesi, tranne quello centrale, vengono scelti uguali tra loro:
+
+\[
+w_i=w,
+\qquad \forall i\neq 0.
+\]
+
+Dalla condizione di normalizzazione dei pesi si ottiene
+
+\[
+w_0+2nw=1.
+\]
+
+Scelto \(w_0\), segue
+
+\[
+w=\frac{1-w_0}{2n}.
+\]
+
+Inoltre, dalla condizione sulla covarianza,
+
+\[
+a_i=a=\frac{1}{\sqrt{2w}}
+=
+\frac{1}{\sqrt{\dfrac{1-w_0}{n}}}
+=
+\sqrt{\frac{n}{1-w_0}},
+\qquad \forall i\neq 0.
+\]
+
+\subsubsection*{Scelta di \(w_0\)}
+
+Rimane da scegliere il peso centrale \(w_0\).
+
+In letteratura si pone
+
+\[
+w_0=\frac{\lambda}{n+\lambda},
+\]
+
+dove \(\lambda\) è un parametro libero.
+
+Con questa scelta,
+
+\[
+w
+=
+\frac{1-w_0}{2n}
+=
+\frac{1-\dfrac{\lambda}{n+\lambda}}{2n}.
+\]
+
+Semplificando,
+
+\[
+w
+=
+\frac{\dfrac{n+\lambda-\lambda}{n+\lambda}}{2n}
+=
+\frac{\dfrac{n}{n+\lambda}}{2n}
+=
+\frac{1}{2(n+\lambda)}.
+\]
+Sostituendo la scelta di \(w_0\), si ottiene
+
+\[
+a
+=
+\sqrt{\frac{n}{1-w_0}}
+=
+\sqrt{
+\frac{n}{1-\frac{\lambda}{n+\lambda}}
+}.
+\]
+
+Semplificando:
+
+\[
+a
+=
+\sqrt{
+\frac{n}{\frac{n+\lambda-\lambda}{n+\lambda}}
+}
+=
+\sqrt{
+\frac{n}{\frac{n}{n+\lambda}}
+}
+=
+\sqrt{n+\lambda}.
+\]
+
+Quindi, fissato il parametro \(\lambda\), si ha
+
+\[
+w=\frac{1}{2(n+\lambda)},
+\qquad
+a=\sqrt{n+\lambda}.
+\]
+
+\subsubsection*{Scelta dei sigma-points}
+
+Scelto \(\lambda\), i sigma-points sono dati da
+
+\[
+x_i=
+\begin{cases}
+\bar x+\sqrt{n+\lambda}\,\gamma_i, & i>0,\\[0.4em]
+\bar x, & i=0,\\[0.4em]
+\bar x-\sqrt{n+\lambda}\,\gamma_i, & i<0.
+\end{cases}
+\]
+
+dove \(\gamma_i\) è la \(i\)-esima colonna della matrice \(\Gamma\), tale che
+
+\[
+\Sigma_X=\Gamma\Gamma^T.
+\]
+
+\subsubsection*{Propagazione dei sigma-points}
+
+Ogni sigma-point viene propagato attraverso la funzione non lineare \(g(\cdot)\):
+
+\[
+Y_i=g(X_i),
+\qquad i=-n,\dots,n.
+\]
+
+In questo modo si ottengono \(2n+1\) punti trasformati.
+
+\[
+X_i
+\;\xrightarrow{\ g(\cdot)\ }\;
+Y_i
+\]
+
+\[
+Y_i=g(X_i).
+\]
+
+\subsubsection*{Ricostruzione dei momenti}
+
+A partire dai punti trasformati \(Y_i\), si ricavano in maniera campionaria i momenti
+
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}.
+\]
+
+La media trasformata è
+
+\[
+\bar y
+=
+\sum_{i=-n}^{n} w_i Y_i.
+\]
+
+La covarianza di \(Y\) è
+
+\[
+\Sigma_Y
+=
+\sum_{i=-n}^{n} w_i'
+\bigl(Y_i-\bar y\bigr)
+\bigl(Y_i-\bar y\bigr)^T.
+\]
+
+La covarianza incrociata tra \(X\) e \(Y\) è
+
+\[
+\Sigma_{XY}
+=
+\sum_{i=-n}^{n} w_i'
+\bigl(X_i-\bar x\bigr)
+\bigl(Y_i-\bar y\bigr)^T.
+\]
+
+I pesi \(w_i'\) possono essere scelti eventualmente diversi dai pesi \(w_i\) usati per la media, a seconda della specifica variante della trasformata Unscented. (Questo detto da chat gpt, effettivamente non ricordo perché aggiunse questi  apici ai pesi). 
+
+\subsubsection*{Algoritmo più generale: SUT}
+
+L'algoritmo più generale prende il nome di
+
+\[
+\text{SUT} = \text{\emph{Scaled Unscented Transform}}.
+\]
+
+Rispetto alla trasformata Unscented vista prima, nella SUT si usano parametri aggiuntivi per scalare i sigma-points e modificare i pesi.
+
+I pesi vengono scelti come
+
+\[
+\begin{cases}
+w_0' = w_0 + 1-\alpha^2+\beta,\\[0.4em]
+w_i' = w_i
+\end{cases}
+\]
+
+Il parametro \(\lambda\) viene scelto come
+
+\[
+\lambda=\alpha^2(n+\kappa)-n,
+\]
+
+con
+
+\[
+\alpha\in(0,1],
+\qquad
+\kappa\geq 0.
+\]
+
+Di conseguenza, i sigma-points non vengono più costruiti come
+
+\[
+\bar x+\sqrt{n+\lambda}\,\gamma_i,
+\]
+
+ma come
+
+\[
+\bar x+\alpha\sqrt{n+\kappa}\,\gamma_i.
+\]
+
+\paragraph{Ruolo di \(\beta\)}
+
+Il parametro \(\beta\) è utilizzato per tenere conto della ``forma'' della PDF di \(\overline{\underline{X}}\).
+
+Nel caso gaussiano, una scelta ottima è
+
+\[
+\beta=2.
+\]
+
+\subsubsection*{Osservazioni sulla SUT}
+
+I momenti
+
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}
+\]
+
+sono un'approssimazione al secondo ordine dei veri momenti.
+
+La linearizzazione, invece, fornisce un'approssimazione al primo ordine.
+
+Inoltre, la trasformata Unscented non richiede di derivare la funzione non lineare
+
+\[
+h(\cdot,\cdot).
+\]
+
+\subsubsection*{Parametri della SUT}
+
+La SUT dipende dai parametri
+
+\[
+\alpha,\qquad \kappa,\qquad \beta.
+\]
+
+Se
+
+\[
+\alpha=1,
+\]
+
+si ottiene la trasformata non scalata. Infatti,
+
+\[
+\lambda=\kappa.
+\]
+
+Per quanto riguarda i pesi:
+
+\[
+w_0' = w_0 + 1-\alpha^2+\beta.
+\]
+
+Se inoltre
+
+\[
+\beta=0,
+\]
+
+allora si hanno gli stessi pesi per la media e per la covarianza:
+
+\[
+w_0'=w_0.
+\]
+
+Nel caso gaussiano si sceglie solitamente
+
+\[
+\beta=2,
+\]
+
+che è ottimo per distribuzioni gaussiane.
+
+Infine, il parametro \(\kappa\geq 0\) influenza i termini di ordine superiore al secondo nell'approssimazione.\subsubsection*{Algoritmo più generale: SUT}
+
+L'algoritmo più generale prende il nome di
+
+\[
+\text{SUT} = \text{\emph{Scaled Unscented Transform}}.
+\]
+
+Rispetto alla trasformata Unscented vista prima, nella SUT si usano parametri aggiuntivi per scalare i sigma-points e modificare i pesi.
+
+I pesi vengono scelti come
+
+\[
+\begin{cases}
+w_0' = w_0 + 1-\alpha^2+\beta,\\[0.4em]
+w_i' = w_i, \qquad i\neq 0.
+\end{cases}
+\]
+
+Il parametro \(\lambda\) viene scelto come
+
+\[
+\lambda=\alpha^2(n+\kappa)-n,
+\]
+
+con
+
+\[
+\alpha\in(0,1],
+\qquad
+\kappa\geq 0.
+\]
+
+Di conseguenza, i sigma-points non vengono più costruiti come
+
+\[
+\bar x+\sqrt{n+\lambda}\,\gamma_i,
+\]
+
+ma come
+
+\[
+\bar x+\alpha\sqrt{n+\kappa}\,\gamma_i.
+\]
+
+\paragraph{Ruolo di \(\beta\)}
+
+Il parametro \(\beta\) è utilizzato per tenere conto della ``forma'' della PDF di \(X\).
+
+Nel caso gaussiano, una scelta ottima è
+
+\[
+\beta=2.
+\]
+
+\subsubsection*{Osservazioni sulla SUT}
+
+I momenti
+
+\[
+\bar y,\qquad \Sigma_Y,\qquad \Sigma_{XY}
+\]
+
+sono un'approssimazione al secondo ordine dei veri momenti.
+
+La linearizzazione, invece, fornisce un'approssimazione al primo ordine.
+
+Inoltre, la trasformata Unscented non richiede di derivare la funzione non lineare
+
+\[
+h(\cdot,\cdot).
+\]
+
+\subsubsection*{Parametri della SUT}
+
+La SUT dipende dai parametri
+
+\[
+\alpha,\qquad \kappa,\qquad \beta.
+\]
+
+Se
+
+\[
+\alpha=1,
+\]
+
+si ottiene la trasformata non scalata. Infatti,
+
+\[
+\lambda=\kappa.
+\]
+
+Per quanto riguarda i pesi:
+
+\[
+w_0' = w_0 + 1-\alpha^2+\beta.
+\]
+
+Se inoltre
+
+\[
+\beta=0,
+\]
+
+allora si hanno gli stessi pesi per la media e per la covarianza:
+
+\[
+w_0'=w_0.
+\]
+
+Nel caso gaussiano si sceglie solitamente
+
+\[
+\beta=2,
+\]
+
+che è ottimo per distribuzioni gaussiane.
+
+Infine, il parametro \(\kappa\geq 0\) influenza i termini di ordine superiore al secondo nell'approssimazione.
+
+Se avessi $\mathcal{f_{\overline{\underline{x}}}}(x) $gaussiana, una possibile scelta dei parametri sarebbe
+
+\[
+\alpha=1,
+\qquad
+\beta=2,
+\qquad
+\kappa=0.
+\]
+
+Naturalmente non si usano sempre questi valori: la scelta dipende dal problema e dalla distribuzione considerata.
+
+\subsubsection*{Altro approccio: metodo Monte Carlo}
+
+Si considera ora un altro approccio per approssimare gli stimatori: il \textbf{metodo Monte Carlo}.
+
+\paragraph{Stima MMSE (EAP)}
+
+Lo stimatore MMSE, equivalente allo stimatore EAP, è
+
+\[
+\hat X^{\mathrm{MMSE}}
+=
+E[\overline{\underline{X}}\mid \overline{\underline{Y}}].
+\]
+
+In forma integrale,
+
+\[
+\hat X^{\mathrm{MMSE}}
+=
+\int x\, f_{\overline{\underline{X}}\mid \overline{\underline{Y}}}(x\mid y)\,dx = \frac{
+\displaystyle
+\int x\, f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\,f_{\overline{\underline{X}}}(x)\,dx
+}{
+\displaystyle
+\int f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\,f_{\overline{\underline{X}}}(x)\,dx
+}.
+\]
+
+
+In generale non riusciamo a calcolare questi integrali in forma chiusa, quindi serve una loro approssimazione.
+
+\paragraph{Covarianza dell'errore MMSE}
+
+Si può stimare anche la covarianza dell'errore associata allo stimatore MMSE:
+
+\[
+\hat\Sigma_X^{\mathrm{MMSE}}
+=
+E\!\left[
+(\overline{\underline{X}}-\hat X^{\mathrm{MMSE}})
+(\overline{\underline{X}}-\hat X^{\mathrm{MMSE}})^T
+\mid \overline{\underline{Y}}
+\right].
+\]
+
+In forma integrale,
+
+\[
+\hat\Sigma_X^{\mathrm{MMSE}}
+=
+\frac{
+\displaystyle
+\int
+(x-\hat X^{\mathrm{MMSE}})
+(x-\hat X^{\mathrm{MMSE}})^T \cdots dx
+}{
+\displaystyle
+\int
+\cdots dx
+}.
+\]
+
+Più in generale, questi integrali possono essere visti nella forma
+
+\[
+E[g(\overline{\underline{X}})\mid \overline{\underline{Y}}].
+\]
+
+\paragraph{Approssimazione Monte Carlo}
+
+L'idea del metodo Monte Carlo è approssimare gli integrali tramite somme finite, usando un numero elevato di valutazioni della funzione.
+
+In particolare, l'integrale viene approssimato tramite una somma di Riemann:
+
+\[
+\text{Riemann}
+\quad\longrightarrow\quad
+K^n \text{ valutazioni della funzione}.
+\]
+
+Il problema è che questo approccio può diventare molto oneroso, perché richiede un numero enorme di valutazioni quando la dimensione \(n\) cresce (quindi queste valutazioni possono essere "troppe".
+
+\subsubsection*{Approccio alternativo: campionamento casuale}
+
+Un approccio alternativo consiste nel generare casualmente \(N\) punti in cui valutare la funzione.
+
+Si consideri l'integrale
+
+\[
+\mathcal{I}=\int_S f(x)\,dx.
+\]
+
+Si introduce una PDF \(p(x)\) tale che 
+
+\[
+\int p(x)\,dx=1. \qquad \text{su tutto il dominnio} \ \mathbb{R}^n
+\]
+
+Il dominio su cui \(p(x)\) è positiva è detto supporto di \(p(\cdot)\):
+
+\[
+S_p := \left\{x\in\mathbb{R}^n \;:\; p(x)>0\right\}.
+\]
+
+Si assume che
+
+\[
+S\subseteq S_p.
+\]
+
+Allora si può riscrivere l'integrale come
+
+\[
+\mathcal{I}
+=
+\int_S f(x)\,dx
+=
+\int_S \frac{f(x)}{p(x)}\,p(x)\,dx
+\]
+
+Per estendere l'integrale a tutto \(\mathbb{R}^n\), si definisce l'estensione nulla di \(f(x)\):
+
+\[
+f^E(x)=
+\begin{cases}
+f(x), & x\in S,\\[0.3em]
+0, & x\notin S.
+\end{cases}
+\]
+
+Quindi
+
+\[
+\mathcal{I}
+=
+\int_{S_p}
+\frac{f^E(x)}{p(x)}\,p(x)\,dx.
+\]
+
+Definendo
+
+\[
+g(x)=\frac{f^E(x)}{p(x)},
+\]
+
+si ottiene
+
+\[
+\mathcal{I}
+=
+\int_{\mathbb{R}^n} g(x)\,p(x)\,dx
+=
+E_{p(\cdot)}[g(X)].
+\]
+
+Quindi l'integrale $\equiv$ media di \(g(X)\) secondo la distribuzione \(p(\cdot)\).
+Si può approssimare con media campionaria (N deve essere grande)
+
+\subsubsection*{Stimatore Monte Carlo}
+
+Si generano casualmente \(N\) campioni secondo la densità \(p(\cdot)\):
+
+\[
+X_i \sim p(\cdot),
+\qquad
+i=1,\dots,N.
+\]
+
+I campioni \(X_i\) sono quindi generati in maniera casuale secondo \(p(\cdot)\).
+
+L'integrale viene approssimato tramite la media campionaria:
+
+\[
+\mathcal{I}
+\simeq
+\mathcal{I}_N
+=
+\frac{1}{N}\sum_{i=1}^{N} g(X_i).
+\]
+
+Poiché
+\[
+g(x)=\frac{f^E(x)}{p(x)},
+\]
+si ottiene
+
+\[
+\mathcal{I}_N
+=
+\frac{1}{N}\sum_{i=1}^{N}
+\frac{f^E(X_i)}{p(X_i)}.
+\]
+
+Poiché \(f^E(x)=f(x)\) per \(x\in S\) e \(f^E(x)=0\) per \(x\notin S\), si può scrivere anche
+
+\[
+\mathcal{I}_N
+=
+\frac{1}{N}
+\sum_{j:\,X_j\in S}
+\frac{f(X_j)}{p(X_j)}.
+\]
+
+\subsubsection*{Proprietà dello stimatore}
+
+Lo stimatore Monte Carlo \(\mathcal{I}_N\) della quantità \(\mathcal{I}\) è asintoticamente non polarizzato:
+
+\[
+\lim_{N\to\infty} E[\mathcal{I}_N-\mathcal{I}]=0.
+\]
+
+Inoltre, la varianza tende a zero come
+
+\[
+\operatorname{Var}[\mathcal{I}_N]\to 0
+\qquad \text{come} \qquad
+\frac{1}{N}.
+\]
+
+Quindi, aumentando il numero di campioni \(N\), la stima diventa progressivamente più accurata.
+
+\paragraph{Recap delle scorse lezioni (sempre stima statica} 
+
+MMSE e BLUE
+
+Nel caso di modelli lineari si considera
+
+\[
+Y=CX+V.
+\]
+
+Per questi modelli si sono introdotti:
+
+\[
+\mathrm{MMSE}
+\qquad \text{e} \qquad
+\mathrm{BLUE}.
+\]
+
+\paragraph{Modelli non lineari}
+
+Nel caso di modelli non lineari, i momenti
+
+\[
+\bar y,
+\qquad
+\Sigma_Y,
+\qquad
+\Sigma_{XY}
+\]
+
+sono difficili da calcolare.
+
+Per stimarli si possono usare tre approcci:
+
+\begin{itemize}
+    \item linearizzazione;
+    \item trasformata Unscented;
+    \item metodo Monte Carlo.
+\end{itemize}
+
+\subsubsection*{Metodo Monte Carlo}
+
+Si vuole calcolare una quantità del tipo
+
+\[
+E[g(\overline{\underline{X}})\mid \overline{\underline{Y}}].
+\]
+
+Nel caso della stima MMSE:
+
+\[
+g(\overline{\underline{X}})=\overline{\underline{X}}
+\qquad \Rightarrow \qquad \hat X^{MMSE}
+\]
+
+Nel caso della covarianza dell'errore:
+
+\[
+g(\bar X)
+=
+(\overline{\underline{X}}-\hat X^{\mathrm{MMSE}})
+(\overline{\underline{X}}-\hat X^{\mathrm{MMSE}})^T
+\qquad \Rightarrow \qquad
+\Sigma_X.
+\]
+
+Usando la formula di Bayes, si può scrivere
+
+\[
+E[\overline{\underline{X}}\mid \overline{\underline{Y}}]
+=
+\frac{
+\displaystyle
+\int x\, f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\,f_{\overline{\underline{X}}}(x)\,dx
+}{
+\displaystyle
+\int f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\,f_{\overline{\underline{X}}}(x)\,dx
+}.
+\]
+
+Questo integrale può essere approssimato con metodi numerici:
+
+\[
+\text{Riemann}
+\qquad \text{oppure} \qquad
+\text{Monte Carlo}.
+\]
+
+\paragraph{Recap sull'integrazione Monte Carlo}
+
+Dato un integrale
+
+\[
+\mathcal{I}=\int_S f(x)\,dx,
+\]
+
+lo si approssima generando campioni
+
+\[
+X_i\sim p(\cdot),
+\]
+
+ottenendo
+
+\[
+\mathcal{I}
+=
+\int_S f(x)\,dx
+\simeq
+\frac{1}{N}
+\sum_{j:\,x_j\in S}
+\frac{f(x_j)}{p(x_j)}.
+\]
+Fine recap
+
+\paragraph{Osservazioni}
+
+I campioni \(X_i\) che non appartengono a \(S\), di fatto, non contribuiscono alla stima.
+
+Inoltre, se
+
+\[
+S_p\setminus S
+\]
+
+cioè il complementare di \(S\) in \(S_p\), è più ``piccolo'' possibile, allora la stima è più efficiente.
+
+In altri termini, è utile scegliere \(S_p\) quanto più "aderente" possibile a \(S\).
+
+
+\subsubsection*{Scelta della distribuzione di campionamento}
+
+Per applicare il metodo Monte Carlo è utile scegliere una densità \(p(\cdot)\) facilmente campionabile.
+
+Deve quindi esistere un generatore di valori casuali coerente con \(p(\cdot)\).
+
+\subsubsection*{Esempio: calcolo del volume di un insieme}
+
+Si vuole calcolare il volume di un insieme \(S\):
+
+\[
+\mathcal{I} = \int_S 1\,dx = \operatorname{vol}(S).
+\]
+
+Si supponga di conoscere un insieme \(\Omega\) che contiene \(S\), ovvero  $\Omega$ "aderente" ad S, cioè
+
+\[
+S\subseteq \Omega,
+\]
+
+e tale che \(\Omega\) abbia dimensione e forma note. 
+
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+
+% parallelepipedo esterno
+\draw[thick] (0,0) -- (5,0) -- (5.8,0.8) -- (0.8,0.8) -- cycle;
+\draw[thick] (0,0) -- (0,3) -- (5,3) -- (5,0);
+\draw[thick] (5,3) -- (5.8,3.8) -- (5.8,0.8);
+\draw[thick] (0,3) -- (0.8,3.8) -- (5.8,3.8);
+\draw[thick] (0.8,3.8) -- (0.8,0.8);
+
+% insieme S interno
+\draw[thick]
+    (1.45,1.45)
+    .. controls (1.1,1.85) and (1.3,2.45) .. (1.95,2.55)
+    .. controls (2.35,3.0) and (3.05,2.85) .. (3.25,2.45)
+    .. controls (3.95,2.55) and (4.35,2.05) .. (4.05,1.65)
+    .. controls (4.0,1.05) and (3.2,0.9) .. (2.7,1.15)
+    .. controls (2.2,0.85) and (1.65,1.0) .. (1.45,1.45);
+
+\node at (2.75,1.85) {\Large \(S\)};
+\node at (5.95,0.35) {\(\Omega\)};
+
+% punti casuali
+\foreach \x/\y in {
+0.55/0.45, 0.85/2.1, 1.15/0.9, 1.45/2.65, 1.65/1.8,
+2.05/1.55, 2.25/2.35, 2.55/0.65, 2.85/1.95,
+3.15/2.65, 3.45/1.35, 3.85/2.1, 4.15/0.75,
+4.45/2.75, 4.75/1.55, 5.1/2.25
+}
+{
+    \fill (\x,\y) circle (1.5pt);
+}
+
+\node[align=left, text width=4.2cm] at (8.0,2.25)
+{
+Punti campionati\\
+in maniera uniforme\\
+in \(\Omega\).
+};
+
+\draw[->, thick] (6.3,2.1) -- (4.6,2.0);
+
+\end{tikzpicture}
+\end{center}
+
+Si utilizza quindi una distribuzione uniforme per il campionamento in \(\Omega\):
+
+\[
+p(x)=
+\begin{cases}
+\dfrac{1}{\operatorname{vol}(\Omega)}, & x\in \Omega,\\[0.8em]
+0, & x\notin \Omega.
+\end{cases}
+\]
+
+Secondo l'approccio Monte Carlo, si ha
+
+\[
+\mathcal{I}
+=
+\operatorname{vol}(S)
+\simeq
+\mathcal{I}_N
+=
+\frac{1}{N}\sum_{i=1}^{N}
+\frac{f^E(x_i)}{p(x_i)}.
+\]
+
+Poiché \(f(x)=1\) su \(S\), l'estensione nulla vale
+
+\[
+f^E(x_i)=
+\begin{cases}
+1, & x_i\in S,\\
+0, & x_i\notin S.
+\end{cases}
+\]
+
+Quindi
+
+\[
+\mathcal{I}_N
+=
+\frac{1}{N}
+\sum_{j:\,x_j\in S}
+\frac{1}{p(x_j)}.
+\]
+
+Dato che il campionamento è uniforme in \(\Omega\),
+
+\[
+p(x_j)=\frac{1}{\operatorname{vol}(\Omega)}
+\qquad
+\text{per } x_j\in \Omega.
+\]
+
+Allora
+
+\[
+\mathcal{I}_N
+=
+\frac{1}{N}
+\sum_{j:\,x_j\in S}
+\operatorname{vol}(\Omega).
+\]
+
+Se \(N(S)\) è il numero di campioni contenuti in \(S\), si ottiene
+
+\[
+\mathcal{I}_N
+=
+\frac{N(S)}{N}\operatorname{vol}(\Omega).
+\]
+
+Quindi il volume di \(S\) viene stimato come frazione di punti caduti in \(S\), moltiplicata per il volume dell'insieme noto \(\Omega\):
+
+\[
+\boxed{
+\operatorname{vol}(S)
+\simeq
+\frac{N(S)}{N}\operatorname{vol}(\Omega)
+}
+\]
+
+\[
+N(S)=\text{numero di campioni contenuti in }S.
+\]
+
+\subsubsection*{Monte Carlo per momenti di una PDF}
+
+Si vuole calcolare un momento di una PDF nella forma
+
+\[
+\mu = E[g(\overline{\underline{X}})] = \int g(x)p(x)\,dx.
+\]
+
+Se si generano campioni
+
+\[
+X \sim p(x),
+\qquad N \ campioni \ X_i
+\]
+
+e poi medie campionarie. 
+
+
+Può essere preferibile usare una PDF diversa per il campionamento, indicata con
+
+\[
+q(\cdot).
+\]
+
+Riscriviamo allora l'integrale come
+
+\[
+\mathcal{I}
+=
+E_{p(\cdot)}[g(X)]
+=
+\int g(x)p(x)\,dx.
+\]
+
+Moltiplicando e dividendo per \(q(x)\), si ottiene
+
+\[
+\mu
+=
+\int g(x)\frac{p(x)}{q(x)}q(x)\,dx.
+\]
+
+Definendo il peso
+
+\[
+w(x)=\frac{p(x)}{q(x)},
+\]
+
+segue
+
+\[
+\mathcal{I}
+=
+\int g(x)w(x)q(x)\,dx
+=
+E_{q(\cdot)}[g(X)w(X)].
+\]
+
+\subsubsection*{Condizione sul supporto}
+
+Il supporto di \(q(\cdot)\) deve includere il supporto di \(p(\cdot)\):
+
+\[
+S_p \subseteq S_q.
+\]
+
+In particolare,
+
+\[
+p(x)>0 \Rightarrow q(x)>0,
+\]
+
+oppure, equivalentemente,
+
+\[
+q(x)=0 \Rightarrow p(x)=0.
+\]
+
+Questa condizione serve per evitare divisioni per zero nel peso
+
+\[
+w(x)=\frac{p(x)}{q(x)}.
+\]
+\[
+Per \ X_i \sim q(\cdot) \quad i=1,\cdots,N
+\]
+Quell'integrale si approssima come
+\[
+\mathcal{I} = \mathcal{I}_N = \frac{1}{N}\sum_{i =1}^{N}w(x_i)g(x_i)
+\]
+\
+
+\subsubsection*{Monte Carlo per la stima MMSE}
+
+Nel caso della stima MMSE si vuole calcolare una quantità del tipo
+
+\[
+\mathcal{I}
+=
+E[g(\overline{\underline{X}})\mid \overline{\underline{Y}}] = \int g(x)f_{\overline{\underline{X}}\mid \overline{\underline{Y}}}(x\mid y)\,dx = \frac{
+\displaystyle
+\int g(x)f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)f_{\overline{\underline{X}}}(x)\,dx
+}{
+\displaystyle
+\int f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)f_{\overline{\underline{X}}}(x)\,dx
+}.
+\]
+
+
+
+Se si usa una PDF di campionamento \(q(x)\), con supporto tale da contenere il supporto di \(f_{\overline{\underline{X}}}(x)\), si riscrivono  numeratore e denominatore come:
+
+\[
+\mathcal{I} =  \frac{
+\displaystyle
+\int g(x)f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\frac{f_{\overline{\underline{X}}}(x)}{q(x)}q(x)\,dx
+}{
+\displaystyle
+\int f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\frac{f_{\overline{\underline{X}}}(x)}{q(x)}q(x)\,dx
+}.
+\]
+
+Definiamo:
+
+\[
+w(x)
+=
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x)\frac{f_{\overline{\underline{X}}}(x)}{q(x)}
+\]
+
+
+Si generano campioni
+
+\[
+X_i \sim q(\cdot),
+\qquad i=1,\dots,N.
+\]
+
+
+E si approssima $\mathcal{I}$come
+
+\[
+\mathcal{I}
+\simeq
+\mathcal{I}_N
+=
+\frac{
+\frac{1}{N}\sum_{i=1}^{N} w(X_i)g(X_i)
+}{
+\frac{1}{N}\sum_{i=1}^{N} w(X_i)
+}.
+\]
+
+Poiché il fattore \(1/N\) compare sia a numeratore sia a denominatore, si semplifica:
+
+\[
+\mathcal{I}_N
+=
+\frac{
+\sum_{i=1}^{N} w(X_i)g(X_i)
+}{
+\sum_{i=1}^{N} WwX_i)
+}.
+\]
+
+Definiamo quindi i pesi normalizzati
+
+\[
+\bar w_i
+=
+\frac{w(X_i)}
+{\displaystyle \sum_{i=1}^{N} w(X_i)}.
+\]
+
+Con questa definizione vale
+
+\[
+\sum_{i=1}^{N}\bar w_i = 1.
+\]
+
+Pertanto la stima può essere scritta come
+
+\[
+\mathcal{I}_N
+=
+\sum_{i=1}^{N}\bar w_i\,g(X_i).
+\]
+
+\subsubsection*{Stima MMSE tramite campioni pesati}
+
+Per la stima MMSE si prende
+
+\[
+g(X_i)=X_i.
+\]
+
+Quindi
+
+\[
+\hat X^{\mathrm{MMSE}}
+=
+E[\overline{\underline{X}}\mid \overline{\underline{Y}}]
+\simeq
+\sum_{i=1}^{N}\bar w_i X_i.
+\]
+
+\subsubsection*{Covarianza dell'errore MMSE}
+
+Per stimare la covarianza dell'errore, si usa
+
+\[
+g(X)
+=
+(X-\hat X^{\mathrm{MMSE}})
+(X-\hat X^{\mathrm{MMSE}})^T.
+\]
+
+Allora
+
+\[
+\hat\Sigma_{\mathrm{MMSE}}
+\simeq
+\sum_{i=1}^{N}
+\bar w_i
+\bigl(X_i-\hat X^{\mathrm{MMSE}}\bigr)
+\bigl(X_i-\hat X^{\mathrm{MMSE}}\bigr)^T.
+\]
+
+\subsubsection*{Riassunto dell'algoritmo}
+
+L'algoritmo richiede la scelta di:
+
+\begin{itemize}
+    \item \(N\), numero di campioni;
+    \item \(q(\cdot)\), funzione usata per il campionamento.
+\end{itemize}
+
+Poi si procede come segue.
+
+\paragraph{1. Generazione dei campioni}
+
+Si generano i campioni
+
+\[
+X_i\sim q(\cdot),
+\qquad i=1,\dots,N.
+\]
+
+\paragraph{2. Calcolo dei pesi non normalizzati}
+
+Per ogni campione si calcola
+
+\[
+w_i
+=
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid X_i)
+\frac{f_{\overline{\underline{X}}}(X_i)}{q(X_i)}.
+\]
+
+Il termine
+
+\[
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid X_i)
+\]
+
+contiene il modello di osservazione, cioè la dipendenza da \(h(\cdot,\cdot)\).
+
+\paragraph{3. Normalizzazione dei pesi}
+
+Si normalizzano i pesi:
+
+\[
+\bar w_i
+=
+\frac{w_i}{\displaystyle\sum w_i}.
+\]
+
+\paragraph{4. Calcolo della stima}
+
+La stima MMSE è
+
+\[
+\hat X^{\mathrm{MMSE}}
+\simeq
+\sum_{i=1}^{N}\bar w_i X_i.
+\]
+
+\paragraph{5. Calcolo della covarianza}
+
+La covarianza dell'errore è
+
+\[
+\hat\Sigma_{\mathrm{MMSE}}
+\simeq
+\sum_{i=1}^{N}
+\bar w_i
+\bigl(X_i-\hat X^{\mathrm{MMSE}}\bigr)
+\bigl(X_i-\hat X^{\mathrm{MMSE}}\bigr)^T.
+\]
+
+
+\subsubsection*{Interpretazione del termine di verosimiglianza}
+
+Nel problema di stima MMSE si considera il modello di osservazione
+
+\[
+Y=h(X,V),
+\]
+
+che rappresenta il problema inverso che si sta cercando di risolvere.
+
+La funzione \(h(\cdot,\cdot)\) è ``nascosta'' dentro la densità condizionata
+
+\[
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid X_i).
+\]
+
+Questa densità è associata al modello di osservazione
+
+\[
+h(X,V).
+\]
+
+\paragraph{Caso di rumore additivo}
+
+Nel caso di rumore additivo si ha
+
+\[
+Y=h(\overline{\underline{X}})+V.
+\]
+
+Allora
+
+\[
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid x_i)
+=
+f_V\bigl(y-h(x)\bigr).
+\]
+
+Se il rumore è gaussiano, cioè
+
+\[
+V\sim \mathcal{N}(0,\Sigma_V),
+\]
+
+ovvero
+
+\[
+f_V\bigl(y-h(x)\bigr)
+=
+\frac{1}{\sqrt{(2\pi)^n\det(\Sigma_V)}}
+\exp\!\left[
+-\frac{1}{2}
+\bigl(y-h(x)\bigr)^T
+\Sigma_V^{-1}
+\bigl(y-h(x)\bigr)
+\right].
+\]
+
+La scelta più naturale per la PDF di campionamento è la densità a priori
+
+\[
+f_{\overline{\underline{X}}}(x).
+\]
+
+In questo caso il peso non normalizzato diventa
+
+\[
+w_i
+=
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(Y\mid X_i)
+\frac{f_{\overline{\underline{X}}}(X_i)}{q(X)}.
+\]
+
+Poiché
+
+\[
+q(X_i)=f_{\overline{\underline{X}}}(X_i),
+\]
+
+si ottiene
+
+\[
+w_i
+=
+f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(y\mid X_i).
+\]
+
+Quindi, con questa scelta, il peso coincide con la verosimiglianza.
+
+\subsubsection*{Degenerazione dei pesi}
+
+Un problema possibile è la degenerazione dei pesi, cioè la situazione in cui la verosimiglianza risulta molto ``appuntita''.
+
+Questo accade, per esempio, quando i sensori sono molto accurati, cioè quando
+
+\[
+\Sigma_V
+\]
+
+è piccola.
+
+In quel caso pochi campioni ricevono peso significativo, mentre la maggior parte dei campioni ha peso praticamente nullo.
+
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+
+% assi
+\draw[->] (-3.5,0) -- (4.2,0) node[right] {\(x\)};
+\draw[->] (-3.5,0) -- (-3.5,2.3);
+
+% prior larga
+\draw[thick]
+plot[smooth, domain=-3.2:3.7, samples=120]
+(\x,{1.35*exp(-0.5*((\x+0.2)/1.45)^2)});
+
+\node at (-0.9,1.55) {\(f_{\overline{\underline{X}}}(x)\)};
+
+% likelihood stretta
+\draw[thick]
+plot[smooth, domain=0.65:2.45, samples=100]
+(\x,{2.05*exp(-0.5*((\x-1.55)/0.25)^2)});
+
+\node at (2.45,1.65) {\(f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(Y\mid X)\)};
+
+% campioni
+\foreach \x in {-2.8,-2.45,-2.1,-1.75,-1.35,-0.9,-0.55,-0.2,0.15,0.45,0.75,1.05,1.35,1.65,1.95,2.35,2.75,3.1}
+{
+    \fill (\x,0.08) circle (1.2pt);
+}
+
+% regione utile
+\draw[dashed] (1.25,0) -- (1.25,2.05);
+\draw[dashed] (1.85,0) -- (1.85,2.05);
+
+\node[align=center] at (1.55,-0.45) {pochi campioni\\con peso alto};
+
+\end{tikzpicture}
+\end{center}
+
+Le medie risultano quindi basate su un numero piccolo di campioni effettivamente utili.
+
+In pratica, anche se si generano molti campioni, solo pochi contribuiscono davvero alla stima.
+
+\subsubsection*{Possibili rimedi alla degenerazione dei pesi}
+
+Quando si verifica degenerazione dei pesi, si possono seguire due vie principali:
+
+\begin{itemize}
+    \item scegliere una diversa densità di campionamento \(q(\cdot)\);
+    \item applicare un ricampionamento, cioè un \emph{resampling}.
+\end{itemize}
+
+\subsubsection*{Ricampionamento}
+
+Il ricampionamento consiste nel rigenerare i campioni con probabilità data dai pesi.
+
+Prima del ricampionamento si ha l'insieme di campioni pesati
+
+\[
+\left\{(X_i,\bar w_i)\right\}_{i=1}^{N}.
+\]
+
+Dopo il ricampionamento si ottiene un nuovo insieme
+
+\[
+\left\{(X_i',\bar w_i')\right\}_{i=1}^{N}.
+\]
+
+I nuovi pesi vengono posti tutti uguali:
+
+\[
+w_j'=\frac{1}{N}.
+\]
+
+I nuovi campioni vengono estratti dai campioni precedenti secondo la distribuzione discreta definita dai pesi:
+
+\[
+X_j'=X_i
+\qquad
+\text{con probabilità } \bar w_i.
+\]
+
+In questo modo, i campioni con peso maggiore hanno maggiore probabilità di essere selezionati più volte, mentre i campioni con peso piccolo tendono a scomparire.
+
+\paragraph{Problema del ricampionamento}
+
+Il rischio è ottenere tanti nuovi campioni coincidenti.
+
+Per ridurre questo problema si può perturbare casualmente i nuovi campioni.
+
+\[
+X_j'=X_i+\xi_j,
+\]
+
+dove
+
+\[
+\xi_j \sim \mathcal{N}(0,\varepsilon I),
+\]
+
+con
+
+\[
+\varepsilon>0
+\]
+
+piccolo.
+
+In questo modo si evita che il nuovo insieme di campioni sia costituito da molte copie identiche dello stesso punto.
+
+
+
+\subsubsection*{Algoritmo di ricampionamento}
+
+Prima del ricampionamento si dispone dell'insieme di campioni pesati
+
+\[
+\left\{(X_i,\bar w_i)\right\}_{i=1}^{N}.
+\]
+
+Si sceglie un valore
+
+\[
+\varepsilon>0
+\]
+
+che verrà usato per perturbare leggermente i campioni ricampionati.
+
+\paragraph{Costruzione della distribuzione cumulativa}
+
+Si definiscono le somme cumulative dei pesi:
+
+\[
+S_1=\bar w_1,
+\]
+
+e, per
+
+\[
+i=2,\dots,N,
+\]
+
+\[
+S_i=S_{i-1}+\bar w_i.
+\]
+
+Poiché i pesi sono normalizzati,
+
+\[
+\sum_{i=1}^{N}\bar w_i=1,
+\]
+
+si ha
+
+\[
+S_N=1.
+\]
+
+Graficamente, il segmento unitario \([0,1]\) viene suddiviso in intervalli di ampiezza pari ai pesi \(\bar w_i\):
+
+\[
+[0,1]
+=
+[0,S_1]\cup [S_1,S_2]\cup \dots \cup [S_{N-1},S_N].
+\]
+
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+
+% linea principale
+\draw[->, thick] (0,0) -- (9,0);
+
+% tacche
+\draw[thick] (0,-0.15) -- (0,0.15);
+\draw[thick] (1.5,-0.15) -- (1.5,0.15);
+\draw[thick] (3.0,-0.15) -- (3.0,0.15);
+\draw[thick] (4.0,-0.15) -- (4.0,0.15);
+\draw[thick] (6.2,-0.15) -- (6.2,0.15);
+\draw[thick] (8.5,-0.15) -- (8.5,0.15);
+
+% etichette sotto
+\node[below] at (0,-0.15) {\(0\)};
+\node[below] at (1.5,-0.15) {\(S_1\)};
+\node[below] at (3.0,-0.15) {\(S_2\)};
+\node[below] at (4.0,-0.15) {\(S_3\)};
+\node[below] at (6.2,-0.15) {\(S_4\)};
+\node[below] at (8.5,-0.15) {\(S_N=1\)};
+
+% pesi sopra
+\draw[<->] (0,0.45) -- (1.5,0.45);
+\draw[<->] (1.5,0.45) -- (3.0,0.45);
+\draw[<->] (3.0,0.45) -- (4.0,0.45);
+\draw[<->] (4.0,0.45) -- (6.2,0.45);
+
+\node[above] at (0.75,0.45) {\(\bar W_1\)};
+\node[above] at (2.25,0.45) {\(\bar W_2\)};
+\node[above] at (3.5,0.45) {\(\bar W_3\)};
+\node[above] at (5.1,0.45) {\(\bar W_4\)};
+
+% graffa segmento unitario
+\draw[decorate,decoration={brace,mirror,amplitude=6pt}]
+(0,-0.8) -- (8.5,-0.8)
+node[midway,below=8pt] {segmento unitario};
+
+\end{tikzpicture}
+\end{center}
+
+\paragraph{Generazione dei nuovi campioni}
+
+Per ogni nuovo campione
+
+\[
+j=1,\dots,N,
+\]
+
+si genera un numero casuale
+
+\[
+u\sim \mathcal U(0,1),
+\]
+
+cioè un numero random secondo distribuzione uniforme tra \(0\) e \(1\).
+
+Inoltre si genera una perturbazione gaussiana
+
+\[
+\xi \sim \mathcal N(0,\varepsilon I),
+\]
+
+che verrà applicata al campione selezionato.
+
+Se
+
+\[
+u\in [S_{i-1},S_i],
+\]
+
+allora il nuovo campione viene scelto come
+
+\[
+X_j'=X_i+\xi.
+\]
+
+Il nuovo peso associato è uniforme:
+
+\[
+\bar w_j'=\frac{1}{N}.
+\]
+
+\paragraph{Risultato dell'algoritmo}
+
+Il risultato del ricampionamento è quindi un nuovo insieme di campioni pesati
+
+\[
+\left\{(X_j',\bar w_j')\right\}_{j=1}^{N}.
+\]
+
+Tutti i nuovi pesi sono uguali, mentre i campioni con peso originario più alto hanno maggiore probabilità di essere selezionati.
+
+\subsubsection*{Ricampionamento ripetuto}
+
+Il ricampionamento può essere effettuato più volte, suddividendo le osservazioni in sottoinsiemi.
+
+Si suddividono quindi le osservazioni \(Y\) in \(K\) sottoinsiemi:
+
+\[
+Y=
+\begin{bmatrix}
+Y_1^T & Y_2^T & \dots & Y_K^T
+\end{bmatrix}^T.
+\]
+
+Si generano inizialmente i campioni dalla prior:
+
+\[
+X_j\sim f_{\overline{\underline{X}}}(x),
+\qquad j=1,\dots,N.
+\]
+
+Per ogni campione si calcola il peso non normalizzato tramite la verosimiglianza:
+
+\[
+w_j=f_{\overline{\underline{Y}}\mid \overline{\underline{X}}}(Y,X).
+\]
+
+I pesi normalizzati sono
+
+\[
+\bar w_j=
+\frac{w_j}{\displaystyle\sum w_i}.
+\]
+
+
+Per
+\[
+i=2,\dots,K,
+\]
+si aggiorna iterativamente l'insieme dei campioni pesati:
+
+\[
+\left\{(X_j,\bar w_j)\right\}
+\longrightarrow
+\left\{(X_j',\bar w_j')\right\}.
+\]
+
+I nuovi pesi \(\bar w_j'\) vengono aggiornati con la verosimiglianza associata al nuovo sottoinsieme di osservazioni.
+
+\subsubsection*{Esempio: stima della posizione di un punto materiale}
+
+Si vuole stimare la posizione \(X\) di un punto materiale tramite una misura di tempo di andata e ritorno di un'onda acustica.
+
+
+\begin{tikzpicture}
+
+    % Asse orizzontale
+    \draw[thick, ->, >=stealth] (0,0) -- (6,0) node[below right] {$x$};
+
+    % Origine (0)
+    \draw[thick] (0,-0.25) -- (0,0.3);
+    \node[below] at (0,-0.25) {$0$};
+
+    % Onde sonore/segnale sotto l'origine (Nero)
+    \fill (0,-1) circle (1pt);
+    \draw[thick] (0,-1) ++(60:0.2) arc (60:-60:0.2);
+    \draw[thick] (0,-1) ++(60:0.4) arc (60:-60:0.4);
+    \draw[thick] (0,-1) ++(60:0.6) arc (60:-60:0.6);
+
+    % Punto medio e deviazione/covarianza (Blu)
+    \draw[thick, blue] (4,-0.15) -- (4,0.15);
+    \node[below, blue] at (4.3,-0.2) {$\bar{x}, \Sigma_x$};
+
+    % Curva a campana (Distribuzione normale) (Blu)
+    \draw[thick, blue] (3.2,0.2) .. controls (3.6,0.2) and (3.7,0.9) .. (4,0.9) .. controls (4.3,0.9) and (4.4,0.2) .. (4.8,0.2);
+
+    % Punto nero sull'asse a destra di x-bar
+    \filldraw[black] (4.5,0) circle (1.5pt);
+
+    % Onde sonore/segnale verso sinistra sotto x-bar (Blu)
+    \draw[thick] (4,-1.2) ++(120:0.2) arc (120:240:0.2);
+    \draw[thick] (4,-1.2) ++(120:0.4) arc (120:240:0.4);
+    \draw[thick] (4,-1.2) ++(120:0.6) arc (120:240:0.6);
+
+\end{tikzpicture}
+
+
+Si assume una distribuzione a priori gaussiana per la posizione:
+
+\[
+X\sim\mathcal{N}(\bar x,\Sigma_X).
+\]
+
+Il rumore di misura è anch'esso gaussiano:
+
+\[
+V\sim\mathcal{N}(0,\Sigma_V).
+\]
+
+Il modello di misura è basato sul tempo di andata e ritorno dell'onda acustica:
+
+\[
+Y=\frac{2}{c}X+V.
+\]
+
+Il fattore \(2\) compare perché si misura il tempo di andata e ritorno.
+
+La costante \(c\) rappresenta la velocità del suono in aria:
+
+\[
+c \simeq 340 \,\frac{\mathrm{m}}{\mathrm{s}}.
+\]
+
+Scrivendo tutte le misure in forma vettoriale:
+
+\[
+Y=
+\begin{bmatrix}
+Y_1\\
+Y_2\\
+\vdots\\
+Y_N
+\end{bmatrix}
+=
+\begin{bmatrix}
+\dfrac{2}{c}\\[0.4em]
+\dfrac{2}{c}\\
+\vdots\\
+\dfrac{2}{c}
+\end{bmatrix}X
++
+\begin{bmatrix}
+V_1\\
+V_2\\
+\vdots\\
+V_N
+\end{bmatrix}.
+\]
+
+Quindi il modello è lineare:
+
+\[
+Y=CX+V,
+\]
+
+dove
+
+\[
+C=
+\begin{bmatrix}
+\dfrac{2}{c}\\[0.4em]
+\dfrac{2}{c}\\
+\vdots\\
+\dfrac{2}{c}
+\end{bmatrix}.
+\]
+
+La matrice di covarianza del rumore di misura è diagonale:
+
+\[
+\Sigma_V=
+\begin{bmatrix}
+\sigma_V & 0 & \cdots & 0\\
+0 & \sigma_V & \cdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \cdots & \sigma_V
+\end{bmatrix}.
+\]
+
+I dati indicati sono:
+
+\[
+\Sigma_X=(3\,\mathrm{m})^2,
+\]
+
+\[
+\bar x=120\,\mathrm{m},
+\]
+
+\[
+\sigma_V=0.1\,\mathrm{s}.
+\]
+
+Poiché siamo nel caso bayesiano gaussiano lineare, gli stimatori coincidono:
+
+\[
+\mathrm{MMSE}
+=
+\mathrm{BLUE}
+=
+\mathrm{EAP}
+=
+\mathrm{MAP}.
+\]
+
+
 
 \end{document}
