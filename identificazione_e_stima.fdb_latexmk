@@ -1,6 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1778686059.32539 "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" "identificazione_e_stima.pdf" "identificazione_e_stima" 1778686062.6911 0
-  "/Users/gab/Appunti_Identificazione_Stima/identificazione_e_stima.tex" 1778686058.82343 217917 7b435680a7f9c160ee537bcd6ce87840 ""
+["pdflatex"] 1786655479.94741 "identificazione_e_stima.tex" "identificazione_e_stima.pdf" "identificazione_e_stima" 1786655680.52579 0
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -235,10 +234,10 @@
   "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1773845389 5541377 04880c840ca220163a28f1a3af0ee662 ""
   "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1773845112 3636762 2f8956604c3fb4c008b00d4a71152d0f ""
   "/usr/local/texlive/2026/texmf.cnf" 1772409725 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
-  "identificazione_e_stima.aux" 1778686062.53849 16624 fc9e095fe1bee016d11abcfa12ef92fc "pdflatex"
-  "identificazione_e_stima.out" 1778686062.54055 10409 e8041779de2315e1b39cde28d2584481 "pdflatex"
-  "identificazione_e_stima.tex" 1778686058.82343 217917 7b435680a7f9c160ee537bcd6ce87840 ""
-  "identificazione_e_stima.toc" 1778686062.5408 10835 324360a3e16cff732f2a270a1bde699d "pdflatex"
+  "identificazione_e_stima.aux" 1786655664.2807 18920 b8c0204352535178b6865a154ec73b7b "pdflatex"
+  "identificazione_e_stima.out" 1786655665.08941 11868 4830fbb6f46e43e247491d9a5102f89e "pdflatex"
+  "identificazione_e_stima.tex" 1786655430.9153 265958 b54a8fcafb3844781769f64332c84d17 ""
+  "identificazione_e_stima.toc" 1786655665.13493 12311 9b5d705b542e1859e9f4113a5eee03da "pdflatex"
   (generated)
   "identificazione_e_stima.aux"
   "identificazione_e_stima.log"

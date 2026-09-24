@@ -8297,6 +8297,3912 @@ Poiché siamo nel caso bayesiano gaussiano lineare, gli stimatori coincidono:
 \mathrm{MAP}.
 \]
 
+Da completare questo e aggiungere esercizio successivo.
 
+\section{Stima Dinamica}
+
+\textbf{Stima statica:}
+\[
+\overline{\underline{x}} \text{ costante nel tempo}
+\]
+
+\textbf{Stima dinamica:}
+\[
+\overline{\underline{x}} \text{ variabile nel tempo}
+\]
+
+\paragraph{Esempio}
+Stima dello stato di un sistema dinamico.
+
+\subsection*{Tempo discreto}
+
+\[
+x_{k+1}=f_k(x_k,w_k)
+\]
+
+\[
+y_k=h_k(x_k,v_k)
+\]
+
+con
+
+\[
+k=0,1,\ldots
+\]
+
+\[
+x_k\in\mathbb{R}^{n}
+\]
+
+\[
+y_k\in\mathbb{R}^{p}
+\qquad \text{(misure)}
+\]
+
+\[
+w_k
+\qquad \text{disturbo di processo}
+\]
+
+\[
+v_k
+\qquad \text{rumore di misura}
+\]
+
+\vspace{0.5cm}
+
+\[
+z_k
+\qquad \text{quantità all'istante }k
+\]
+
+\[
+z^{k}
+\qquad \text{segnale fino all'istante }k
+\]
+
+\[
+z^{k}=
+\left\{
+z^{k},
+z^{k-1},
+z^{k-2},
+\ldots
+\right\}
+\]
+
+\vspace{0.5cm}
+
+Stima dello stato:
+
+\[
+x_t
+\]
+
+\begin{itemize}
+    \item $t>k$ \hfill Predizione
+    \item $t=k$ \hfill Filtraggio
+    \item $t<k$ \hfill Regolarizzazione
+\end{itemize}
+
+\subsection*{Come fare?}
+
+Stimare $x_k$ sfruttando $f_k$, ma tenendo conto di:
+
+\begin{itemize}
+    \item $f$ non ideale;
+    \item incertezza sullo stato iniziale.
+\end{itemize}
+
+Compensare con le misure
+
+\[
+y_k
+\qquad \bigl(h_k(\cdot)\bigr)
+\]
+
+che però sono rumorose.
+
+\subsection*{Caso LTI}
+
+Consideriamo il sistema lineare tempo-invariante
+
+\[
+x_{k+1} = A x_k + b_k + D w_k
+\]
+
+\[
+y_k = C x_k + v_k
+\]
+
+dove $b_k$ rappresenta la componente deterministica dell'ingresso. In particolare,
+
+\[
+b_k = B u_k.
+\]
+
+Il problema consiste nella stima in tempo reale dello stato $x_k$, elaborando gli ingressi noti $b_k$ e le misure $y_k$, in modo da ottenere una stima
+
+\[
+\hat{x}_k.
+\]
+
+\subsection*{Osservatore}
+
+Una possibile struttura dell'osservatore è
+
+\[
+\xi_{k+1}
+=
+\mathcal{A}\xi_k
++
+\mathcal{B}b_k
++
+\mathcal{C}y_k
+\]
+
+\[
+\hat{x}_k
+=
+\mathcal{D}\xi_k
++
+\mathcal{E}b_k
++
+\mathcal{F}y_k.
+\]
+
+dove $\xi_k$ rappresenta lo stato interno dell'osservatore.
+
+\begin{center}
+\begin{tikzpicture}[
+    >=Latex,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=3.2cm,
+        minimum height=1.35cm,
+        align=center
+    },
+    obsblock/.style={
+        draw,
+        rectangle,
+        minimum width=3.8cm,
+        minimum height=2.0cm,
+        align=center
+    },
+    every node/.style={font=\normalsize}
+]
+
+% =========================
+% Sistema
+% =========================
+
+\node[block] (sys) at (0,0) {$A,\ C,\ D$};
+
+% b_k
+\node (bk) at (-3,0) {$b_k$};
+\draw[->] (bk) -- (sys.west);
+
+% w_k e v_k
+\node (wk) at (-0.8,1.4) {$w_k$};
+\node (vk) at (0.8,1.4) {$v_k$};
+
+\draw[->] (wk) -- (-0.8,0.68);
+\draw[->] (vk) -- (0.8,0.68);
+
+% x_k sotto il sistema
+\draw (sys.south) -- ++(0,-0.45);
+\draw (0,-1.125) circle (0.08);
+\node[below=0.12cm] at (0,-1.125) {$x_k$};
+
+% =========================
+% Uscita y_k
+% =========================
+
+% y_k esce normalmente dal sistema verso destra
+\coordinate (ysplit) at (2.35,0);
+
+\draw[->]
+    (sys.east)
+    -- (4.15,0)
+    node[pos=0.52,above] {$y_k$};
+
+% =========================
+% Osservatore
+% =========================
+
+\node[obsblock] (obs) at (5,-2.2) {
+    $\mathcal{A}\qquad\mathcal{B}\qquad\mathcal{C}$\\[2mm]
+    $\mathcal{D}\qquad\mathcal{E}\qquad\mathcal{F}$
+};
+
+\node[above=0.15cm of obs] {Osservatore};
+
+% ramo di y_k che entra nell'osservatore
+\draw[->]
+    (ysplit)
+    -- (2.35,-1.75)
+    -- ([yshift=0.45cm]obs.west);
+
+% b_k entra anche nell'osservatore
+\coordinate (bsplit) at (-2.35,0);
+
+\draw
+    (bsplit)
+    -- (-2.35,-2.65)
+    -- ([xshift=-0.3cm,yshift=-0.45cm]obs.west);
+
+\draw[->]
+    ([xshift=-0.3cm,yshift=-0.45cm]obs.west)
+    -- ([yshift=-0.45cm]obs.west);
+
+% uscita x_hat_k
+\node (xhat) at (8,-2.2) {$\hat{x}_k$};
+\draw[->] (obs.east) -- (xhat);
+
+% xi_k sotto osservatore
+\draw (obs.south) -- ++(0,-0.45);
+\draw (5,-3.65) circle (0.08);
+\node[below=0.12cm] at (5,-3.65) {$\xi_k$};
+
+\end{tikzpicture}
+\end{center}
+
+\subsection*{Comportamento desiderato dell'osservatore}
+
+In assenza di disturbi e rumori, si desidera che
+
+\[
+\hat{x}_k \longrightarrow x_k,
+\qquad k\to\infty,
+\]
+
+indipendentemente dalle condizioni iniziali del sistema e dell'osservatore.
+
+Vogliamo quindi costruire un \textbf{osservatore asintotico}.
+
+Definiamo l'errore di stima dello stato come
+
+\[
+\tilde{x}_k
+=
+x_k-\hat{x}_k.
+\]
+
+Se
+
+\[
+v_k=0,
+\qquad
+w_k=0,
+\]
+
+l'osservatore deve soddisfare
+
+\[
+\boxed{
+\lim_{k\to\infty}\tilde{x}_k=0
+\qquad
+\forall\,x_0,\xi_0
+}
+\]
+
+ossia la stima deve convergere asintoticamente allo stato reale:
+
+\[
+\hat{x}_k \longrightarrow x_k.
+\]
+
+\subsection*{Osservatore di Luenberger}
+
+L'osservatore di Luenberger è definito da
+
+\[
+\hat{x}_{k+1}
+=
+A\hat{x}_k+b_k
++
+K\left(y_k-C\hat{x}_k\right),
+\]
+
+dove
+
+- il termine
+  \[
+  A\hat{x}_k+b_k
+  \]
+  rappresenta una \emph{copia del sistema};
+
+- il termine
+  \[
+  K\left(y_k-C\hat{x}_k\right)
+  \]
+  rappresenta la \emph{correzione} basata sull'errore di stima dell'uscita.
+
+Sviluppando l'espressione,
+
+\[
+\boxed{
+\hat{x}_{k+1}
+=
+(A-KC)\hat{x}_k+b_k+Ky_k.
+}
+\]
+
+L'uscita dell'osservatore coincide con la stima dello stato,
+
+\[
+\hat{x}_k=\hat{x}_k.
+\]
+
+Confrontando questa forma con l'osservatore generale,
+
+\[
+\begin{aligned}
+\xi_{k+1}
+&=
+\mathcal{A}\xi_k
++
+\mathcal{B}b_k
++
+\mathcal{C}y_k,\\
+\hat{x}_k
+&=
+\mathcal{D}\xi_k
++
+\mathcal{E}b_k
++
+\mathcal{F}y_k,
+\end{aligned}
+\]
+
+si ottengono
+
+\[
+\boxed{
+\begin{aligned}
+\mathcal{A}&=A-KC,\\
+\mathcal{B}&=I,\\
+\mathcal{C}&=K,\\
+\mathcal{D}&=I,\\
+\mathcal{E}&=0,\\
+\mathcal{F}&=0.
+\end{aligned}
+}
+\]
+
+\subsection*{Dinamica dell'errore di stima}
+
+Definiamo l'errore di stima
+
+\[
+\tilde{x}_k=x_k-\hat{x}_k.
+\]
+
+Allora
+
+\[
+\begin{aligned}
+\tilde{x}_{k+1}
+&=
+x_{k+1}-\hat{x}_{k+1}\\
+&=
+\left(Ax_k+b_k+Dw_k\right)
+-
+\left(A\hat{x}_k+b_k+K(y_k-C\hat{x}_k)\right).
+\end{aligned}
+\]
+
+Poiché
+
+\[
+y_k=Cx_k+v_k,
+\]
+
+segue che
+
+\[
+\begin{aligned}
+\tilde{x}_{k+1}
+&=
+A(x_k-\hat{x}_k)
++
+Dw_k
+-
+K(Cx_k+v_k-C\hat{x}_k)\\
+&=
+(A-KC)\tilde{x}_k
++
+Dw_k
+-
+Kv_k.
+\end{aligned}
+\]
+
+Pertanto
+
+\[
+\boxed{
+\tilde{x}_{k+1}
+=
+(A-KC)\tilde{x}_k
++
+Dw_k
+-
+Kv_k.
+}
+\]
+
+Nel caso ideale, cioè
+
+\[
+v_k=0,
+\qquad
+w_k=0,
+\]
+
+(si tratta proprio della definizione di osservatore asintotico),
+
+\[
+\boxed{
+\tilde{x}_{k+1}
+=
+(A-KC)\tilde{x}_k.
+}
+\]
+
+L'osservatore di Luenberger è asintotico se e solo se
+
+\[
+A-KC
+\]
+
+ha tutti gli autovalori all'interno del cerchio unitario.
+
+Infatti,
+
+\[
+\boxed{
+\text{L'osservatore è asintotico}
+\iff
+\rho(A-KC)<1,
+}
+\]
+
+dove $\rho(\cdot)$ indica il raggio spettrale.
+
+Infine, tutti gli autovalori di $A-KC$ possono essere assegnati arbitrariamente se e solo se la coppia
+
+\[
+(A,C)
+\]
+
+è completamente osservabile.
+
+In particolare,
+
+\[
+\boxed{
+\text{Esiste un osservatore asintotico}
+\iff
+(A,C)\ \text{è rilevabile}.
+}
+\]
+
+\subsection*{Presenza di rumore di processo e di misura}
+
+In presenza di rumore di processo $w_k$ e di rumore di misura $v_k$, la dinamica dell'errore di stima diventa
+
+\[
+\tilde{x}_{k+1}
+=
+(A-KC)\tilde{x}_k
++
+Dw_k
+-
+Kv_k.
+\]
+
+Sviluppando ricorsivamente,
+
+\[
+\tilde{x}_1
+=
+(A-KC)\tilde{x}_0
++
+Dw_0
+-
+Kv_0,
+\]
+
+\[
+\tilde{x}_2
+=
+(A-KC)^2\tilde{x}_0
++
+(A-KC)Dw_0
+-
+(A-KC)Kv_0
++
+Dw_1
+-
+Kv_1,
+\]
+
+e, in generale,
+
+\[
+\boxed{
+\tilde{x}_k
+=
+(A-KC)^k\tilde{x}_0
++
+\sum_{i=0}^{k-1}
+(A-KC)^{k-1-i}Dw_i
+-
+\sum_{j=0}^{k-1}
+(A-KC)^{k-1-j}Kv_j.
+}
+\]
+
+Supponiamo che
+
+\begin{enumerate}
+    \item l'osservatore sia asintotico;
+    \item $w_k$ e $v_k$ siano processi stazionari a media nulla.
+\end{enumerate}
+
+Ci si chiede quale sia il comportamento di $\tilde{x}_k$ a regime.
+
+In queste ipotesi,
+
+\[
+\boxed{
+\tilde{x}_k
+\text{ è un processo stazionario (P.S.S.) a media nulla a regime.}
+}
+\]
+
+Rimane quindi da scegliere opportunamente il guadagno $K$.
+
+L'idea è scegliere il guadagno che minimizza la varianza dell'errore di stima, cioè
+
+\[
+\boxed{
+\min_K
+\;
+\mathbb{E}
+\!\left[
+\tilde{x}_k
+\tilde{x}_k^{T}
+\right].
+}
+\]
+
+Questa scelta porta al \textbf{filtro di Kalman}, che fornisce il guadagno ottimo nel senso della minima covarianza dell'errore di stima.
+
+\section{Recap Stima Dinamica}
+
+\subsection*{Stima dinamica}
+
+Obiettivo: stimare lo stato $x_t$ sulla base delle informazioni disponibili fino all'istante $k$,
+
+\[
+z^k=\{z_k,z_{k-1},\ldots\}.
+\]
+
+A seconda dell'istante da stimare si distinguono:
+
+\begin{itemize}
+    \item $t>k$ : \textbf{predizione};
+    \item $t=k$ : \textbf{filtraggio};
+    \item $t<k$ : \textbf{regolarizzazione (smoothing)}.
+\end{itemize}
+
+Il sistema dinamico generale è descritto da
+
+\[
+x_{k+1}=f_k(x_k,w_k),
+\]
+
+\[
+y_k=h_k(x_k,v_k).
+\]
+
+\subsection*{Caso LTI}
+
+Nel caso lineare tempo-invariante,
+
+\[
+x_{k+1}=Ax_k+b_k+Dw_k,
+\]
+
+\[
+y_k=Cx_k+v_k.
+\]
+
+L'osservatore di Luenberger è
+
+\[
+\hat{x}_{k+1}
+=
+A\hat{x}_k
++b_k
++
+K\left(y_k-C\hat{x}_k\right).
+\]
+
+L'errore di stima evolve secondo
+
+\[
+\tilde{x}_k
+=
+(A-KC)^k\tilde{x}_0
++
+\sum_{i=0}^{k-1}
+(A-KC)^{k-1-i}Dw_i
+-
+\sum_{j=0}^{k-1}
+(A-KC)^{k-1-j}Kv_j.
+\]
+
+Se
+
+\begin{itemize}
+    \item l'osservatore è asintotico;
+    \item $w_k$ e $v_k$ sono processi stazionari a media nulla,
+\end{itemize}
+
+allora
+
+\[
+\tilde{x}_k
+\]
+
+è un processo stazionario a media nulla a regime.
+
+Il guadagno viene quindi scelto in modo da minimizzare
+
+\[
+\boxed{
+\mathbb{E}
+\!\left[
+\tilde{x}_k\tilde{x}_k^{T}
+\right].
+}
+\]
+
+\subsection*{Caso LTV}
+
+Per un sistema lineare tempo-variante,
+
+\[
+x_{k+1}
+=
+A_kx_k
++
+b_k
++
+D_kw_k,
+\]
+
+\[
+y_k
+=
+C_kx_k
++
+v_k.
+\]
+
+L'osservatore di Luenberger tempo-variante diventa
+
+\[
+\hat{x}_{k+1}
+=
+A_k\hat{x}_k
++
+b_k
++
+K_k\!\left(y_k-C_k\hat{x}_k\right),
+\]
+
+ovvero,
+
+\[
+\boxed{
+\hat{x}_{k+1}
+=
+(A_k-K_kC_k)\hat{x}_k
++
+b_k
++
+K_ky_k.
+}
+\]
+
+\subsection*{Dinamica dell'errore di stima}
+
+Nel caso tempo-variante, la dinamica dell'errore di stima è
+
+\[
+\boxed{
+\tilde{x}_{k+1}
+=
+(A_k-K_kC_k)\tilde{x}_k
++
+D_kw_k
+-
+K_kv_k.
+}
+\]
+
+\subsection*{Ipotesi statistiche}
+
+Assumiamo che il rumore di processo sia un rumore bianco, a media nulla e covarianza
+
+\[
+Q_k=Q_k^T>0,
+\]
+
+cioè
+
+\[
+w_k\sim\mathcal{WN}(0,Q_k).
+\]
+
+Analogamente, il rumore di misura è
+
+\[
+v_k\sim\mathcal{WN}(0,R_k).
+\]
+
+Lo stato iniziale è una variabile aleatoria con
+
+\[
+\mathbb{E}[x_0]=\hat{x}_0,
+\]
+
+e matrice di covarianza
+
+\[
+P_0=P_0^T>0.
+\]
+
+Inoltre si assume
+
+\[
+\boxed{
+\mathbb{E}[w_i\,v_j^{T}]=0,
+\qquad
+\forall\,i,j,
+}
+\]
+
+ossia rumore di processo e rumore di misura sono incorrelati.
+
+Si assume inoltre che lo stato iniziale sia incorrelato con entrambi i processi di rumore.
+
+\subsection*{Problema dell'osservatore ottimo}
+
+Per ogni
+
+\[
+k=0,1,\ldots
+\]
+
+determinare il guadagno
+
+\[
+K_k
+\]
+
+in modo da minimizzare l'errore quadratico medio di stima.
+
+Definiamo
+
+\[
+\boxed{
+P_{k+1}
+=
+\mathbb{E}
+\!\left[
+\tilde{x}_{k+1}
+\tilde{x}_{k+1}^{T}
+\right].
+}
+\]
+
+Poiché
+
+\[
+\tilde{x}_{k+1}
+=
+(A_k-K_kC_k)\tilde{x}_k
++
+D_kw_k
+-
+K_kv_k,
+\]
+
+segue
+
+\[
+\begin{aligned}
+P_{k+1}
+=
+\mathbb{E}
+\Big[
+&
+\big(
+(A_k-K_kC_k)\tilde{x}_k
++D_kw_k
+-K_kv_k
+\big)
+\\
+&
+\cdot
+\big(
+(A_k-K_kC_k)\tilde{x}_k
++D_kw_k
+-K_kv_k
+\big)^T
+\Big].
+\end{aligned}
+\]
+
+\subsection*{Espansione dell'errore}
+
+Introduciamo la matrice di transizione
+
+\[
+\Phi_k=A_k-K_kC_k.
+\]
+
+La soluzione ricorsiva dell'errore è
+
+\[
+\boxed{
+\tilde{x}_k
+=
+\Phi_{k,0}\tilde{x}_0
++
+\sum_{i=0}^{k-1}
+\Phi_{k,i+1}D_iw_i
+-
+\sum_{j=0}^{k-1}
+\Phi_{k,j+1}K_jv_j.
+}
+\]
+
+dove
+
+\[
+\Phi_{k,i}
+=
+\begin{cases}
+\Phi_{k-1}\Phi_{k-2}\cdots\Phi_i,
+& k>i,\\[2mm]
+I,
+& k=i.
+\end{cases}
+\]
+
+\subsection*{Proprietà di incorrelazione}
+
+Le seguenti proprietà verranno utilizzate nello sviluppo di $P_{k+1}$.
+
+\[
+\tilde{x}_k
+\quad\text{e}\quad
+w_k
+\]
+
+sono incorrelati perché
+
+\begin{itemize}
+    \item $w_k$ è incorrelato con $\tilde{x}_0$;
+    \item $w_k$ è incorrelato con $v_j$;
+    \item $w_k$ è incorrelato con $w_i$, \qquad $i=0,\ldots,k-1$.
+\end{itemize}
+
+Analogamente,
+
+\[
+\tilde{x}_k
+\quad\text{e}\quad
+v_k
+\]
+
+sono incorrelati.
+
+Infine,
+
+\[
+w_k
+\quad\text{e}\quad
+v_k
+\]
+
+sono incorrelati per ipotesi.
+
+\subsection*{Derivazione del guadagno ottimo di Kalman}
+
+Dalla definizione della matrice di covarianza dell'errore,
+
+\[
+P_{k+1}
+=
+\mathbb{E}
+\!\left[
+\tilde{x}_{k+1}\tilde{x}_{k+1}^{T}
+\right],
+\]
+
+e sfruttando le ipotesi di incorrelazione tra errore, rumore di processo e rumore di misura, si ottiene
+
+\[
+\begin{aligned}
+P_{k+1}
+&=
+(A_k-K_kC_k)
+\,
+P_k
+\,
+(A_k-K_kC_k)^T
+\\
+&\qquad
++
+D_kQ_kD_k^T
++
+K_kR_kK_k^T.
+\end{aligned}
+\]
+
+Il problema consiste quindi nel determinare
+
+\[
+\boxed{
+K_k
+=
+\arg\min_{K}
+P_{k+1}.
+}
+\]
+
+Espandendo il primo termine,
+
+\[
+\begin{aligned}
+P_{k+1}
+=
+&
+(A_k-KC_k)
+P_k
+(A_k-KC_k)^T
+\\
+&
++D_kQ_kD_k^T
++
+KR_kK^T
+\\[1mm]
+=
+&
+K(R_k+C_kP_kC_k^T)K^T
+\\
+&
+-KC_kP_kA_k^T
+-A_kP_kC_k^TK^T
+\\
+&
++D_kQ_kD_k^T
++
+A_kP_kA_k^T .
+\end{aligned}
+\]
+
+Introduciamo le matrici
+
+\[
+\boxed{
+S_k
+=
+R_k+C_kP_kC_k^T,
+}
+\]
+
+\[
+\boxed{
+V_k
+=
+A_kP_kC_k^T.
+}
+\]
+
+L'espressione precedente diventa
+
+\[
+\begin{aligned}
+P_{k+1}
+=
+&
+KS_kK^T
+-
+KV_k^T
+-
+V_kK^T
+\\
+&
++
+D_kQ_kD_k^T
++
+A_kP_kA_k^T .
+\end{aligned}
+\]
+
+A questo punto si completa il quadrato matriciale,
+
+\[
+\begin{aligned}
+P_{k+1}
+=
+&
+(K-V_kS_k^{-1})
+S_k
+(K-V_kS_k^{-1})^T
+\\
+&
+-
+V_kS_k^{-1}V_k^T
+\\
+&
++
+D_kQ_kD_k^T
++
+A_kP_kA_k^T.
+\end{aligned}
+\]
+
+Poiché il primo termine è sempre semidefinito positivo, esso è minimo quando
+
+\[
+\boxed{
+K_k
+=
+V_kS_k^{-1}.
+}
+\]
+
+Sostituendo le definizioni di $V_k$ e $S_k$,
+
+\[
+\boxed{
+K_k
+=
+A_kP_kC_k^T
+\left(
+R_k+C_kP_kC_k^T
+\right)^{-1}.
+}
+\]
+
+L'osservatore ottimo diventa quindi
+
+\[
+\boxed{
+\hat{x}_{k+1}
+=
+A_k\hat{x}_k
++
+b_k
++
+K_k
+\left(
+y_k-C_k\hat{x}_k
+\right).
+}
+\]
+
+Infine, sostituendo il guadagno ottimo nell'equazione della covarianza si ottiene
+
+\[
+\boxed{
+\begin{aligned}
+P_{k+1}
+=
+&
+A_kP_kA_k^T
++
+D_kQ_kD_k^T
+\\
+&
+-
+A_kP_kC_k^T
+\left(
+R_k+C_kP_kC_k^T
+\right)^{-1}
+C_kP_kA_k^T.
+\end{aligned}
+}
+\]
+
+Le tre equazioni
+
+\begin{enumerate}
+    \item aggiornamento del guadagno $K_k$;
+    \item aggiornamento della stima $\hat{x}_k$;
+    \item aggiornamento della covarianza $P_k$;
+\end{enumerate}
+
+costituiscono il \textbf{Filtro di Kalman} (Kalman, 1960).
+
+\subsection*{Forma ricorsiva del filtro di Kalman}
+
+Osservazioni:
+
+\begin{itemize}
+    \item è il miglior stimatore lineare per sistemi lineari;
+    \item nel caso gaussiano è ottimo anche tra tutti gli stimatori non lineari (MMSE).
+\end{itemize}
+
+L'ipotesi di gaussianità riguarda
+
+\begin{itemize}
+    \item il disturbo di processo;
+    \item il rumore di misura;
+    \item lo stato iniziale.
+\end{itemize}
+
+Si osserva inoltre che
+
+\begin{itemize}
+    \item $K_k$ e $P_{k+1}$ non dipendono dalle osservazioni e possono quindi essere calcolati offline;
+    \item $\hat{x}_k$ e $P_k$ sono invece basati sulle osservazioni disponibili fino all'istante $k-1$, cioè rappresentano una \emph{predizione}.
+\end{itemize}
+
+Per evitare ambiguità di notazione è preferibile scrivere
+
+\[
+\hat{x}_k
+\equiv
+\hat{x}_{k|k-1},
+\]
+
+ossia la stima dello stato all'istante $k$ basata sulle misure fino all'istante $k-1$.
+
+Analogamente,
+
+\[
+P_k
+\equiv
+P_{k|k-1}.
+\]
+
+\subsection*{Aggiornamento mediante la nuova misura}
+
+In pratica interessa ottenere una stima \emph{filtrata}, cioè utilizzando anche la misura disponibile all'istante corrente.
+
+Infatti
+
+\[
+Y^k
+=
+Y^{k-1}
+\cup
+\{y_k\}.
+\]
+
+La stima filtrata viene ottenuta combinando
+
+\[
+\bigl(\hat{x}_{k|k-1},\,P_{k|k-1}\bigr)
+\]
+
+con la nuova osservazione
+
+\[
+y_k,
+\]
+
+ottenendo
+
+\[
+\boxed{
+\hat{x}_{k|k},
+\qquad
+P_{k|k}.
+}
+\]
+
+Questo aggiornamento può essere visto come un problema di stima statica, la cui soluzione è lo stimatore BLUE.
+
+\subsection*{Equazioni di aggiornamento}
+
+Lo stato viene corretto mediante
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+\Sigma_{xy}\Sigma_y^{-1}
+\left(
+y_k-\hat{y}_{k|k-1}
+\right).
+}
+\]
+
+Poiché
+
+\[
+\hat{y}_{k|k-1}
+=
+C_k\hat{x}_{k|k-1},
+\]
+
+e
+
+\[
+\Sigma_{xy}
+=
+P_{k|k-1}C_k^T,
+\]
+
+\[
+\Sigma_y
+=
+C_kP_{k|k-1}C_k^T
++
+R_k,
+\]
+
+l'equazione precedente diventa
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+P_{k|k-1}C_k^T
+\left(
+C_kP_{k|k-1}C_k^T
++
+R_k
+\right)^{-1}
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right).
+}
+\]
+
+Infine, la matrice di covarianza aggiornata è
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+\Sigma_{xy}
+\Sigma_y^{-1}
+\Sigma_{xy}^T.
+}
+\]
+
+Esplicitando le matrici,
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+P_{k|k-1}C_k^T
+\left(
+C_kP_{k|k-1}C_k^T
++
+R_k
+\right)^{-1}
+C_kP_{k|k-1}.
+}
+\]
+
+\subsection*{Forma predizione--correzione del filtro di Kalman}
+
+L'aggiornamento della stima filtrata può essere scritto nella forma
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right),
+}
+\]
+
+dove
+
+\[
+\boxed{
+L_k
+=
+P_{k|k-1}C_k^T
+\left(
+C_kP_{k|k-1}C_k^T+R_k
+\right)^{-1}
+}
+\]
+
+è il \textbf{guadagno di correzione} (Kalman Gain).
+
+La covarianza della stima filtrata diventa
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+P_{k|k-1}C_k^T
+\left(
+C_kP_{k|k-1}C_k^T+R_k
+\right)^{-1}
+C_kP_{k|k-1}.
+}
+\]
+
+La logica del filtro è quindi la seguente:
+
+\begin{center}
+\begin{tikzpicture}[
+    >=Latex,
+    every node/.style={font=\normalsize}
+]
+
+% =========================
+% Nodi principali
+% =========================
+
+\node (kf) at (0,0) {Filtro di Kalman};
+\node[below=0.15cm of kf] (eq) {3 eq.};
+
+\node (pred) at (4.2,0) {$\hat{x}_{k|k-1}$};
+\node[below=0.18cm of pred] {Predizione};
+
+\node (blue) at (7.2,0) {BLUE};
+
+\node (corr) at (10.5,0) {Stima filtrata};
+\node[below=0.12cm of corr] {(corretta)};
+
+% =========================
+% Flusso principale
+% =========================
+
+\draw[->, thick]
+    ([xshift=0.2cm]kf.east)
+    --
+    ([xshift=-0.35cm]pred.west);
+
+\draw[->, thick]
+    ([xshift=0.25cm]pred.east)
+    --
+    ([xshift=-0.35cm]blue.west);
+
+\draw[->, thick]
+    ([xshift=0.25cm]blue.east)
+    --
+    ([xshift=-0.35cm]corr.west);
+
+% =========================
+% Osservazione all'istante k
+% =========================
+
+\node[below=1.25cm of blue, align=center] (obs) {
+    osserv.\\
+    all'istante $k$
+};
+
+\draw[->, thick]
+    (obs.north)
+    --
+    ([yshift=-0.15cm]blue.south);
+
+% =========================
+% Freccia di predizione che torna indietro
+% =========================
+
+\draw[->, thick]
+    ([xshift=0.2cm,yshift=0.25cm]corr.north)
+    .. controls
+        (9.0,2.4)
+        and
+        (3.0,2.6)
+    ..
+    ([xshift=0.5cm,yshift=0.25cm]kf.north);
+
+\node at (8.9,2.25) {Predizione};
+
+% =========================
+% Freccia curva locale sul filtro di Kalman
+% =========================
+
+\draw[->, thick]
+    ([xshift=-0.1cm,yshift=0.25cm]kf.north)
+    .. controls
+        (-1.45,1.45)
+        and
+        (-1.45,-1.35)
+    ..
+    ([xshift=-0.05cm,yshift=-0.25cm]eq.south);
+
+\end{tikzpicture}
+\end{center}
+
+La stima predetta
+
+\[
+\hat{x}_{k|k-1}
+\]
+
+viene corretta sfruttando la nuova osservazione disponibile all'istante \(k\), ottenendo
+
+\[
+\hat{x}_{k|k}.
+\]
+
+Successivamente la stima filtrata viene propagata nel modello dinamico per ottenere la predizione all'istante successivo.
+
+\subsection*{Equazione di predizione}
+
+Introduciamo il guadagno
+
+\[
+\boxed{
+K_k=A_kL_k.
+}
+\]
+
+L'osservatore di Luenberger può essere scritto come
+
+\[
+\hat{x}_{k+1|k}
+=
+A_k\hat{x}_{k|k-1}
++
+b_k
++
+K_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right).
+\]
+
+Poiché
+
+\[
+K_k=A_kL_k,
+\]
+
+si ottiene
+
+\[
+\begin{aligned}
+\hat{x}_{k+1|k}
+&=
+A_k\hat{x}_{k|k-1}
++
+A_kL_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right)
++
+b_k
+\\[1mm]
+&=
+A_k
+\left[
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right)
+\right]
++
+b_k.
+\end{aligned}
+\]
+
+Riconoscendo il termine tra parentesi come la stima filtrata,
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right),
+}
+\]
+
+segue immediatamente l'equazione di predizione
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A_k\hat{x}_{k|k}
++
+b_k.
+}
+\]
+
+Quest'ultima rappresenta il passo di **predizione** del filtro di Kalman: una volta corretta la stima con la misura all'istante \(k\), essa viene propagata al tempo \(k+1\) attraverso il modello dinamico.
+
+
+\section{Filtro di Kalman -- Ricapitolazione}
+
+Consideriamo il sistema dinamico lineare tempo-variante
+
+\[
+x_{k+1}=A_kx_k+b_k+D_kw_k,
+\]
+
+\[
+y_k=C_kx_k+v_k.
+\]
+
+Assumiamo
+
+\[
+x_0\sim\mathcal N(\hat{x}_0,P_0),
+\]
+
+\[
+w_k\sim\mathcal N(0,Q_k),
+\]
+
+\[
+v_k\sim\mathcal N(0,R_k),
+\]
+
+con
+
+- \(w_k\) e \(v_k\) rumori bianchi (WN);
+- stato iniziale, rumore di processo e rumore di misura mutuamente incorrelati.
+
+Partendo dalla predizione
+
+\[
+\hat{x}_{k|k-1},
+\qquad
+P_{k|k-1},
+\]
+
+le tre equazioni del filtro di Kalman sono
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A_k\hat{x}_{k|k-1}
++b_k
++
+K_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right)
+}
+\]
+
+\[
+\boxed{
+K_k
+=
+A_kP_{k|k-1}C_k^T
+\left(
+R_k+C_kP_{k|k-1}C_k^T
+\right)^{-1}
+}
+\]
+
+\[
+\boxed{
+\begin{aligned}
+P_{k+1|k}
+=
+&
+A_kP_{k|k-1}A_k^T
+\\
+&
+-
+A_kP_{k|k-1}C_k^T
+\left(
+R_k+C_kP_{k|k-1}C_k^T
+\right)^{-1}
+C_kP_{k|k-1}A_k^T
+\\
+&
++
+D_kQ_kD_k^T.
+\end{aligned}
+}
+\]
+
+Le tre equazioni precedenti costituiscono il **filtro di Kalman** e producono la nuova predizione
+
+\[
+\boxed{
+\hat{x}_{k+1|k},
+\qquad
+P_{k+1|k}.
+}
+\]
+
+\subsubsection*{Passo di correzione (stima statica)}
+
+La misura disponibile all'istante \(k\),
+
+\[
+y_k,
+\]
+
+viene utilizzata per correggere la predizione
+
+\[
+\hat{x}_{k|k-1}
+\]
+
+ottenendo la stima filtrata
+
+\[
+\hat{x}_{k|k}.
+\]
+
+Questo equivale ad un problema di **stima statica**, risolto mediante lo stimatore BLUE.
+
+Il guadagno di correzione è
+
+\[
+\boxed{
+L_k
+=
+P_{k|k-1}C_k^T
+\left(
+R_k+C_kP_{k|k-1}C_k^T
+\right)^{-1}.
+}
+\]
+
+La correzione dello stato è
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right).
+}
+\]
+
+La covarianza filtrata diventa
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+P_{k|k-1}C_k^T
+\left(
+R_k+C_kP_{k|k-1}C_k^T
+\right)^{-1}
+C_kP_{k|k-1}.
+}
+\]
+
+\subsubsection*{Passo di predizione}
+
+Definendo
+
+\[
+K_k=A_kL_k,
+\]
+
+la predizione successiva è
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A_k\hat{x}_{k|k}
++
+b_k,
+}
+\]
+
+mentre la covarianza evolve secondo il modello dinamico
+
+\[
+\boxed{
+P_{k+1|k}
+=
+A_kP_{k|k}A_k^T
++
+D_kQ_kD_k^T.
+}
+\]
+
+Infine, il modello dinamico reale è
+
+\[
+x_{k+1}
+=
+A_kx_k+b_k+D_kw_k,
+\]
+
+\[
+y_k
+=
+C_kx_k+v_k.
+\]
+
+\subsection*{Interpretazione ricorsiva del filtro di Kalman}
+
+Il filtro di Kalman alterna due fasi:
+
+\[
+\boxed{
+(\hat{x}_{k|k-1},P_{k|k-1})
+\;\xrightarrow[\text{osservazione}]{\text{BLUE}}
+(\hat{x}_{k|k},P_{k|k})
+\;\xrightarrow[\text{modello dinamico}]{\text{predizione}}
+(\hat{x}_{k+1|k},P_{k+1|k})
+}
+\]
+
+ovvero
+
+\[
+\text{Predizione}
+\;\longrightarrow\;
+\text{Correzione}
+\;\longrightarrow\;
+\text{Predizione}
+\;\longrightarrow\;
+\cdots
+\]
+
+In particolare,
+
+\[
+\hat{x}_{k|k-1}
+\overset{y_k}{\longrightarrow}
+\hat{x}_{k|k}
+\overset{\text{predizione}}{\longrightarrow}
+\hat{x}_{k+1|k}
+\overset{y_{k+1}}{\longrightarrow}
+\hat{x}_{k+1|k+1}
+\longrightarrow\cdots
+\]
+
+\subsection*{Filtro di Kalman in forma ricorsiva}
+
+Sono noti
+
+\[
+A_k,\qquad
+D_k,\qquad
+C_k,\qquad
+Q_k,\qquad
+R_k.
+\]
+
+Inoltre sono assegnate la stima iniziale
+
+\[
+\hat{x}_{1|0},
+\qquad
+P_{1|0}.
+\]
+
+Per
+
+\[
+k=1,2,\ldots
+\]
+
+si eseguono i seguenti passi.
+
+\subsubsection*{1. Correzione \texorpdfstring{$(k|k-1\rightarrow k|k)$}{(k|k-1 -> k|k)}}
+
+L'innovazione è definita come
+
+\[
+\boxed{
+e_k
+=
+y_k-C_k\hat{x}_{k|k-1}.
+}
+\]
+
+Infatti
+
+\[
+y_k=C_kx_k+v_k,
+\]
+
+mentre la misura prevista è
+
+\[
+\hat{y}_{k|k-1}
+=
+C_k\hat{x}_{k|k-1},
+\]
+
+per cui
+
+\[
+e_k
+=
+y_k-\hat{y}_{k|k-1}.
+\]
+
+La covarianza dell'innovazione è
+
+\[
+\boxed{
+S_k
+=
+R_k
++
+C_kP_{k|k-1}C_k^T.
+}
+\]
+
+Il guadagno di correzione è
+
+\[
+\boxed{
+L_k
+=
+P_{k|k-1}C_k^TS_k^{-1}.
+}
+\]
+
+\subsubsection*{Covarianza dell'innovazione}
+
+Per definizione,
+
+\[
+e_k
+=
+y_k-\hat{y}_{k|k-1}.
+\]
+
+Poiché
+
+\[
+y_k=C_kx_k+v_k,
+\]
+
+e
+
+\[
+\hat{y}_{k|k-1}
+=
+C_k\hat{x}_{k|k-1},
+\]
+
+segue che
+
+\[
+e_k
+=
+C_k\tilde{x}_{k|k-1}+v_k.
+\]
+
+La covarianza dell'innovazione vale quindi
+
+\[
+\begin{aligned}
+\mathbb{E}[e_ke_k^T]
+&=
+C_k
+\mathbb{E}
+\!\left[
+\tilde{x}_{k|k-1}
+\tilde{x}_{k|k-1}^{T}
+\right]
+C_k^T
++
+\mathbb{E}
+\!\left[
+v_kv_k^T
+\right]
+\\
+&=
+C_kP_{k|k-1}C_k^T+R_k.
+\end{aligned}
+\]
+
+Pertanto
+
+\[
+\boxed{
+S_k
+=
+C_kP_{k|k-1}C_k^T+R_k.
+}
+\]
+
+\subsubsection*{Correzione \texorpdfstring{$(k|k-1\rightarrow k|k)$}{(k|k-1 -> k|k)}}
+
+La stima filtrata è
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_ke_k.
+}
+\]
+
+La covarianza associata è
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+L_kS_kL_k^T.
+}
+\]
+
+\subsubsection*{Predizione \texorpdfstring{$(k|k\rightarrow k+1|k)$}{(k|k -> k+1|k)}}
+
+Una volta corretta la stima, la si propaga mediante il modello dinamico:
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A_k\hat{x}_{k|k}
++
+b_k.
+}
+\]
+
+La covarianza evolve come
+
+\[
+\boxed{
+P_{k+1|k}
+=
+A_kP_{k|k}A_k^T
++
+D_kQ_kD_k^T.
+}
+\]
+
+\paragraph{Osservazioni}
+
+\begin{itemize}
+    \item La correzione è sempre associata ad una riduzione dell'incertezza (riduzione della matrice di covarianza).
+    \item La forma
+    \[
+    P_{k|k}
+    =
+    P_{k|k-1}
+    -
+    L_kS_kL_k^T
+    \]
+    può perdere la definita positività per effetto degli errori numerici (differenza tra matrici definite positive).
+\end{itemize}
+
+Per questo motivo viene spesso utilizzata la \textbf{forma di Joseph}
+
+\[
+\boxed{
+P_{k|k}
+=
+(I-L_kC_k)
+P_{k|k-1}
+(I-L_kC_k)^T
++
+L_kR_kL_k^T.
+}
+\]
+
+Essa è matematicamente equivalente alla formula precedente, ma è numericamente più robusta e preserva meglio la simmetria e la definita positività della matrice di covarianza.
+
+\subsubsection*{Errore di stima dopo la correzione}
+
+L'errore filtrato è
+
+\[
+\tilde{x}_{k|k}
+=
+x_k-\hat{x}_{k|k}.
+\]
+
+Sostituendo l'equazione di aggiornamento,
+
+\[
+\begin{aligned}
+\tilde{x}_{k|k}
+&=
+x_k
+-
+\hat{x}_{k|k-1}
+-
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right)
+\\
+&=
+\tilde{x}_{k|k-1}
+-
+L_k
+\left(
+C_kx_k+v_k-C_k\hat{x}_{k|k-1}
+\right)
+\\
+&=
+\tilde{x}_{k|k-1}
+-
+L_k
+\left(
+C_k\tilde{x}_{k|k-1}+v_k
+\right).
+\end{aligned}
+\]
+
+Pertanto
+
+\[
+\boxed{
+\tilde{x}_{k|k}
+=
+(I-L_kC_k)\tilde{x}_{k|k-1}
+-
+L_kv_k.
+}
+\]
+
+\subsubsection*{Forma di Joseph}
+
+La matrice di covarianza della stima filtrata può essere scritta come
+
+\[
+\boxed{
+P_{k|k}
+=
+\mathbb{E}
+\!\left[
+\tilde{x}_{k|k}\tilde{x}_{k|k}^{T}
+\right]
+=
+(I-L_kC_k)
+P_{k|k-1}
+(I-L_kC_k)^T
++
+L_kR_kL_k^T.
+}
+\]
+
+Questa espressione è nota come \textbf{forma di Joseph}.
+
+\subsection*{Osservazioni}
+
+\begin{itemize}
+    \item Il filtro di Kalman nella forma \emph{correzione--predizione} è anche un filtro \emph{predittore}.
+    
+    \item Le matrici di covarianza
+    \[
+    P_{k|k-1}
+    \qquad\text{e}\qquad
+    P_{k|k}
+    \]
+    sono utilizzate per il calcolo dei guadagni e, poiché rappresentano la covarianza della stima, consentono anche di costruire gli intervalli di confidenza.
+    
+    \item Il filtro di Kalman è applicabile a qualunque sistema lineare.
+    \begin{itemize}
+        \item Nel caso gaussiano è lo stimatore ottimo.
+        \item Nel caso non gaussiano è ottimo all'interno della classe degli stimatori lineari.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Sistemi non lineari}
+
+Per sistemi non lineari si utilizzano estensioni del filtro di Kalman.
+
+Le principali sono:
+
+\begin{itemize}
+    \item \textbf{Extended Kalman Filter (EKF)}: basato sulla linearizzazione locale del modello;
+    \item \textbf{Unscented Kalman Filter (UKF)}: basato sulla trasformazione Unscented (UT);
+    \item \textbf{Particle Filter}: basato su tecniche Monte Carlo.
+\end{itemize}
+
+\subsection*{Rappresentazione come osservatore LTV}
+
+La dinamica della predizione può essere riscritta nella forma
+
+\[
+\begin{aligned}
+\hat{x}_{k+1|k}
+&=
+A_k\hat{x}_{k|k}
++b_k
+\\
+&=
+A_k
+\left[
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-C_k\hat{x}_{k|k-1}
+\right)
+\right]
++b_k
+\\
+&=
+(A_k-K_kC_k)\hat{x}_{k|k-1}
++b_k
++
+K_ky_k,
+\end{aligned}
+\]
+
+dove
+
+\[
+K_k=A_kL_k.
+\]
+
+La stima filtrata, che costituisce l'uscita dell'osservatore, è invece
+
+\[
+\begin{aligned}
+\hat{x}_{k|k}
+&=
+\hat{x}_{k|k-1}
++L_k\left(y_k-C_k\hat{x}_{k|k-1}\right)\\
+&=
+(I-L_kC_k)\hat{x}_{k|k-1}
++L_ky_k.
+\end{aligned}
+\]
+
+Confrontando questa espressione con l'osservatore LTV generale,
+
+\[
+\xi_{k+1}
+=
+\mathcal{A}_k\xi_k
++
+\mathcal{B}_kb_k
++
+\mathcal{C}_ky_k,
+\]
+
+\[
+\hat{x}_k
+=
+\mathcal{D}_k\xi_k
++
+\mathcal{E}_kb_k
++
+\mathcal{F}_ky_k,
+\]
+
+si ottengono i parametri
+
+\[
+\boxed{
+\begin{aligned}
+\mathcal{A}_k &= A_k-K_kC_k,\\
+\mathcal{B}_k &= I,\\
+\mathcal{C}_k &= K_k,\\
+\mathcal{D}_k &= I-L_kC_k,\\
+\mathcal{E}_k &= 0,\\
+\mathcal{F}_k &= L_k.
+\end{aligned}
+}
+\]
+
+In particolare, lo stato interno dell'osservatore coincide con la predizione
+
+\[
+\boxed{
+\xi_k=\hat{x}_{k|k-1},
+}
+\]
+
+mentre l'uscita dell'osservatore è la stima filtrata
+
+\[
+\boxed{
+\hat{x}_{k|k}.
+}
+\]
+
+\subsection*{Innovazione}
+
+L'innovazione è definita come
+
+\[
+\boxed{
+e_k
+=
+y_k-C_k\hat{x}_{k|k-1}.
+}
+\]
+
+Se il modello descrive correttamente il sistema, allora il processo di innovazione è un rumore bianco gaussiano
+
+\[
+\boxed{
+e_k\sim\mathcal{WN}(0,S_k),
+}
+\]
+
+dove \(S_k\) è la covarianza dell'innovazione.
+
+L'innovazione ha diversi impieghi.
+
+\begin{enumerate}
+    \item \textbf{Progettazione del filtro} (validazione del modello).
+
+    \item \textbf{Diagnosi di malfunzionamenti e guasti}, mediante test di bianchezza.
+
+    \item \textbf{Rilevamento di outlier}, cioè misure spurie o incoerenti con il modello.
+\end{enumerate}
+
+Nel problema di rilevamento degli outlier si verifica se l'innovazione è coerente con la distribuzione
+
+\[
+\mathcal N(0,S_k),
+\]
+
+mediante un opportuno test a soglia.
+
+La distanza euclidea non è sufficiente, poiché non tiene conto della covarianza del rumore.
+
+Ad esempio, due innovazioni possono soddisfare
+
+\[
+D_M(e_k^{(1)})
+<
+D_M(e_k^{(2)}),
+\]
+
+pur avendo una distanza euclidea opposta.
+
+\subsection*{Distanza di Mahalanobis}
+
+La distanza di Mahalanobis dell'innovazione è definita come
+
+\[
+\boxed{
+D_M(e_k)
+=
+\sqrt{
+(e_k-\mu_{e_k})^T
+S_k^{-1}
+(e_k-\mu_{e_k})
+}.
+}
+\]
+
+Poiché
+
+\[
+\mu_{e_k}=0,
+\]
+
+si ottiene
+
+\[
+\boxed{
+D_M(e_k)
+=
+\sqrt{
+e_k^TS_k^{-1}e_k
+}.
+}
+\]
+
+Un'innovazione viene generalmente considerata anomala quando la sua distanza di Mahalanobis supera una soglia prefissata.
+
+In pratica, si confronta la distanza dalla media espressa in termini della covarianza dell'innovazione, piuttosto che la semplice distanza euclidea.
+
+\subsection*{Caso particolare: sistema LTI}
+
+Consideriamo il sistema lineare tempo-invariante
+
+\[
+x_{k+1}=Ax_k+bu_k+Dw_k,
+\]
+
+\[
+y_k=Cx_k+v_k,
+\]
+
+con
+
+\[
+w_k\sim\mathcal N(0,Q),
+\]
+
+\[
+v_k\sim\mathcal N(0,R).
+\]
+
+Le equazioni del filtro di Kalman diventano
+
+\[
+\boxed{
+K_k
+=
+AP_{k|k-1}C^T
+\left(
+R+CP_{k|k-1}C^T
+\right)^{-1},
+}
+\]
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A\hat{x}_{k|k-1}
++
+bu_k
++
+K_k
+\left(
+y_k-C\hat{x}_{k|k-1}
+\right),
+}
+\]
+
+\[
+\boxed{
+\begin{aligned}
+P_{k+1|k}
+=
+&
+AP_{k|k-1}A^T
+\\
+&
+-
+AP_{k|k-1}C^T
+\left(
+R+CP_{k|k-1}C^T
+\right)^{-1}
+CP_{k|k-1}A^T
+\\
+&
++
+DQD^T.
+\end{aligned}
+}
+\]
+
+Le prime due equazioni costituiscono la ricorsione del filtro di Kalman, mentre la terza è la ricorsione della matrice di covarianza (equazione di Riccati).
+
+\paragraph{Osservazione}
+
+Anche se il sistema è LTI, il filtro rimane in generale \textbf{LTV}, poiché il guadagno
+
+\[
+K_k
+\]
+
+dipende dalla soluzione ricorsiva dell'equazione di Riccati.
+
+\subsection*{Filtro di Kalman stazionario}
+
+Ci si chiede sotto quali condizioni esistano i limiti
+
+\[
+\lim_{k\rightarrow\infty}
+P_{k|k-1}
+=
+P,
+\qquad
+P=P^T>0,
+\]
+
+e, di conseguenza,
+
+\[
+\lim_{k\rightarrow\infty}
+K_k
+=
+K.
+\]
+
+In tal caso il filtro diventa tempo-invariante.
+
+La matrice limite \(P\) deve soddisfare la \textbf{Discrete Algebraic Riccati Equation (DARE)}
+
+\[
+\boxed{
+\begin{aligned}
+P
+=
+&
+APA^T
+-
+APC^T
+\left(
+R+CPC^T
+\right)^{-1}
+CPA^T
+\\
+&
++
+DQD^T.
+\end{aligned}
+}
+\]
+
+Spesso si introduce una matrice \(B\) tale che
+
+\[
+\boxed{
+BB^T=DQD^T,
+}
+\]
+
+così da poter riscrivere il rumore di processo come
+
+\[
+Dw_k=B\bar{w}_k,
+\]
+
+dove
+
+\[
+\bar{w}_k
+\sim
+\mathcal{WN}(0,I).
+\]
+
+In questo modo
+
+\[
+DQD^T
+=
+BB^T.
+\]
+
+\subsection*{Condizioni di esistenza}
+
+L'equazione algebrica di Riccati ammette una soluzione stabilizzante se
+
+\[
+\boxed{
+(A,C)
+\ \text{è rilevabile},
+}
+\]
+
+e
+
+\[
+\boxed{
+(A,B)
+\ \text{è stabilizzabile},
+}
+\]
+
+ossia:
+
+- tutti i modi non osservabili sono stabili (rilevabilità);
+- tutti i modi instabili sono controllabili (stabilizzabilità).
+
+In tali condizioni il filtro di Kalman converge ad un guadagno costante
+
+\[
+K_k\longrightarrow K,
+\]
+
+ottenendo il cosiddetto **filtro di Kalman stazionario**.
+
+\subsection*{Convergenza del filtro di Kalman stazionario}
+
+Sotto le ipotesi viste in precedenza vale che
+
+\begin{itemize}
+    \item esiste una soluzione della DARE
+    \[
+    P=P^T>0;
+    \]
+    \item per qualunque condizione iniziale la DRE converge alla DARE.
+\end{itemize}
+
+In particolare,
+
+\[
+\boxed{
+\lim_{k\rightarrow\infty}
+P_{k+1|k}
+=
+P
+=
+AMA^T
++
+DQD^T,
+}
+\]
+
+dove
+
+\[
+\boxed{
+M
+=
+P
+-
+PC^T
+(R+CPC^T)^{-1}
+CP.
+}
+\]
+
+Infatti,
+
+\[
+\boxed{
+\lim_{k\rightarrow\infty}
+P_{k|k}
+=
+M.
+}
+\]
+
+Il guadagno di correzione converge a
+
+\[
+\boxed{
+\lim_{k\rightarrow\infty}
+L_k
+=
+L
+=
+PC^T
+(R+CPC^T)^{-1}.
+}
+\]
+
+Di conseguenza,
+
+\[
+\boxed{
+\lim_{k\rightarrow\infty}
+K_k
+=
+K
+=
+AL.
+}
+\]
+
+\subsection*{Filtro di Kalman stazionario}
+
+A regime il filtro assume la forma
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+A\hat{x}_{k|k-1}
++
+bu_k
++
+K
+\left(
+y_k-C\hat{x}_{k|k-1}
+\right),
+}
+\]
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L
+\left(
+y_k-C\hat{x}_{k|k-1}
+\right).
+}
+\]
+
+Il filtro stazionario costituisce un osservatore asintotico.
+
+Infatti,
+
+\[
+\boxed{
+A-KC
+}
+\]
+
+ha tutti gli autovalori all'interno del cerchio unitario.
+
+Pertanto l'errore di stima converge asintoticamente a zero in assenza di rumori.
+
+\paragraph{Osservazione}
+
+La convergenza ai valori stazionari
+
+\[
+P,\qquad M,\qquad L,\qquad K
+\]
+
+è indipendente dalla scelta della stima iniziale
+
+\[
+\boxed{
+(\hat{x}_0,\;P_0),
+}
+\]
+
+purché siano soddisfatte le ipotesi di esistenza della soluzione stabilizzante della DARE.
+
+
+\section{Filtraggio non lineare}
+
+Consideriamo il sistema dinamico non lineare
+
+\[
+x_{k+1}=f_k(x_k,w_k),
+\]
+
+\[
+y_k=h_k(x_k,v_k).
+\]
+
+Si assumono valide le stesse ipotesi viste nel caso lineare riguardo:
+
+\begin{itemize}
+    \item rumore di processo;
+    \item rumore di misura;
+    \item condizioni iniziali.
+\end{itemize}
+
+Gli approcci al filtraggio non lineare derivano dai metodi di stima statica per modelli non lineari.
+
+I principali sono:
+
+\begin{itemize}
+    \item \textbf{Linearizzazione} \(\rightarrow\) \textbf{Extended Kalman Filter (EKF)};
+    \item \textbf{Trasformata Unscented} \(\rightarrow\) \textbf{Unscented Kalman Filter (UKF)};
+    \item \textbf{Metodi Monte Carlo} \(\rightarrow\) \textbf{Particle Filter}.
+\end{itemize}
+
+\subsection*{Extended Kalman Filter}
+
+L'Extended Kalman Filter si basa su una approssimazione al primo ordine (linearizzazione locale) delle funzioni
+
+\[
+f_k(\cdot),
+\qquad
+h_k(\cdot).
+\]
+
+\subsubsection*{Predizione}
+
+Si propaga la stima filtrata mediante il modello non lineare
+
+\[
+(k|k)
+\;\longrightarrow\;
+(k+1|k)
+\]
+
+calcolando
+
+\[
+\boxed{
+\hat{x}_{k+1|k}
+=
+f_k(\hat{x}_{k|k},0).
+}
+\]
+
+La covarianza viene propagata come
+
+\[
+\boxed{
+P_{k+1|k}
+=
+F_kP_{k|k}F_k^T
++
+D_kQ_kD_k^T.
+}
+\]
+
+Le matrici della linearizzazione sono i Jacobiani del modello dinamico valutati nel punto di lavoro
+
+\[
+\boxed{
+F_k
+=
+\left.
+\frac{\partial f_k(x,w)}
+{\partial x}
+\right|_{
+\substack{
+x=\hat{x}_{k|k}\\
+w=0
+}
+}
+}
+\]
+
+e
+
+\[
+\boxed{
+D_k
+=
+\left.
+\frac{\partial f_k(x,w)}
+{\partial w}
+\right|_{
+\substack{
+x=\hat{x}_{k|k}\\
+w=0
+}
+}.
+}
+\]
+
+\subsubsection*{Correzione}
+
+La fase di correzione aggiorna la stima
+
+\[
+(k|k-1)
+\;\longrightarrow\;
+(k|k),
+\]
+
+utilizzando il modello di misura non lineare
+
+\[
+h_k(\cdot).
+\]
+
+Si introducono i Jacobiani della funzione di misura
+
+\[
+\boxed{
+H_k
+=
+\left.
+\frac{\partial h_k(x,v)}
+{\partial x}
+\right|_{
+\substack{
+x=\hat{x}_{k|k-1}\\
+v=0
+}
+}
+}
+\]
+
+e
+
+\[
+\boxed{
+M_k
+=
+\left.
+\frac{\partial h_k(x,v)}
+{\partial v}
+\right|_{
+\substack{
+x=\hat{x}_{k|k-1}\\
+v=0
+}
+}.
+}
+\]
+
+La linearizzazione locale della misura è
+
+\[
+y_k
+=
+C_k x_k + v_k.
+\]
+(non so perché lo scriva così y ma vabbè)
+
+L'innovazione è
+
+\[
+\boxed{
+e_k
+=
+y_k
+-
+h_k(\hat{x}_{k|k-1},0).
+}
+\]
+
+La covarianza dell'innovazione vale
+
+\[
+\boxed{
+S_k
+=
+H_kP_{k|k-1}H_k^T
++
+M_kR_kM_k^T.
+}
+\]
+
+Il guadagno di Kalman è
+
+\[
+\boxed{
+L_k
+=
+P_{k|k-1}
+H_k^T
+S_k^{-1}.
+}
+\]
+
+La stima corretta è
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_ke_k.
+}
+\]
+
+Infine, la covarianza aggiornata è
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+L_kS_kL_k^T.
+}
+\]
+
+\subsection*{Unscented Kalman Filter (UKF)}
+
+L'Unscented Kalman Filter è basato sulla \textbf{Trasformata Unscented (Unscented Transform, UT)}.
+
+La fase di correzione viene ricondotta ad un problema di stima statica BLUE.
+
+\subsubsection*{Correzione}
+
+Applicando la Trasformata Unscented al vettore aleatorio
+
+\[
+\begin{bmatrix}
+\hat{x}_{k|k-1}\\
+0
+\end{bmatrix},
+\]
+
+con matrice di covarianza
+
+\[
+\begin{bmatrix}
+P_{k|k-1} & 0\\
+0 & R_k
+\end{bmatrix},
+\]
+
+attraverso il modello di misura
+
+\[
+h_k(\cdot),
+\]
+
+si ottengono
+
+\[
+\boxed{
+\hat{y}_{k|k-1},
+}
+\]
+
+\[
+\boxed{
+\Sigma_y,
+}
+\]
+
+\[
+\boxed{
+\Sigma_{xy},
+}
+\]
+
+dove:
+
+\begin{itemize}
+    \item \(\Sigma_y\) è la covarianza della misura prevista;
+    \item \(\Sigma_{xy}\) è il momento incrociato (covarianza incrociata) tra stato e misura.
+\end{itemize}
+
+Il guadagno di Kalman è quindi
+
+\[
+\boxed{
+L_k
+=
+\Sigma_{xy}\Sigma_y^{-1}.
+}
+\]
+
+La stima filtrata viene aggiornata come
+
+\[
+\boxed{
+\hat{x}_{k|k}
+=
+\hat{x}_{k|k-1}
++
+L_k
+\left(
+y_k-\hat{y}_{k|k-1}
+\right).
+}
+\]
+
+La covarianza aggiornata è
+
+\[
+\boxed{
+P_{k|k}
+=
+P_{k|k-1}
+-
+L_k\Sigma_yL_k^T.
+}
+\]
+Dove, nella notazione usata dal prof:
+\[
+\Sigma_y = S_k
+\]
+
+\subsubsection*{Predizione}
+
+Per propagare la stima si applica nuovamente la Trasformata Unscented.
+
+Si considera il vettore
+
+\[
+\begin{bmatrix}
+\hat{x}_{k|k}\\
+0
+\end{bmatrix},
+\]
+
+con matrice di covarianza
+
+\[
+\begin{bmatrix}
+P_{k|k} & 0\\
+0 & Q_k
+\end{bmatrix},
+\]
+
+e lo si propaga attraverso il modello dinamico
+
+\[
+f_k(\cdot).
+\]
+
+La Trasformata Unscented restituisce direttamente
+
+\[
+\boxed{
+\hat{x}_{k+1|k},
+}
+\]
+
+\[
+\boxed{
+P_{k+1|k}.
+}
+\]
+
+In questa fase il momento incrociato non viene utilizzato.
+
+\subsection*{Particle Filter}
+
+Il Particle Filter può essere visto come l'analogo dinamico del metodo Monte Carlo per la stima statica.
+
+L'idea è quella di ricavare i momenti della distribuzione a posteriori mediante medie campionarie su "tanti" (N) campioni (particelle).
+
+Si considerano \(N\) campioni
+
+\[
+(x_i,w_i),
+\qquad
+i=1,\ldots,N,
+\]
+
+dove
+
+- \(x_i\) è l'\(i\)-esima particella;
+- \(w_i\) è il peso associato.
+
+La PDF (densità di probabilità) p(x) viene quindi rappresentata mediante l'insieme
+
+\[
+\boxed{
+\{(x_i,w_i)\}_{i=1}^{N}.
+}
+\]
+
+\subsubsection*{Approssimazione della PDF}
+
+La distribuzione viene approssimata come
+
+\[
+\boxed{
+p(x)
+\simeq
+\sum_{i=1}^{N}
+w_i\,\delta(x-x_i),
+}
+\]
+
+dove \(\delta(\cdot)\) è la delta di Dirac.
+
+\subsubsection*{Media}
+
+La media della distribuzione vale
+
+\[
+\bar{x}
+=
+\int xp(x)\,dx.
+\]
+
+Utilizzando l'approssimazione precedente,
+
+\[
+\begin{aligned}
+\bar{x}
+&\simeq
+\int
+x
+\sum_{i=1}^{N}
+w_i\delta(x-x_i)\,dx
+\\
+&=
+\sum_{i=1}^{N}
+w_i
+\int
+x\,
+\delta(x-x_i)\,dx
+\\
+&=
+\boxed{
+\sum_{i=1}^{N}
+w_ix_i.
+}
+\end{aligned}
+\]
+
+\subsubsection*{Covarianza}
+
+La matrice di covarianza è
+
+\[
+\Sigma_x
+=
+\int
+(x-\bar{x})
+(x-\bar{x})^T
+p(x)\,dx.
+\]
+
+Sostituendo l'approssimazione della PDF,
+
+\[
+\begin{aligned}
+\Sigma_x
+&\simeq
+\int
+(x-\bar{x})
+(x-\bar{x})^T
+\sum_{i=1}^{N}
+w_i
+\delta(x-x_i)\,dx
+\\
+&=
+\sum_{i=1}^{N}
+w_i
+\int
+(x-\bar{x})
+(x-\bar{x})^T
+\delta(x-x_i)\,dx
+\\
+&=
+\boxed{
+\sum_{i=1}^{N}
+w_i
+(x_i-\bar{x})
+(x_i-\bar{x})^T.
+}
+\end{aligned}
+\]
+
+\subsubsection*{Aggiornamento della distribuzione a posteriori}
+
+L'approssimazione mediante particelle può essere utilizzata anche per rappresentare la distribuzione \emph{a priori}
+
+\[
+\boxed{
+p_{k|k-1}(x)
+\simeq
+\sum_{i=1}^{N}
+w_{k|k-1}^{(i)}
+\delta\!\left(x-x_{k|k-1}^{(i)}\right).
+}
+\]
+
+L'obiettivo è determinare la distribuzione \emph{a posteriori}, tenendo conto della misura \(y_k\), ottenendone una nuova approssimazione mediante particelle
+
+\[
+\left(
+x_{k|k}^{(i)},
+\;
+w_{k|k}^{(i)}
+\right),
+\]
+
+tale che
+
+\[
+\boxed{
+p_{k|k}(x)
+\simeq
+\sum_{i=1}^{N}
+w_{k|k}^{(i)}
+\delta\!\left(x-x_{k|k}^{(i)}\right).
+}
+\]
+
+Dalla formula di Bayes,
+
+\[
+\begin{aligned}
+p_{k|k}(x)
+&=
+f_{X|Y}(x|y)
+\\
+&=
+\frac{
+f_{Y|X}(y|x)\,f_X(x)
+}{
+\displaystyle
+\int
+f_{Y|X}(y|\zeta)\,
+f_X(\zeta)\,
+d\zeta
+}
+\\
+&=
+\frac{
+f_{Y|X}(y_k|x)\,
+p_{k|k-1}(x)
+}{
+\displaystyle
+\int
+f_{Y|X}(y_k|\zeta)\,
+p_{k|k-1}(\zeta)\,
+d\zeta
+}.
+\end{aligned}
+\]
+
+Sostituendo l'approssimazione particellare della distribuzione a priori,
+
+\[
+\begin{aligned}
+p_{k|k}(x)
+\simeq
+\frac{
+f_{Y|X}(y_k|x)
+\displaystyle
+\sum_{i=1}^{N}
+w_{k|k-1}^{(i)}
+\delta\!\left(x-x_{k|k-1}^{(i)}\right)
+}{
+\displaystyle
+\int
+f_{Y|X}(y_k|\zeta)
+\sum_{i=1}^{N}
+w_{k|k-1}^{(i)}
+\delta\!\left(\zeta-x_{k|k-1}^{(i)}\right)
+d\zeta
+}.
+\end{aligned}
+\]
+
+Applicando la proprietà della delta di Dirac,
+
+\[
+\boxed{
+p_{k|k}(x)
+\simeq
+\frac{
+\displaystyle
+\sum_{i=1}^{N}
+w_{k|k-1}^{(i)}
+f_{Y|X}\!\left(
+y_k
+\mid
+x_{k|k-1}^{(i)}
+\right)
+\delta\!\left(
+x-x_{k|k-1}^{(i)}
+\right)
+}{
+\displaystyle
+\sum_{i=1}^{N}
+w_{k|k-1}^{(i)}
+f_{Y|X}\!\left(
+y_k
+\mid
+x_{k|k-1}^{(i)}
+\right)
+}.
+}
+\]
+
+Si osserva quindi che:
+
+\[
+\boxed{
+x_{k|k}^{(i)}
+=
+x_{k|k-1}^{(i)},
+}
+\]
+
+ossia la fase di aggiornamento non modifica la posizione delle particelle, ma solamente i loro pesi.
+
+Infatti,
+
+\[
+\boxed{
+w_{k|k}^{(i)}
+=
+\frac{
+w_{k|k-1}^{(i)}
+f_{Y|X}\!\left(
+y_k
+\mid
+x_{k|k-1}^{(i)}
+\right)
+}{
+\displaystyle
+\sum_{j=1}^{N}
+w_{k|k-1}^{(j)}
+f_{Y|X}\!\left(
+y_k
+\mid
+x_{k|k-1}^{(j)}
+\right)
+}.
+}
+\]
+
+I nuovi pesi sono quindi ottenuti normalizzando il prodotto tra il peso a priori e la likelihood della 
+misura.
+
+
+\subsubsection*{Correzione}
+
+La fase di correzione aggiorna le particelle utilizzando la nuova misura
+
+\[
+(k|k-1)
+\;\longrightarrow\;
+(k|k),
+\]
+
+attraverso il modello di misura
+
+\[
+h_k(\cdot).
+\]
+
+Le particelle non vengono spostate:
+
+\[
+\boxed{
+x_{k|k}^{(i)}
+=
+x_{k|k-1}^{(i)}.
+}
+\]
+
+Vengono invece aggiornati i pesi
+
+\[
+\boxed{
+w_{k|k}^{(i)}
+=
+w_{k|k-1}^{(i)}
+\,f_{Y|X}
+\!\left(
+y_k
+\mid
+x_{k|k-1}^{(i)}
+\right),
+}
+\]
+
+seguiti da una normalizzazione in modo che
+
+\[
+\sum_{i=1}^{N}w_{k|k}^{(i)}=1.
+\]
+
+\subsubsection*{Predizione}
+
+La fase di predizione propaga le particelle dal tempo \(k\) al tempo \(k+1\)
+
+\[
+(k|k)
+\;\longrightarrow\;
+(k+1|k),
+\]
+
+attraverso il modello dinamico
+
+\[
+f_k(\cdot).
+\]
+
+Ogni particella evolve secondo
+
+\[
+\boxed{
+x_{k+1|k}^{(i)}
+=
+f_k
+\!\left(
+x_{k|k}^{(i)},
+w_k^{(i)}
+\right),
+}
+\]
+
+dove
+
+\[
+w_k^{(i)}
+\sim
+\mathcal{WN}(0,Q_k)
+\]
+
+è un campione del rumore di processo.
+
+Durante la predizione i pesi non vengono modificati,
+
+\[
+\boxed{
+w_{k+1|k}^{(i)}
+=
+w_{k|k}^{(i)}.
+}
+\]
+
+\subsubsection*{Inizializzazione}
+
+Lo stato iniziale è assunto distribuito come
+
+\[
+x_0
+\sim
+(\hat{x}_0,P_0).
+\]
+
+L'insieme iniziale delle particelle si ottiene campionando \(N\) volte dalla distribuzione iniziale,
+
+\[
+x_0^{(i)}
+\sim
+(\hat{x}_0,P_0),
+\qquad
+i=1,\ldots,N,
+\]
+
+assegnando inizialmente a tutte lo stesso peso
+
+\[
+\boxed{
+w_0^{(i)}
+=
+\frac{1}{N},
+\qquad
+i=1,\ldots,N.
+}
+\]
+
+\subsection{recap Filtraggio non lineare}
+
+\[
+\begin{cases}
+x_{k+1}=f_k(x_k,w_k)\\
+y_k=h_k(x_k,v_k)
+\end{cases}
+\]
+
+Si assumono le consuete ipotesi sulle distribuzioni.
+
+\vspace{0.5em}
+
+Metodi principali:
+
+\[
+\boxed{\text{EKF} \qquad \text{UKF} \qquad \text{PF}}
+\]
+
+\subsection{Particle Filter (PF)}
+
+\paragraph{Inizializzazione}
+
+Lo stato iniziale
+
+\[
+x_0\sim(\hat{x}_0,P_0)
+\]
+
+viene approssimato mediante un numero elevato \(N\) di campioni
+(particelle), ciascuno con peso iniziale uniforme
+
+\[
+W=\frac1N.
+\]
+
+L'insieme iniziale delle particelle è
+
+\[
+\left\{
+\left(x^{(i)}_{1|0},\,W^{(i)}_{1|0}\right)
+\right\}_{i=1}^{N}.
+\]
+
+\bigskip
+
+\paragraph{Correzione}
+
+Passaggio
+
+\[
+k|k-1
+\;\xrightarrow{\;y_k\;}\;
+k|k,
+\]
+
+utilizzando la misura \(y_k\) e la funzione di osservazione
+\(h_k(\cdot)\).
+
+Le particelle non vengono spostate:
+
+\[
+x^{(i)}_{k|k}
+=
+x^{(i)}_{k|k-1}.
+\]
+
+I pesi vengono aggiornati tramite la likelihood della misura
+
+\[
+W^{(i)}_{k|k}
+=
+W^{(i)}_{k|k-1}\,
+f_{Y|X}\!\left(
+y_k\,\middle|\,x^{(i)}_{k|k-1}
+\right),
+\]
+
+e successivamente normalizzati.
+
+\bigskip
+
+\paragraph{Predizione}
+
+Passaggio
+
+\[
+k|k
+\;\longrightarrow\;
+k+1|k,
+\]
+
+utilizzando il modello dinamico \(f_k(\cdot)\).
+
+Ogni particella viene propagata come
+
+\[
+x^{(i)}_{k+1|k}
+=
+f_k\!\left(
+x^{(i)}_{k|k},
+w^{(i)}_k
+\right),
+\]
+
+dove
+
+\[
+w^{(i)}_k
+\]
+
+è una \textbf{realizzazione del rumore di processo}
+(\emph{non} il peso della particella).
+
+Durante la predizione i pesi rimangono invariati:
+
+\[
+W^{(i)}_{k+1|k}
+=
+W^{(i)}_{k|k}.
+\]
+
+\subsection{Ricampionamento (Resampling)}
+
+Nel filtro SIR-PF (\emph{Sequential Importance Resampling}) si esegue un
+ricampionamento dopo la fase di correzione.
+
+\[
+\left(x^{(i)}_{k|k},\,W^{(i)}_{k|k}\right)
+\;\longrightarrow\;
+\left(\tilde{x}^{(i)}_{k|k},\,\tilde{W}^{(i)}_{k|k}\right)
+\]
+
+dove le nuove particelle vengono estratte secondo la distribuzione dei
+pesi:
+
+\[
+\tilde{x}^{(i)}_{k|k}
+=
+x^{(j)}_{k|k}
+\qquad
+\text{con probabilità}
+\qquad
+W^{(j)}_{k|k}.
+\]
+
+Una stessa particella può quindi essere estratta più volte, mentre altre
+possono non essere selezionate.
+
+Dopo il ricampionamento tutti i pesi vengono riportati a valori uniformi:
+
+\[
+\boxed{
+\tilde{W}^{(i)}_{k|k}
+=
+\frac1N
+}
+\]
+
+Nella fase di predizione i pesi rimangono invariati:
+
+\[
+W^{(i)}_{k+1|k}
+=
+\frac1N.
+\]
+
+Alla successiva correzione essi vengono nuovamente aggiornati mediante la
+likelihood della misura:
+
+\[
+W^{(i)}_{k+1|k+1}
+=
+W^{(i)}_{k+1|k}\,
+f_{Y|X}
+\!\left(
+y_{k+1}\mid x^{(i)}_{k+1|k}
+\right).
+\]
+
+I pesi rappresentano quindi la \textbf{verosimiglianza} delle particelle
+rispetto alla misura osservata.
+
+\bigskip
+
+\paragraph{Alternativa al ricampionamento continuo}
+
+Invece di ricampionare ad ogni iterazione, si può stimare il numero
+effettivo di particelle che contribuiscono realmente alla stima:
+
+\[
+\boxed{
+N_{\mathrm{eff}}
+=
+\frac{1}
+{\displaystyle\sum_{i=1}^{N}
+\left(W^{(i)}_{k|k}\right)^2}
+}
+\]
+
+e ricampionare solamente quando \(N_{\mathrm{eff}}\) scende sotto una
+determinata soglia.
+
+\bigskip
+
+\paragraph{Caso limite}
+
+Se tutte le particelle contribuiscono allo stesso modo,
+
+\[
+W^{(i)}_{k|k}
+=
+\frac1N,
+\qquad
+\forall i,
+\]
+
+allora
+
+\[
+N_{\mathrm{eff}}
+=
+\frac{1}
+{N\left(\frac1N\right)^2}
+=
+N.
+\]
+
+In questo caso tutte le particelle hanno la stessa importanza e il
+ricampionamento non è necessario.
+
+\paragraph{Caso limite}
+
+Se una sola particella possiede peso unitario
+
+\[
+W^{(i)}=1,
+\]
+
+mentre tutte le altre hanno peso nullo,
+
+\[
+W^{(j)}=0,
+\qquad
+j\neq i,
+\]
+
+allora
+
+\[
+N_{\mathrm{eff}}=1.
+\]
+
+Pertanto si calcola il rapporto
+
+\[
+\frac{N_{\mathrm{eff}}}{N}
+\]
+
+e lo si confronta con una soglia prefissata per decidere se effettuare il
+ricampionamento.
+
+\vspace{0.5em}
+
+Riferimento:
+
+\begin{quote}
+Arulampalam et al., \emph{A Tutorial on Particle Filters for Online
+Nonlinear/Non-Gaussian Bayesian Tracking}, IEEE Transactions on Signal
+Processing, 2002.
+\end{quote}
+
+Con questo si conclude la parte dedicata al filtraggio.
+
+\bigskip
+
+Si passa quindi al problema della regolarizzazione
+(\emph{smoothing}), cioè alla stima dello stato utilizzando anche misure
+future.
+
+\[
+k|n,
+\qquad n>k.
+\]
+
+Riferimento classico:
+
+\begin{quote}
+Rauch, Tung e Striebel (1965).
+\end{quote}
+
+\subsection{Rauch--Tung--Striebel Smoother}
+
+L'algoritmo è composto da due fasi.
+
+\paragraph{1. Passata in avanti}
+
+Si esegue un normale filtro di Kalman (oppure EKF), ottenendo per ogni
+istante
+
+\[
+\hat{x}_{k|k},
+\qquad
+P_{k|k},
+\]
+
+e successivamente la predizione
+
+\[
+\hat{x}_{k+1|k},
+\qquad
+P_{k+1|k},
+\]
+
+per
+
+\[
+k=1,\ldots,n.
+\]
+
+Nel caso dell'EKF la matrice
+
+\[
+F_k
+\]
+
+è la matrice del modello (Jacobiana della dinamica).
+
+\bigskip
+
+\paragraph{2. Passata all'indietro}
+
+Si procede dall'istante finale verso quello iniziale
+
+\[
+n
+\longrightarrow
+1.
+\]
+
+Si introduce il guadagno di smoothing
+
+\[
+\boxed{
+C_k
+=
+P_{k|k}
+F_{k+1}^{T}
+P_{k+1|k}^{-1}
+}
+\]
+
+e si aggiorna la stima secondo
+
+\[
+\boxed{
+\hat{x}_{k|n}
+=
+\hat{x}_{k|k}
++
+C_k
+\left(
+\hat{x}_{k+1|n}
+-
+\hat{x}_{k+1|k}
+\right).
+}
+\]
+
+La covarianza associata alla stima smoothed viene aggiornata come
+
+\[
+\boxed{
+P_{k|n}
+=
+P_{k|k}
++
+C_k
+\left(
+P_{k+1|n}
+-
+P_{k+1|k}
+\right)
+C_k^{T}
+}
+\]
+
+dove il termine
+
+\[
+P_{k+1|n}-P_{k+1|k}
+\]
+
+rappresenta il miglioramento ottenuto sulla covarianza grazie
+all'utilizzo delle misure future.
+
+\vspace{1em}
+
+L'algoritmo procede ricorsivamente all'indietro:
+
+\[
+n|n
+\]
+
+(stima finale fornita dal filtro di Kalman)
+
+\[
+\Downarrow
+\]
+
+\[
+n-1|n
+\]
+
+\[
+\Downarrow
+\]
+
+\[
+n-2|n
+\]
+
+\[
+\Downarrow
+\]
+
+\[
+\cdots
+\]
+
+\[
+\Downarrow
+\]
+
+\[
+1|n.
+\]
+
+Aggiungere ultimi due esercizi
 
 \end{document}

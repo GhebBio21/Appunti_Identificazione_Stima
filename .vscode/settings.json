@@ -1,0 +1,25 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-relative",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "%DOCFILE%"
+      ],
+      "cwd": "%DIR%"
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (relative path)",
+      "tools": [
+        "latexmk-relative"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "first"
+}
